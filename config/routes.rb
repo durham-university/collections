@@ -68,5 +68,7 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 
-  get "doi/:id" => "doi#show"
+  resources :doi
+  resources :files
+
 end

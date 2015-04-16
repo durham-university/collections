@@ -1,3 +1,11 @@
-<h1>Show or Generate DOI</h1>
-<p>http://dx.doi.org/10.15128/<%= @id %></p>
-<%= @resource.identifier %>
+<h1>DOI for <%= @id %></h1>
+
+<% if @has_doi %>
+	<p>This resource already has DOI <%= @has_doi %>.</p>
+<% else %>
+	<p>This resource has no DOI allocated.</p>
+
+	<p>Generated DOI: <%= @doi %>.  You can publish the DOI.  This cannot be reversed, and will mean that the existence of the resource is publicly available.</p>
+
+	<p><%= link_to "Publish DOI", doi_path, :method => :put %></p>
+<% end %>
