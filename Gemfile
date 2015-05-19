@@ -46,3 +46,11 @@ group :development, :test do
   gem 'spring'
 end
 
+
+gem 'rsolr', '~> 1.0.6'
+gem 'devise'
+gem 'devise-guests', '~> 0.3'
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'jettywrapper'
+end
