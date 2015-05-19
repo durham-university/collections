@@ -141,4 +141,5 @@ Sufia.config do |config|
 
 end
 
-Date::DATE_FORMATS[:standard] = "%m/%d/%Y"
+Date::DATE_FORMATS[:standard] = "%-d %B %Y"
+Time::DATE_FORMATS[:standard] = "%-d %B %Y, %H:%m:%S"
