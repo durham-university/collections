@@ -1,0 +1,7 @@
+<%= link_to sufia.notifications_path, id: "notify_link", title: "User Notifications" do %>
+ <span class="sr-only">click for notifications.</span>
+ <%= render partial: 'users/notify_number' %>
+<% end %>
+<div class='hide'>
+  <%= link_to "notify", sufia.user_notify_path, remote: true, id: 'notify_update_link' %>
+</div>

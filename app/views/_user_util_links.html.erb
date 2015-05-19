@@ -1,0 +1,30 @@
+<% if user_signed_in? %>
+    <li>
+      <%= render partial: 'users/notify_link' %>
+    </li>
+    <li class="btn-group">
+      <%= link_to sufia.dashboard_index_path, class: "btn", id: "dashboard_link" do %>
+        <span class="glyphicon glyphicon-dashboard"></span>
+        <span class="sr-only">Select to access</span>
+        <span class="hidden-xs">&nbsp;<%= current_user.name %></span>
+        <span class="sr-only"> dashboard</span>
+      <% end %>
+      <a class=" btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-right" role="menu">
+        <% if can? :create, GenericFile %>
+          <li><%= link_to raw('<span class="glyphicon glyphicon-upload"></span> upload'), sufia.new_generic_file_path, id: 'upload_nav_link' %></li>
+        <% end %>
+        <li><%= link_to raw('<span class="glyphicon glyphicon-user"></span> my profile'), sufia.profile_path(current_user), id: 'profile_nav_link' %></li>
+        <%= render partial: 'users/user_util_links_extra' %>
+        <li class="divider"></li>
+        <li><%= link_to raw('<span class="glyphicon glyphicon-log-out"></span> log out'), destroy_user_session_path, id: 'logout_nav_link' %></li>
+      </ul>
+    </li>
+<% else %>
+    <li>
+    <%= link_to raw('<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Login'), new_user_session_path, class: "btn ", title: "Login" %>
+    </li>
+<% end %>
