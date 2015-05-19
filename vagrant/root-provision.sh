@@ -28,3 +28,5 @@ systemctl enable redis.service
 
 # Start redis now
 systemctl start redis.service
+
+gem update --system
