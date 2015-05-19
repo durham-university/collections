@@ -1,0 +1,15 @@
+[Unit]
+Description=Sufia Resque Worker Pool
+Requires=redis.service opt-sufia-wait.service
+After=redis.service opt-sufia-wait.service
+
+[Service]
+Type=forking
+User=vagrant
+WorkingDirectory=/opt/sufia
+ExecStart=/home/vagrant/bin/resque-pool --daemon --environment development start
+ExecStopPost=/usr/bin/rm /opt/sufia/tmp/pids/resque-pool.pid
+PIDFile=/opt/sufia/tmp/pids/resque-pool.pid
+
+[Install]
+WantedBy=multi-user.target

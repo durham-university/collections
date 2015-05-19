@@ -1,0 +1,10 @@
+[Unit]
+Description=Oneshot service to wait for /opt/sufia
+
+[Service]
+Type=oneshot
+User=vagrant
+ExecStart=/bin/bash -c "while [ ! -d /opt/sufia/vagrant ]; do sleep 1; done; exit 0"
+
+[Install]
+WantedBy=multi-user.target

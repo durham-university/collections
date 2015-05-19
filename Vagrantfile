@@ -33,5 +33,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Provisioning
   config.vm.provision "shell", path: "vagrant/root-provision.sh"
   config.vm.provision "shell", path: "vagrant/user-provision.sh", privileged: false
+  config.vm.provision "shell", path: "vagrant/root-provision-resque.sh"
 
 end
