@@ -37,6 +37,7 @@ gem 'kaminari', github: 'jcoyne/kaminari', branch: 'sufia'
 gem 'rsolr', '~> 1.0.6'
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
+gem 'hydra-role-management'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
