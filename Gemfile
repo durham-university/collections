@@ -39,6 +39,11 @@ gem 'devise'
 gem 'devise-guests', '~> 0.3'
 gem 'hydra-role-management'
 
+# Fix mini_magick at the latest 3.x version
+# After that there are incompatibilities with Ruby 2.0.0p598, used on CentOS 7
+# See https://github.com/minimagick/minimagick/issues/278
+gem 'mini_magick', '3.8.1'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
