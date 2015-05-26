@@ -6,6 +6,12 @@ yum -y update
 
 yum -y install \
 	java-1.7.0-openjdk \
+	libreoffice-calc \
+	libreoffice-draw \
+	libreoffice-headless \
+	libreoffice-impress \
+	libreoffice-math \
+	libreoffice-writer \
 	mariadb-devel \
 	openssl-devel \
 	readline-devel \
