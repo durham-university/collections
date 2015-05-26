@@ -5,3 +5,26 @@ en:
         institution_name: "Durham University"
         institution_name_full: "Durham University"
         background_attribution: ""
+    simple_form:
+        labels:
+            generic_file:
+                description: "Other description"
+                abstract: "Abstract"
+                funder: "Funder"
+                research_methods: "Research methods"
+            collection:
+                description: "Description"
+                abstract: "Abstract"
+                funder: "Funder"
+                research_methods: "Research methods"
+        metadata_help:
+            generic_file:
+                description: "Other description information that does not fit into an existing category."
+                abstract_html: "A brief description of the resource and the context in which the resource was created."
+                funder_html: "Institution that provided financial support for the development of the resource."
+                research_methods_html: "The methodology employed for the study or research."
+            collection:
+                description: "Other description information that does not fit into an existing category."
+                abstract_html: "A brief description of the resource and the context in which the resource was created."
+                funder_html: "Institution that provided financial support for the development of the resource."
+                research_methods_html: "The methodology employed for the study or research."
