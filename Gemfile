@@ -37,6 +37,7 @@ gem 'kaminari', github: 'jcoyne/kaminari', branch: 'sufia'
 gem 'rsolr', '~> 1.0.6'
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
+gem 'devise_ldap_authenticatable'
 gem 'hydra-role-management'
 gem 'mysql2'
 
