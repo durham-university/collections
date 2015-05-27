@@ -18,3 +18,4 @@
 
 .vagrant/
 jetty/
+config/secrets.yml

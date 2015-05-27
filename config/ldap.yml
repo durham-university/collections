@@ -3,10 +3,10 @@
 # You can also just copy and paste the tree (do not include the "authorizations") to each
 # environment if you need something different per enviornment.
 authorizations: &AUTHORIZATIONS
-  host: ldap.host
+  host: <%= Rails.application.secrets.ldap_host %>
   port: 636
   attribute: cn
-  base: ou=people,dc=org,dc=uk
+  base: <%= Rails.application.secrets.ldap_base %>
   ssl: true
   allow_unauthenticated_bind: true
   require_attribute:
