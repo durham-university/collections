@@ -1,9 +1,5 @@
 #!/bin/sh
 
-yum -y install deltarpm
-
-yum -y update
-
 yum -y install \
 	java-1.7.0-openjdk \
 	libreoffice-calc \
