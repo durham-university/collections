@@ -17,14 +17,14 @@ module HydraDurham
         index.as :stored_searchable
       end
 
-      property :creator, predicate: ::RDF::DC.creator, class_name: "Person" do |index|
-        index.as :stored_searchable, :facetable
-      end
-
       property :doi_published, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#doi_published'), multiple: false do |index|
         index.type :date
         index.as :stored_searchable
       end
+
+      has_and_belongs_to_many :authors, predicate: ::RDF::DC.creator, class_name: "Author", inverse_of: :generic_files
+
+      accepts_nested_attributes_for :authors
     end
   end
 end
