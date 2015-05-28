@@ -38,4 +38,6 @@ class GenericFilesController < ApplicationController
 		super
 	end
 
+  self.presenter_class = ResourcePresenter
+  self.edit_form_class = ResourceEditForm
 end
