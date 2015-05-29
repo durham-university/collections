@@ -19,8 +19,7 @@ class ResourceEditForm < ResourcePresenter
         {
           first_name: [],
           last_name: []
-        },
-        :orcid
+        }
       ]
     end
 
