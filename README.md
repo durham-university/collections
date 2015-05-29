@@ -8,6 +8,15 @@ Installation
 
 Clone the repository into a directory.
 
+Create a `config/secrets.yml` file containing:
+```yaml
+development:
+  secret_key_base: SECRET-KEY
+  ldap_host: ldaphost.myorganisation.org
+  ldap_base: ou=People,dc=myorganisation,dc=org
+```
+and customise the `ldap_host` and `ldap_base` settings as required.
+
 In the directory, run 
 
 ```bash
@@ -26,7 +35,7 @@ to log into the server, then:
 
 ```bash
 cd /opt/sufia
-rails s
+rails server --binding=0.0.0.0
 ```
 
 You should then be able to access Fedora and Solr at http://localhost:8983/ and Sufia at http://localhost:3000/ .
@@ -48,9 +57,9 @@ On later runs, you will need to login with
 vagrant ssh
 ```
 then run
-```
+```bash
 cd /opt/sufia
 rake jetty:start
-rails s
+rails server --binding=0.0.0.0
 ```
 (Note the additional rake step - this is done for you on the first deploy).
