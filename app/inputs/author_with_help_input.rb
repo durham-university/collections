@@ -62,29 +62,6 @@ class AuthorWithHelpInput < MultiValueWithHelpInput
 
       @html << "</div>" # row
 
-      @html << "<div class='row'>"
-
-      # --- First Name
-      field = :orcid
-
-      field_value = value.send(field)
-      field_name = name_for(attribute_name, index, field)
-
-      @html << "  <div class='col-md-2'>"
-      @html << template.label_tag(field_name, field.to_s.humanize, required: true)
-      @html << "  </div>"
-
-      @html << "  <div class='col-md-3'>"
-      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name))
-      @html << "  </div>"
-
-      # delete checkbox
-      @html << "  <div class='col-md-3'>"
-      @html << destroy_widget(attribute_name, index)
-      @html << "  </div>"
-
-      @html << "</div>" # class=row
-
       @html
     end
 
