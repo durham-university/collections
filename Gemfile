@@ -40,6 +40,7 @@ gem 'devise-guests', '~> 0.3'
 gem 'devise_ldap_authenticatable'
 gem 'hydra-role-management'
 gem 'mysql2'
+gem 'clamav'
 
 # Fix mini_magick at the latest 3.x version
 # After that there are incompatibilities with Ruby 2.0.0p598, used on CentOS 7

@@ -1,6 +1,9 @@
 #!/bin/sh
 
 yum -y install \
+	clamav \
+	clamav-devel \
+	clamav-update \
 	java-1.7.0-openjdk \
 	libreoffice-calc \
 	libreoffice-draw \
@@ -18,6 +21,10 @@ yum -y install \
 	ruby \
 	ruby-devel \
 	wget
+
+# Update clamav config file and database
+sed -i -e "s/^Example/#Example/" /etc/freshclam.conf
+freshclam
 
 # Download and set up FITS
 wget -O /tmp/fits.zip http://projects.iq.harvard.edu/files/fits/files/fits-0.8.4.zip
