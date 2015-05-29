@@ -1,0 +1,10 @@
+development:
+  host: localhost
+  port: 6379
+test:
+  host: localhost
+  port: 6379
+production:
+  host: <%= Rails.application.secrets.redis_session_host %>
+  port: <%= Rails.application.secrets.redis_session_port %>
+  db: <%= Rails.application.secrets.redis_session_db %>
