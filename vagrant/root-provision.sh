@@ -20,7 +20,7 @@ yum -y install \
 	wget
 
 # Download and set up FITS
-wget -O /tmp/fits.zip http://projects.iq.harvard.edu/files/fits/files/fits-0.8.4.zip
+wget -nv -O /tmp/fits.zip http://projects.iq.harvard.edu/files/fits/files/fits-0.8.4.zip
 unzip -d /opt/ /tmp/fits.zip
 mv /opt/fits-0.8.4 /opt/fits
 chmod a+x /opt/fits/fits.sh
