@@ -56,28 +56,97 @@ module DoiHelper
 		if fobj.class == GenericFile
 
 			@data[:title] = fobj.title
-			@data[:description] = fobj.description
+
+			description = Array.new
+			fobj.description.each do |fdesc|
+				description << fdesc
+			end
+			@data[:description] = description 
+			
+			abstract = Array.new
+			fobj.abstract.each do |fabstract|
+				abstract << fabstract
+			end 
+			@data[:abstract] = abstract
+
+			research_methods = Array.new
+			fobj.research_methods.each do |method|
+				research_methods << method
+			end
+			@data[:research_methods] = research_methods
+
+			funder = Array.new
+			fobj.resarch_methods.each do |fun|
+				funder << fun
+			end
+			@data[:funder] = funder
+
 			@data[:size] = fobj.file_size
-			@data[:relatedIdentifier] = [] # empty array to avoid issue wtih nil.any?
-			@data[:format] = [fobj.format_label[0] + " - " + fobj.mime_type] # xml builder expects array here
+			size = Array.new
+			size << fobj.content.size
+			@data[:size] = size
+			relatedIdentifier = Array.new
+			fobj.related_url.each do |url|
+				relatedIdentifier << url
+			end
+			@data[:relatedIdentifier] = relatedIdentifier
+			format = Array.new
+			# fobj.format_label.each do |flable|
+			# 	format << flabel + " - " + fobj.mime_type
+			# end
+			format << fobj.content.mime_type
+			@data[:format] = format
 			@data[:date_uploaded] = Date.parse(fobj.date_uploaded.to_s).strftime('%Y-%m-%d')
-			rights = [{ # Do we allow for multiple licensing?
-						rights: fobj.filename[0] + " - " + Sufia.config.cc_licenses_reverse[fobj.rights[0]],
-						rightsURI: fobj.rights[0] }]
+			rights = Array.new
+			fobj.rights.each do |frights|
+				rights << {rights: Sufia.config.cc_licenses_reverse[frights], rightsURI: frights}
+			end
 			@data[:rights] = rights
 
 		else #Add Collection metadata
 			
 			@data[:title] = [fobj.title] # Collection returns string, XML builder expects array
-			@data[:description] = [fobj.description]
-			@data[:date_created] = Date.parse(fobj.date_created.to_s).strftime('%Y-%m-%d')
 
+			if ! fobj.description.empty? then
+				@data[:description] = [fobj.description] # Collection only singular currently 
+			end
+
+			abstract = Array.new
+			fobj.abstract.each do |fabstract|
+				abstract << fabstract
+			end 
+			@data[:abstract] = abstract
+			
+			research_methods = Array.new
+			fobj.research_methods.each do |method|
+				research_methods << method
+			end
+			@data[:research_methods] = research_methods
+
+			funder = Array.new
+			fobj.funder.each do |fun|
+				funder << fun
+			end
+			@data[:funder] = funder
+
+			contributor = Array.new
+			# FixMe: construct << {contributor, email} 
+			@data[:contributor] = contributor
+
+			if ! fobj.date_created[0].nil? then
+				@data[:date_created] = Date.parse(fobj.date_created.to_s).strftime('%Y-%m-%d')
+			end
+			
 			#Add members metadata
-			rights = Array[{rights: "Collection rights - " + Sufia.config.cc_licenses_reverse[fobj.rights[0]], rightsURI: fobj.rights[0] }]
+			rights = Array.new
+			fobj.rights.each do |crights|
+				rights << {rights: "Collection rights - " + Sufia.config.cc_licenses_reverse[crights], rightsURI: crights }
+			end
 			fobj.member_ids.each do |mid|
 				mobj = ActiveFedora::Base.find(mid)
+				if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
 				rights << { # Do we allow for multiple licensing?
-							rights: mobj.filename[0] + " - " + Sufia.config.cc_licenses_reverse[mobj.rights[0]],
+							rights: filename + " - " + Sufia.config.cc_licenses_reverse[mobj.rights[0]],
 							rightsURI: mobj.rights[0] 
 						}
 			end
@@ -86,21 +155,28 @@ module DoiHelper
 			format = Array.new
 			fobj.member_ids.each do |mid|
 				mobj = ActiveFedora::Base.find(mid)
-				format << mobj.filename[0] + " - " + mobj.mime_type 
+				if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
+				if mobj.content.mime_type.nil? then next end
+				format << filename + " - " + mobj.content.mime_type 
 			end
 			@data[:format] = format 
 			
 			size = Array.new
 			fobj.member_ids.each do |mid|
 				mobj = ActiveFedora::Base.find(mid)
-				size << mobj.filename[0] + " - " + mobj.file_size[0] # Should we preatyfier file size in bytes?
+				if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
+				if mobj.content.size then next end
+				size << filename + " - " + mobj.content.size # Should we preatyfier file size in bytes?
 			end
-			@data[:size] = size 
+			@data[:size] = size
 
 			relatedIdentifier = Array.new
+			fobj.related_url.each do |url|
+				relatedIdentifier << url
+			end
 			fobj.member_ids.each do |mid|
 				mobj = ActiveFedora::Base.find(mid)
-				relatedIdentifier << mobj.id # all will be mapped to default HasPart URI 
+				relatedIdentifier << "http://collections.durham.ac.uk/files/" + mobj.id # all will be mapped to default HasPart URI 
 			end
 			@data[:relatedIdentifier] = relatedIdentifier 
 		end

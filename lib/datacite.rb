@@ -2,11 +2,18 @@ require 'httparty'
 
 class Datacite
   include HTTParty
-  base_uri 'https://test.datacite.org'
-  # PRODUCTION # base_uri 'https://mds.datacite.org'
 
   def initialize
     @auth = {:username => Rails.application.secrets.mduser, :password => Rails.application.secrets.mdpassword}
+    if Rails.env.production? then
+      self.class.base_uri 'https://mds.datacite.org'
+      @api_doi_path = '/doi'
+      @api_metadata_path = '/metadata'
+    else #development/test
+      self.class.base_uri 'https://test.datacite.org'
+      @api_doi_path = '/mds/doi'
+      @api_metadata_path = '/mds/metadata'
+    end
   end
 
   # mint DOI
@@ -15,15 +22,23 @@ class Datacite
                 :basic_auth => @auth, 
                 :headers => {'Content-Type' => 'text/plain'} }
     puts options
-    self.class.post('/mds/doi', options)
-    # PRODUCTION # self.class.post('/doi', options)
+    response = self.class.post(@api_doi_path, options)
+    if response.success?
+      response
+    else
+      raise response.response
+    end
   end
   
   # register metadata
   def metadata(xml)
     options = { :body => xml, :basic_auth => @auth, 
                 :headers => {'Content-Type' => 'application/xml;charset=UTF-8'} }
-    self.class.post('/mds/metadata', options)
-    # PRODUCTION # self.class.post('/metadata', options)
+    response = self.class.post(@api_metadata_path, options)
+    if response.success?
+      response
+    else
+      raise response.response
+    end
   end
 end

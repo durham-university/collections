@@ -40,6 +40,28 @@ class DataciteXml
 
         xml.publicationYear map[:publication_year]
 
+        xml.contributors {
+          xml.contributor(:contributorType=>'RightsHolder') { 
+            xml.contributorName "Durham University"
+          }
+          if map[:funder].any? then
+            map[:funder].each do |f|
+              xml.contributor(:contributorType=>'Funder') {
+                xml.contributorName f
+                # xml.contributorName "Engineering and Physical Sciences Research Council (EPSRC)
+                # xml.nameIdentifier :nameIdentifierScheme=>'FundRef', schemeURI=>'http://www.crossref.org/fundref">http://dx.doi.org/10.13039/501100000266'
+              }   
+            end
+          end
+          if map[:contributor].any? then
+            map[:contributor].each do |f|
+              xml.contributor(:contributorType=>'ContactPerson') {
+                xml.contributorName f
+                # xml.nameIdentifier :nameIdentifierScheme=>'URI mailto', schemeURI=>'<mailto:upload.name@durham.ac.uk>'
+              }   
+            end
+          end
+        }
 
         xml.subjects {
           map[:subject].each do |s|
@@ -49,7 +71,7 @@ class DataciteXml
 
         xml.dates {
           if map.has_key?(:date_uploaded) then xml.date map[:date_uploaded], :dateType=>'Submitted' end
-          if map.has_key?(:date_ceated) then xml.date map[:date_created], :dateType=>'Created' end 
+          if map.has_key?(:date_created) then xml.date map[:date_created], :dateType=>'Created' end 
         }
 
         xml.resourceType Sufia.config.resource_types_to_datacite[map[:resource_type]], :resourceTypeGeneral=>Sufia.config.resource_types_to_datacite_reverse[map[:resource_type]]
@@ -81,15 +103,27 @@ class DataciteXml
         if map[:relatedIdentifier].any?
           xml.relatedIdentifiers {
             map[:relatedIdentifier].each do |rid|
-              xml.relatedIdentifier "http://collections.durham.ac.uk/files/"+rid, :relatedIdentifierType=>"URL", :relationType=>"HasPart"
+              xml.relatedIdentifier rid, :relatedIdentifierType=>"URL", :relationType=>"HasPart"
             end 
           }
         end
 
-        if map[:description].any?
-          xml.descriptions{
-            map[:description].each do |d|
-              xml.description d, :descriptionType=>'Other'
+        if map[:description].any? or map[:abstract].any? or map[:research_methods].any?
+          xml.descriptions {
+            if map[:description].any?
+              map[:description].each do |d|
+                xml.description d, :descriptionType=>'Other'
+              end
+            end
+            if map[:abstract].any?
+              map[:abstract].each do |d|
+                xml.description d, :descriptionType=>'Abstract'
+              end
+            end
+            if map[:research_methods].any?
+              map[:research_methods].each do |d|
+                xml.description d, :descriptionType=>'Methods'
+              end
             end
           }
         end
