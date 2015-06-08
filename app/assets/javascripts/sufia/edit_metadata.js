@@ -17,7 +17,10 @@ Blacklight.onLoad(function() {
     var form=$("form.simple_form");
     var id=form.attr('id');
     var s=id.split('_');
-    s=s.slice(1,s.length-1);
+    if(s[0]=='new')
+      s=s.slice(1)
+    else
+      s=s.slice(1,s.length-1);
     var model=s.join('_');
     return pluralise(model);
   }
