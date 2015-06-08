@@ -1,9 +1,33 @@
 Blacklight.onLoad(function() {
+  function pluralise(s){
+    // This probably doesn't cover all the cases.
+    // TODO: is there maybe a way to put all pluralisation in Rails so we don't
+    // need to deal with it here.
+    if(s.endsWith('s') || s.endsWith('sh') || s.endsWith('ch') || s.endsWith('o')) {
+      return s+'es';
+    }
+    else if(s.endsWith('y')){
+      if('aeiou'.indexOf(s[s.length-2])>=0) return s+'s';
+      return s.substring(0,s.length-1)+'ies';
+    }
+    else return s+'s';
+  }
+
+  function get_model(){
+    var form=$("form.simple_form");
+    var id=form.attr('id');
+    var s=id.split('_');
+    s=s.slice(1,s.length-1);
+    var model=s.join('_');
+    return pluralise(model);
+  }
+
   function get_autocomplete_opts(field) {
+    var model=get_model();
     var autocomplete_opts = {
       minLength: 2,
       source: function( request, response ) {
-        $.getJSON( "/authorities/generic_files/" + field, {
+        $.getJSON( "/authorities/" + model + "/" + field, {
           q: request.term
         }, response );
       },
@@ -18,66 +42,44 @@ Blacklight.onLoad(function() {
     return autocomplete_opts;
   }
 
-    // there are two levels of vocabulary auto complete.
-    // currently we have this externally hosted vocabulary
-    // for geonames.  I'm not going to make these any easier
-    // to implement for an external url (it's all hard coded)
-    // because I'm guessing we'll get away from the hard coding
-  var cities_autocomplete_opts = {
-    source: function( request, response ) {
-      $.ajax( {
-        url: "http://ws.geonames.org/searchJSON",
-        dataType: "jsonp",
-        data: {
-          featureClass: "P",
-          style: "full",
-          maxRows: 12,
-          name_startsWith: request.term
-        },
-        success: function( data ) {        response( $.map( data.geonames, function( item ) {
-            return {
-              label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
-              value: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName
-            };
-          }));
-        },
-      });
-    },
-    minLength: 2
-  };
-  $("#generic_file_based_near").autocomplete(get_autocomplete_opts("location"));
-
-  var autocomplete_vocab = new Object();
-
-  autocomplete_vocab.url_var = ['subject', 'language'];   // the url variable to pass to determine the vocab to attach to
-  autocomplete_vocab.field_name = new Array(); // the form name to attach the event for autocomplete
+  $(".autocomplete_geo")
+    .addClass('autocomplete_field_location')
+    .autocomplete(get_autocomplete_opts('location'));
 
   // loop over the autocomplete fields and attach the
   // events for autocomplete and create other array values for autocomplete
-  for (var i=0; i < autocomplete_vocab.url_var.length; i++) {
-    autocomplete_vocab.field_name.push('generic_file_' + autocomplete_vocab.url_var[i]);
-    // autocompletes
-    $("#" + autocomplete_vocab.field_name[i])
-        // don't navigate away from the field on tab when selecting an item
-        .bind( "keydown", function( event ) {
-            if ( event.keyCode === $.ui.keyCode.TAB &&
-                    $( this ).data( "autocomplete" ).menu.active ) {
-                event.preventDefault();
-            }
-        })
-        .autocomplete( get_autocomplete_opts(autocomplete_vocab.url_var[i]) );
-  }
-
+  $(".autocomplete_la").each(function(){
+    var input=$(this);
+/*  // TODO: Not sure what this does. If it indeed does something useful
+    // then it should also be added to the autocompletes for location and
+    // the multiple value fields.
+    input.bind( "keydown", function( event ) {
+        if ( event.keyCode === $.ui.keyCode.TAB &&
+                $( this ).data( "autocomplete" ).menu.active ) {
+            event.preventDefault();
+        }
+    });
+*/
+    var nameSplit=input.attr('name').split(/[\[\]]/);
+    var field=nameSplit[1];
+    input.addClass('autocomplete_field_'+field);
+    input.autocomplete( get_autocomplete_opts( field ));
+  });
 
   // attach an auto complete based on the field
   function setup_autocomplete(e, cloneElem) {
     var $cloneElem = $(cloneElem);
-    // FIXME this code (comparing the id) depends on a bug. Each input has an id and the id is
-    // duplicated when you press the plus button. This is not valid html.
-    if ($cloneElem.attr("id") == 'generic_file_based_near') {
-      $cloneElem.autocomplete(cities_autocomplete_opts);
-    } else if ( (index = $.inArray($cloneElem.attr("id"), autocomplete_vocab.field_name)) != -1 ) {
-      $cloneElem.autocomplete(get_autocomplete_opts(autocomplete_vocab.url_var[index]));
+
+    var autocomplete_field=null;
+    var classes=$cloneElem.attr('class').split(/\s+/);
+    $.each(classes,function(index,item){
+      if(item.startsWith("autocomplete_field_")){
+        autocomplete_field=item.substring("autocomplete_field_".length);
+      }
+    });
+
+    if(autocomplete_field){
+      $cloneElem.autocomplete(get_autocomplete_opts(autocomplete_field));
     }
   }
 
