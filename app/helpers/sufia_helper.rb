@@ -3,29 +3,39 @@ module SufiaHelper
   include Sufia::BlacklightOverride
   include Sufia::SufiaHelperBehavior
 
-  # Given a model and a term, gets the html class name which will
-  # determine what kind of autocomplete to use for the field. If no
-  # autocomplete is to be used, returns an empty string.
+  # Given a model and a term, gets the html class names as a list of
+  # strings which will determine what kind of autocomplete to use for
+  # the field. Typically this list is just ['autocomplete'] or an
+  # empty list if no autocomplete is to be used. It could however in
+  # the future contain other classes used to mark special autocomplete
+  # behaviour.
   #
-  # If the database contains a DomainTerm with the given model and
-  # term names and a local authority for the DomainTerm, then returns
-  # "autocomplete_la".
+  # There is special handling for some terms these will always just return
+  # ['autocomplete'] regardless of the model or anything else. These cases
+  # match the special cases in authoritios_controller.
   #
-  # As a special case, for term "based_near" returns "autocomplete_geo".
+  # Otherwise, If the database contains a DomainTerm with the given model
+  # and term names and a local authority for the DomainTerm, then returns
+  # ["autocomplete"]. Otherwise no autocomple should be used and returns [].
+  #
+  # Other relevant files to edit when modifying this are authorities_controller
+  # and edit_metadata.js.
   def get_field_autocomplete_class(model,term)
     if (not model.is_a? String) and (not model.is_a? Symbol)
       model=ActiveSupport::Inflector.tableize(model.class.to_s)
     end
 
-    if term and term.to_s=='based_near'
-      return 'autocomplete_geo'
+    if term
+      if term.to_s=='based_near' || term.to_s=='subject'
+        return ['autocomplete']
+      end
     end
 
     dt=DomainTerm.find_by(model: model, term: term)
     if not dt or dt.local_authorities.empty?
-      return ''
+      return []
     else
-      return 'autocomplete_la'
+      return ['autocomplete']
     end
   end
 end

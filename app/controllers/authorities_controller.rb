@@ -4,8 +4,8 @@ require 'cgi'
 class AuthoritiesController < ApplicationController
   def query
     s = params.fetch("q", "")
-    hits = if params[:term] == "location"
-      GeoNamesResource.find_location(s)
+    hits = if params[:term] == "based_near"
+      GeoNamesResource.find_location(s) rescue []
     elsif params[:term] == "subject"
       FASTResource.find_suggestions(s,'suggest50') rescue []
     else
