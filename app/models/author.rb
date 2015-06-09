@@ -3,11 +3,18 @@ class Author < ActiveFedora::Base
 
   has_many :generic_files, inverse_of: :authors, class_name: "GenericFile"
 
-  property :first_name, predicate: ::RDF::FOAF.firstName do |index|
+  property :author_name, predicate: ::RDF::FOAF.name do |index|
     index.as :stored_searchable
   end
 
-  property :last_name, predicate: ::RDF::FOAF.lastName do |index|
+  property :affiliation, predicate: ::RDF::FOAF.currentProject do |index|
     index.as :stored_searchable
+  end
+
+  def to_s
+  	string = ""
+  	string += author_name.one? ? author_name.first + " " : ""
+  	string += affiliation.one? ? affiliation.first : ""
+  	string
   end
 end

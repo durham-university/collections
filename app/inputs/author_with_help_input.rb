@@ -8,7 +8,7 @@ class AuthorWithHelpInput < MultiValueWithHelpInput
     def collection
       @collection ||= Array.wrap(object[attribute_name]).reject do
         |value| value.to_s.strip.blank?
-      end
+      end + [Author.new()]
     end
 
     def build_field(value, index)
@@ -30,37 +30,41 @@ class AuthorWithHelpInput < MultiValueWithHelpInput
     end
 
     def build_components(attribute_name, value, index, options)
-      @html << "<div class='row'>"
+      @html << "<div class='block' style='padding-bottom: 0.5em'>"
 
-      # --- First Name
-      field = :first_name
+      # --- Author Name
+      field = :author_name
 
       field_value = value.send(field).first
       field_name = name_for(attribute_name, index, field)
 
-      @html << "  <div class='col-md-2'>"
+      @html << "<div class='row'>"
+      @html << "  <div class='col-md-4'>"
+      @html << template.label_tag(field_name, "Name", required: true)
+      @html << "  </div>"
+
+      @html << "  <div class='col-md-8'>"
+      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name))
+      @html << "  </div>"
+      @html << "</div>"
+
+      # --- Last Name
+      field = :affiliation
+
+      field_value = value.send(field).first
+      field_name = name_for(attribute_name, index, field)
+
+      @html << "<div class='row'>"
+      @html << "  <div class='col-md-4'>"
       @html << template.label_tag(field_name, field.to_s.humanize, required: true)
       @html << "  </div>"
 
-      @html << "  <div class='col-md-3'>"
+      @html << "  <div class='col-md-8'>"
       @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name))
       @html << "  </div>"
+      @html << "</div>"
 
-      # --- Last Name
-      field = :last_name
-
-      field_value = value.send(field).first
-      field_name = name_for(attribute_name, index, field)
-
-      @html << "  <div class='col-md-2'>"
-      @html << template.label_tag(field_name, field.to_s.humanize, required: false)
-      @html << "  </div>"
-
-      @html << "  <div class='col-md-3'>"
-      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name))
-      @html << "  </div>"
-
-      @html << "</div>" # row
+      @html << "</div>" # block
 
       @html
     end

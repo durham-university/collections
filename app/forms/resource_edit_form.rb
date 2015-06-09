@@ -17,8 +17,8 @@ class ResourceEditForm < ResourcePresenter
         :id, 
         :_destroy, 
         {
-          first_name: [],
-          last_name: []
+          author_name: [],
+          affiliation: []
         }
       ]
     end
