@@ -151,8 +151,6 @@ GEM
       devise (>= 3.4.1)
       net-ldap (>= 0.3.1, < 0.6.0)
     diff-lcs (1.2.5)
-    domain_name (0.5.24)
-      unf (>= 0.0.5, < 1.0.0)
     dropbox-sdk (1.6.4)
       json
     ebnf (0.3.9)
@@ -202,8 +200,6 @@ GEM
       httparty (>= 0.7.3)
       mimemagic
       multipart-post
-    http-cookie (1.0.2)
-      domain_name (~> 0.5)
     http_logger (0.5.1)
     httparty (0.13.4)
       json (~> 1.8)
@@ -330,7 +326,6 @@ GEM
       redis
     net-http-persistent (2.9.4)
     net-ldap (0.5.1)
-    netrc (0.10.3)
     noid (0.7.1)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
@@ -355,12 +350,6 @@ GEM
     orm_adapter (0.5.0)
     parslet (1.7.0)
       blankslate (>= 2.0, <= 4.0)
-    qa (0.5.0)
-      activerecord-import
-      deprecation
-      nokogiri (~> 1.6.0)
-      rails (>= 3.2.13, < 5.0)
-      rest-client
     rack (1.6.1)
     rack-protection (1.5.3)
       rack
@@ -465,10 +454,6 @@ GEM
       rake
       resque (~> 1.22)
       trollop (~> 2.0)
-    rest-client (1.8.0)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 3.0)
-      netrc (~> 0.7)
     retriable (1.4.1)
     rsolr (1.0.12)
       builder (>= 2.1.2)
@@ -611,9 +596,6 @@ GEM
     uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    unf (0.1.4)
-      unf_ext
-    unf_ext (0.0.7.1)
     vegas (0.1.11)
       rack (>= 1.0.0)
     warden (1.2.3)
@@ -644,7 +626,6 @@ DEPENDENCIES
   kaminari!
   mini_magick (= 3.8.1)
   mysql2
-  qa (~> 0.5.0)
   rails (= 4.2.1)
   rsolr (~> 1.0.6)
   rspec-rails
