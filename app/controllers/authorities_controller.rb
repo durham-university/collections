@@ -8,6 +8,8 @@ class AuthoritiesController < ApplicationController
       GeoNamesResource.find_location(s) rescue []
     elsif params[:term] == "subject"
       FASTResource.find_suggestions(s,'suggest50') rescue []
+    elsif params[:term] == "contributor"
+      NamesSolrAuthority.new.search(s) rescue []
     else
       LocalAuthority.entries_by_term(params[:model], params[:term], s) rescue []
     end

@@ -26,7 +26,7 @@ module SufiaHelper
     end
 
     if term
-      if term.to_s=='based_near' || term.to_s=='subject'
+      if term.to_s=='based_near' || term.to_s=='subject' || term.to_s=='contributor'
         return ['autocomplete']
       end
     end
