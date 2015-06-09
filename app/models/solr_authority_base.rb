@@ -44,7 +44,12 @@ class SolrAuthorityBase
 
   # cleans user supplied query string
   def clean_query(s)
-    s.sub(/[^\w\s]/, ' ')
+    s.strip
+     .slice(0,50) # don't process ridiculously long queries
+     .gsub(/[^\w\s]/, ' ') # Substitute all non-alphanumeric characters just to
+                           # be safe. Could probably let some others through but
+                           # need to check if this causes vulnerabilities in solr.
+
   end
 
   # Builds the actual Solr query. The query is split at white space and
@@ -53,11 +58,13 @@ class SolrAuthorityBase
   def build_q(s)
     s=clean_query(s)
     q=''
-    # split query into parts, and process at most four of them
-    s.split(/\s+/).slice(0,4).each do |ss|
-      if not q.empty? then q+=' AND ' end
-      qp=build_q_part(ss)
-      q+="(#{qp})"
+    # split query into parts, and process at most five of them
+    s.split(/\s+/).slice(0,5).each do |ss|
+      if not ss.empty?
+        if not q.empty? then q+=' AND ' end
+        qp=build_q_part(ss)
+        q+="(#{qp})"
+      end
     end
     return q
   end
@@ -96,7 +103,12 @@ class SolrAuthorityBase
   # Main entry for the authority. Performs the lookup and returns a list of
   # found terms.
   def search(q)
-    _, list = search_results({q: build_q(q) }, [
+    q=build_q(q)
+    if q.empty?
+      # don't perform empty queries
+      return []
+    end
+    _, list = search_results({q: q }, [
         :default_solr_parameters,
         :add_query_to_solr])
     translate_results(list)
