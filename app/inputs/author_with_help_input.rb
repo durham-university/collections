@@ -64,6 +64,11 @@ class AuthorWithHelpInput < MultiValueWithHelpInput
       @html << "  </div>"
       @html << "</div>"
 
+      # delete checkbox
+      @html << "  <div class='col-md-3'>"
+      @html << destroy_widget(attribute_name, index)
+      @html << "  </div>"
+
       @html << "</div>" # block
 
       @html

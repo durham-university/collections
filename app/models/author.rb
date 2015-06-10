@@ -13,8 +13,8 @@ class Author < ActiveFedora::Base
 
   def to_s
   	string = ""
-  	string += author_name.one? ? author_name.first + " " : ""
-  	string += affiliation.one? ? affiliation.first : ""
-  	string
+  	string += author_name.any? { |string| string.strip.length > 0 } ? author_name.first + " " : ""
+  	string += affiliation.any? { |string| string.strip.length > 0 } ? "(" + affiliation.first + ")" : ""
+  	string.strip
   end
 end
