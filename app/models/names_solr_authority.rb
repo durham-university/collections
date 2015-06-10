@@ -14,7 +14,13 @@ class NamesSolrAuthority < SolrAuthorityBase
     full_name_tesim: 'value',
     # pass a Proc for custom processing.
     label: Proc.new do |result,solr,key|
-      result['label']="#{solr[:full_name_tesim].first} (#{solr[:affiliation_tesim].first})"
+      affiliation=solr[:affiliation_tesim]
+      if affiliation and !affiliation.empty?
+        affiliation=" (#{affiliation.first})"
+      else
+        affiliation=''
+      end
+      result['label']="#{solr[:full_name_tesim].first}#{affiliation}"
     end
   }
 
