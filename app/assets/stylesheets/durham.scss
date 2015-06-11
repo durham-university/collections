@@ -24,6 +24,14 @@ a:visited {
 	color: $purple;
 }
 
+#content a {
+	text-decoration: underline;
+}
+
+#homeTabs a, #content a.btn-primary, #content .home_share_work a, #content .nav a {
+	text-decoration: none;
+}
+
 div#masthead, div#footer {
 	font-family: "Lato", Helvetica, Arial, sans-serif;
 }
