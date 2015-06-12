@@ -10,7 +10,7 @@ class NamesSolrAuthority < SolrAuthorityBase
   # Maps results from Solr to a hash by changing field names and possibly
   # doing other processing
   self.solr_translate_map={
-    # simple map from Solr field full_name_tesim to a field id
+    # simple map from Solr field full_name_tesim to a field value
     full_name_tesim: 'value',
     # pass a Proc for custom processing.
     label: Proc.new do |result,solr,key|

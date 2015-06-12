@@ -16,7 +16,7 @@ class SolrAuthorityBase
   def initialize()
   end
 
-  # builds the filter query based on @solr_fq_map
+  # builds the filter query based on solr_fq_map
   def self.build_fq
     fq=''
     self.solr_fq_map.each do |k,v|
@@ -26,7 +26,7 @@ class SolrAuthorityBase
     return fq
   end
 
-  # builds the field list based on @solr_fl_map
+  # builds the field list based on solr_fl_map
   def self.build_fl
     self.solr_fl.join ' '
   end
