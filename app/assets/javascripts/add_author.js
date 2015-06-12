@@ -75,7 +75,7 @@ AuthorsFieldManager.prototype = Object.create(HydraEditor.FieldManager.prototype
     removeFromList: { value: function( event ) {
       event.preventDefault();
       var field = $(event.target).parents(this.fieldWrapperClass);
-      field.find('[data-destroy]').val('true')
+      field.find('[data-destroy]').val('1')
       field.hide();
       this.element.trigger("managed_field:remove", field);
     }}

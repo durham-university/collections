@@ -3,6 +3,10 @@ class AuthorWithHelpInput < MultiValueWithHelpInput
     super
   end
 
+  def input_type
+    'authors_multi_value'
+  end
+
   protected
 
     def collection
@@ -77,10 +81,10 @@ class AuthorWithHelpInput < MultiValueWithHelpInput
     def destroy_widget(attribute_name, index)
       out = ''
       field_name = destroy_name_for(attribute_name, index)
-      out << @builder.check_box(attribute_name,
+      out << @builder.hidden_field(attribute_name,
                             name: field_name,
                             id: id_for(attribute_name, index, '_destroy'.freeze),
-                            value: "true", data: { destroy: true })
+                            value: "0", data: { destroy: true })
       out << template.label_tag(field_name, "Remove", class: "remove_author")
       out
     end

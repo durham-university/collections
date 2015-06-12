@@ -24,7 +24,7 @@ module HydraDurham
 
       has_and_belongs_to_many :authors, predicate: ::RDF::DC.creator, class_name: "Author", inverse_of: :generic_files
 
-      accepts_nested_attributes_for :authors
+      accepts_nested_attributes_for :authors, allow_destroy: true
     end
   end
 end
