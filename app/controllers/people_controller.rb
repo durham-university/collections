@@ -4,26 +4,31 @@ class PeopleController < ApplicationController
   # GET /people
   # GET /people.json
   def index
+    authorize! :index, :people_controller
     @people = Person.all
   end
 
   # GET /people/1
   # GET /people/1.json
   def show
+    authorize! :show, :people_controller
   end
 
   # GET /people/new
   def new
+    authorize! :create, :people_controller
     @person = Person.new
   end
 
   # GET /people/1/edit
   def edit
+    authorize! :edit, :people_controller
   end
 
   # POST /people
   # POST /people.json
   def create
+    authorize! :create, :people_controller
     @person = Person.new(person_params)
 
     respond_to do |format|
@@ -40,6 +45,7 @@ class PeopleController < ApplicationController
   # PATCH/PUT /people/1
   # PATCH/PUT /people/1.json
   def update
+    authorize! :edit, :people_controller
     respond_to do |format|
       if @person.update(person_params)
         format.html { redirect_to @person, notice: 'Person was successfully updated.' }
@@ -54,6 +60,7 @@ class PeopleController < ApplicationController
   # DELETE /people/1
   # DELETE /people/1.json
   def destroy
+    authorize! :destroy, :people_controller
     @person.destroy
     respond_to do |format|
       format.html { redirect_to people_url, notice: 'Person was successfully destroyed.' }

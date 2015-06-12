@@ -2,11 +2,13 @@ class Ability
   include Hydra::Ability
   include Sufia::Ability
 
-  
+
   # Define any customized permissions here.
   def custom_permissions
+    can [:index, :show], :people_controller
     if current_user.admin?
       can [:create, :show, :add_user, :remove_user, :index], Role
+      can [:edit, :create, :destroy], :people_controller
     end
     # Limits deleting objects to a the admin user
     #
