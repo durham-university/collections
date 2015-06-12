@@ -12,11 +12,11 @@ module SufiaHelper
   #
   # There is special handling for some terms these will always just return
   # ['autocomplete'] regardless of the model or anything else. These cases
-  # match the special cases in authoritios_controller.
+  # match the special cases in authorities_controller.
   #
   # Otherwise, If the database contains a DomainTerm with the given model
   # and term names and a local authority for the DomainTerm, then returns
-  # ["autocomplete"]. Otherwise no autocomple should be used and returns [].
+  # ["autocomplete"]. Otherwise no autocomplete should be used and returns [].
   #
   # Other relevant files to edit when modifying this are authorities_controller
   # and edit_metadata.js.
