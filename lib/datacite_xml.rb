@@ -3,20 +3,20 @@ require 'nokogiri'
 NS = {
   "xmlns" => "http://datacite.org/schema/kernel-3",
   "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-  "xsi:schemaLocation" => "http://datacite.org/schema/kernel-3 http://schema.datacite.org/meta/kernel-3/metadata.xsd" 
+  "xsi:schemaLocation" => "http://datacite.org/schema/kernel-3 http://schema.datacite.org/meta/kernel-3/metadata.xsd"
 }
 
 class DataciteXml
 
-  # generate DataCite XML with metadata 
+  # generate DataCite XML with metadata
   def generate(map)
 
     # affiliation = "Durham University"
     builder = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
-      xml.resource (NS) { 
-     
+      xml.resource (NS) {
+
         xml.identifier map[:identifier], :identifierType=>'DOI'
-        
+
         xml.creators {
           map[:creator].each do |c|
             xml.creator {
@@ -36,13 +36,13 @@ class DataciteXml
           end
         }
 
-        xml.publisher "Durham University"
+        xml.publisher DOI_CONFIG['datacite_publisher']
 
         xml.publicationYear map[:publication_year]
 
         xml.contributors {
-          xml.contributor(:contributorType=>'RightsHolder') { 
-            xml.contributorName "Durham University"
+          xml.contributor(:contributorType=>'RightsHolder') {
+            xml.contributorName DOI_CONFIG['datacite_contributor']
           }
           if map[:funder].any? then
             map[:funder].each do |f|
@@ -50,7 +50,7 @@ class DataciteXml
                 xml.contributorName f
                 # xml.contributorName "Engineering and Physical Sciences Research Council (EPSRC)
                 # xml.nameIdentifier :nameIdentifierScheme=>'FundRef', schemeURI=>'http://www.crossref.org/fundref">http://dx.doi.org/10.13039/501100000266'
-              }   
+              }
             end
           end
           if map[:contributor].any? then
@@ -58,7 +58,7 @@ class DataciteXml
               xml.contributor(:contributorType=>'ContactPerson') {
                 xml.contributorName f
                 # xml.nameIdentifier :nameIdentifierScheme=>'URI mailto', schemeURI=>'<mailto:upload.name@durham.ac.uk>'
-              }   
+              }
             end
           end
         }
@@ -71,7 +71,7 @@ class DataciteXml
 
         xml.dates {
           if map.has_key?(:date_uploaded) then xml.date map[:date_uploaded], :dateType=>'Submitted' end
-          if map.has_key?(:date_created) then xml.date map[:date_created], :dateType=>'Created' end 
+          if map.has_key?(:date_created) then xml.date map[:date_created], :dateType=>'Created' end
         }
 
         xml.resourceType Sufia.config.resource_types_to_datacite[map[:resource_type]], :resourceTypeGeneral=>Sufia.config.resource_types_to_datacite_reverse[map[:resource_type]]
@@ -96,7 +96,7 @@ class DataciteXml
           xml.rightsList {
             map[:rights].each do |r|
               xml.rights r[:rights], :rightsURI=>r[:rightsURI]
-            end 
+            end
           }
         end
 
@@ -104,7 +104,7 @@ class DataciteXml
           xml.relatedIdentifiers {
             map[:relatedIdentifier].each do |rid|
               xml.relatedIdentifier rid, :relatedIdentifierType=>"URL", :relationType=>"HasPart"
-            end 
+            end
           }
         end
 
@@ -130,6 +130,6 @@ class DataciteXml
 
       }
     end
-    return builder.to_xml  
+    return builder.to_xml
   end
 end

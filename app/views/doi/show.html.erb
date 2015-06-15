@@ -1,11 +1,12 @@
-<h1>DOI for <%= @id %></h1>
+<h1>DOI for <%= @resource.title.first %> (<%= @id %>)</h1>
 
-<% if @has_doi %>
-	<p>This resource already has DOI <%= @has_doi %>.</p>
+<% if @resource.has_doi? %>
+	<p>This resource already has a DOI <%= @resource.doi.first %>.</p>
+	<p><%= link_to "Back", @resource %></p>
 <% else %>
 	<p>This resource has no DOI allocated.</p>
 
-	<p>Generated DOI: <%= @doi %>.  You can publish the DOI.  This cannot be reversed, and will mean that the existence of the resource is publicly available.</p>
+	<p>Generated DOI: <%= @resource.mock_doi %>.  You can publish the DOI.  This cannot be reversed, and will mean that the existence of the resource is publicly available.</p>
 
-	<p><%= link_to "Publish DOI", doi_path, :method => :put %></p>
+	<p><%= link_to "Publish DOI", doi_path, method: 'put' %></p>
 <% end %>
