@@ -1,12 +1,23 @@
 <h1>DOI for <%= @resource.title.first %> (<%= @id %>)</h1>
 
-<% if @resource.has_doi? %>
-	<p>This resource already has a DOI <%= @resource.doi.first %>.</p>
-	<p><%= link_to "Back", @resource %></p>
+<% if @resource.has_local_doi? %>
+	<p>This resource already has a local DOI:</p>
+	<ul><li><%= @resource.doi.first %></li></ul>
 <% else %>
-	<p>This resource has no DOI allocated.</p>
+	<% if @resource.has_doi? %>
+	<p>This resource has an outside DOI already</p>
+	<ul>
+		<% @resource.doi.each do |doi| %>
+			<li><%= doi %></li>
+		<% end %>
+	</ul>
+	<% else %>
+		<p>This resource has no DOI.</p>
+	<% end %>
 
-	<p>Generated DOI: <%= @resource.mock_doi %>.  You can publish the DOI.  This cannot be reversed, and will mean that the existence of the resource is publicly available.</p>
-
-	<p><%= link_to "Publish DOI", doi_path, method: 'put' %></p>
+	<p>You can generate a new DOI for this resource. The generated DOI would be:
+	<ul><li>doi:<%= @resource.mock_doi %></li></ul>
+	<p><strong>You cannot reverse the publishing of a DOI</strong>. Once published, the existence of the resource will become public knowledge.</p>
+	<p><%= link_to "Publish DOI now", doi_path, method: 'put' %></p>
 <% end %>
+<p><%= link_to "Back", @resource %></p>

@@ -11,7 +11,7 @@ class DoiController < ApplicationController
   # Mints the doi and sends metadata to Datacite
   def mint_doi(resource)
     raise "Resource doesn't support DOI functionality" if not resource.respond_to? :doi
-    raise "Resource already has a DOI" if resource.has_doi?
+    raise "Resource already has a DOI" if resource.has_local_doi?
 
     datacite = Datacite.new
     datacite.metadata(resource.doi_metadata_xml)

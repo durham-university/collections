@@ -18,10 +18,9 @@ class Datacite
 
   # mint DOI
   def mint(url, doi)
-    options = { :body => "doi=#{doi}\nurl=#{url}", 
-                :basic_auth => @auth, 
+    options = { :body => "doi=#{doi}\nurl=#{url}",
+                :basic_auth => @auth,
                 :headers => {'Content-Type' => 'text/plain'} }
-    puts options
     response = self.class.post(@api_doi_path, options)
     if response.success?
       response
@@ -29,10 +28,10 @@ class Datacite
       raise response.response
     end
   end
-  
+
   # register metadata
   def metadata(xml)
-    options = { :body => xml, :basic_auth => @auth, 
+    options = { :body => xml, :basic_auth => @auth,
                 :headers => {'Content-Type' => 'application/xml;charset=UTF-8'} }
     response = self.class.post(@api_metadata_path, options)
     if response.success?
