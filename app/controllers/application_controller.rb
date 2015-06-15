@@ -5,7 +5,18 @@ class ApplicationController < ActionController::Base
   before_filter do
     resource = controller_path.singularize.gsub('/', '_').to_sym
     method = "#{resource}_params"
+    members=nil
+    if resource==:collection and params['collection']
+      # Collection members parameter needs special handling. collection_params
+      # (which is what send(method) ends up being) will strip away the members
+      # parameter which is needed when adding or removing members from a
+      # collection. Store it temporarily and then restore later. See issue #90.
+      members=params['collection']['members']
+    end
     params[resource] &&= send(method) if respond_to?(method, true)
+    if members
+      params['collection']['members']=members
+    end
   end
   helper Openseadragon::OpenseadragonHelper
   # Adds a few additional behaviors into the application controller
