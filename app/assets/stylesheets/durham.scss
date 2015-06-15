@@ -15,6 +15,23 @@ $border-radius-small: 0;
 	border-radius: $border-radius-base !important;
 }
 
+
+a:link {
+	color: $darkhighlight;
+}
+
+a:visited {
+	color: $purple;
+}
+
+#content a {
+	text-decoration: underline;
+}
+
+#homeTabs a, #content a.btn, #content a.btn-primary, #content .home_share_work a, #content .nav a, #content .tagcloud a {
+	text-decoration: none;
+}
+
 div#masthead, div#footer {
 	font-family: "Lato", Helvetica, Arial, sans-serif;
 }
@@ -98,9 +115,10 @@ a#logo {
 	min-height: 6.2em;
 }
 
-.add, .btn-primary {
+.add, .btn-primary, a.add, a.btn-primary {
 	background-color: $darkhighlight;
 	border-color: $darkhighlight;
+	color: white;
 }
 
 .add:hover, .add:focus, .btn-primary:hover, .btn-primary:focus {
