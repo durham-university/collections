@@ -60,7 +60,15 @@ module HydraDurham
     # Gets the resource Datacite metadata as a hash.
     def doi_metadata
       data = {:identifier => mock_doi}
-  		data[:publication_year] = Time.new.year
+
+      if not date_created.empty?
+        data[:publication_year] = Date.parse(date_created.first.to_s).strftime('%Y')
+      elsif respond_to? :date_uploaded and date_uploaded
+        data[:publication_year] = date_uploaded.strftime('%Y')
+      else
+        data[:publication_year] = "#{Time.new.year}"
+      end
+
   		data[:subject] = tag
       data[:creator] = creator.map do |c| {:name => c} end
 

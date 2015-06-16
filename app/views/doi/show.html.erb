@@ -1,4 +1,4 @@
-<h1>DOI for <%= @resource.title.first %> (<%= @id %>)</h1>
+<h1>DOI for <%= @resource.title.is_a? Array and @resource.title.first or @resource.title %> (<%= @id %>)</h1>
 
 <% if @resource.has_local_doi? %>
 	<p>This resource already has a local DOI:</p>
