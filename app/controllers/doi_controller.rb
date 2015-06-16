@@ -21,11 +21,10 @@ class DoiController < ApplicationController
   # Action that mints the doi and sends metadata to Datacite
 	def update
     @id = params[:id]
-
     @resource = ActiveFedora::Base.find(@id)
     raise ActiveFedora::ObjectNotFoundError if not @resource
 
-    # TODO: Permissions check! Make sure the user is allowed to publish the DOI.
+    authorize! :edit, @resource
 
     mint_doi @resource
 

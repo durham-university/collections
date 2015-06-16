@@ -30,9 +30,11 @@
       &nbsp;|&nbsp;
       <%= link_to 'Mendeley', sufia.static_path('mendeley'), {id: 'mendeleyLink', name: 'mendeley', class: 'lightboxLink'} %>
     </p>
-    <p>
-      <%= link_to 'Generate DOI', '/doi/' + @generic_file.id %>
-    </p>
+    <% if can? :edit, @generic_file %>
+      <p>
+        <%= link_to 'Generate DOI', '/doi/' + @generic_file.id %>
+      </p>
+    <% end %>
     <!-- AddThis Button BEGIN -->
     <div class="addthis_toolbox addthis_default_style">
       <a class="addthis_button_preferred_1"></a>
