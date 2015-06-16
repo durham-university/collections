@@ -80,7 +80,7 @@ Sufia.config do |config|
     "Software or Program Code" => "Software",
     "Video" => "Audiovisual",
     "Model" => "Model",
-    "Physicsl Object" => "PhysicalObject",
+    "Physical Object" => "PhysicalObject",
     "Service" => "Service",
     "Workflow" => "Workflow",
     "Other" => "Other",
