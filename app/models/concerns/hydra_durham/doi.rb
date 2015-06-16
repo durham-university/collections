@@ -69,7 +69,7 @@ module HydraDurham
         data[:publication_year] = "#{Time.new.year}"
       end
 
-  		data[:subject] = tag
+  		data[:subject] = tag.to_a
       data[:creator] = creator.map do |c| {:name => c} end
 
       data[:abstract] = abstract.to_a
