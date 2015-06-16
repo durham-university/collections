@@ -102,8 +102,10 @@ class DataciteXml
 
         if map[:relatedIdentifier].any?
           xml.relatedIdentifiers {
-            map[:relatedIdentifier].each do |rid|
-              xml.relatedIdentifier rid, :relatedIdentifierType=>"URL", :relationType=>"HasPart"
+            map[:relatedIdentifier].each do |rel|
+              xml.relatedIdentifier rel[:id],
+                  :relatedIdentifierType=>rel[:id_type],
+                  :relationType=>rel[:relation_type]
             end
           }
         end

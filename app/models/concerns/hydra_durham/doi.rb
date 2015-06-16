@@ -59,6 +59,9 @@ module HydraDurham
 
     # Gets the resource Datacite metadata as a hash.
     def doi_metadata
+      # This must be mock_doi rather than any identifier defined in the object.
+      # Otherwise users could manually specify a different identifier and
+      # change records they're not supposed to.
       data = {:identifier => mock_doi}
 
       if not date_created.empty?
@@ -70,6 +73,8 @@ module HydraDurham
       end
 
   		data[:subject] = tag.to_a
+      # TODO: When we have authors with affiliations, change this
+      #       and corresponding part in datacite_xml.rb
       data[:creator] = creator.map do |c| {:name => c} end
 
       data[:abstract] = abstract.to_a
@@ -77,12 +82,18 @@ module HydraDurham
       data[:funder] = funder.to_a
       data[:contributor] = contributor.to_a
 
+      data[:relatedIdentifier] = related_url.map do |url|
+        # IsSupplementedBy is probably the most generic allowed type.
+        # Loads of more specific ones in DataCite if we had better information
+        # about the related resources.
+        {id: url, id_type: 'URL', relation_type: 'IsSupplementedBy'}
+      end
+
   		if self.class == GenericFile
   			data[:title] = title
         data[:description] = description.to_a
         data[:resource_type] = resource_type.first # Only maping first choice from the list
         data[:size] = [content.size]
-  			data[:relatedIdentifier] = related_url.to_a
   			data[:format] = [content.mime_type]
   			data[:date_uploaded] = date_uploaded.strftime('%Y-%m-%d')
         data[:rights] = rights.map do |frights|
@@ -124,11 +135,11 @@ module HydraDurham
   				a << "#{filename} - #{mobj.content.size}"# Should we preatyfier file size in bytes?
   			end
 
-        data[:relatedIdentifier] = related_url.to_a
+
         member_ids.reduce(data[:relatedIdentifier]) do |a,mid|
   				mobj = ActiveFedora::Base.find(mid)
           if mobj.respond_to? :doi_landing_page
-            a << mobj.doi_landing_page
+            a << { id: mobj.doi_landing_page, id_type: 'URL', relation_type: 'HasPart' }
           else
             a
           end
