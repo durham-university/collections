@@ -15,8 +15,11 @@ class CollectionsController < ApplicationController
 
   def update_datacite
     if @collection.manage_datacite?
-      datacite = Datacite.new
-      datacite.metadata(@collection.doi_metadata_xml)
+      #datacite = Datacite.new
+      #datacite.metadata(@collection.doi_metadata_xml)
+
+      # Queue a job instead of sending metadata here.
+      Sufia.queue.push(UpdateDataciteJob.new @collection.id)
     end
   end
 

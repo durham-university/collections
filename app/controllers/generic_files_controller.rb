@@ -8,8 +8,12 @@ class GenericFilesController < ApplicationController
 
   def update_datacite
     if @generic_file.manage_datacite?
-      datacite = Datacite.new
-      datacite.metadata(@generic_file.doi_metadata_xml)
+      #datacite = Datacite.new
+      #datacite.metadata(@generic_file.doi_metadata_xml)
+
+      # Queue a job instead of sending metadata here.
+      Sufia.queue.push(UpdateDataciteJob.new @generic_file.id)
+
       # TODO: Also update any collections this file may belong to?
     end
   end
