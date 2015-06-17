@@ -3,6 +3,6 @@
   <% if can? :edit, @collection %>
       <span class="label label-default"><%= link_to "Edit", collections.edit_collection_path, title: "Edit this Collection" %></span> &nbsp;&nbsp;
       <span class="label label-default"><%= link_to "Add files",  sufia.dashboard_files_path, title: "Add files to this Collection" %></span> &nbsp;&nbsp;
-      <span class="label label-default"><%= link_to 'Generate DOI', '/doi/' + @collection.id %></span>
+      <span class="label label-default"><%= link_to t('durham.doi.generate_doi'), '/doi/' + @collection.id %></span>
   <%end %>
 </div>

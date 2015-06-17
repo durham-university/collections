@@ -2,5 +2,5 @@
 <p>
   <span class="label label-default"><%= link_to "Browse", collections.collection_path %></span> &nbsp;&nbsp;
   <span class="label label-default"><%= link_to "Add files",  sufia.dashboard_files_path %></span> &nbsp;&nbsp;
-  <span class="label label-default"><%= link_to 'Generate DOI', '/doi/' + @collection.id %></span>
+  <span class="label label-default"><%= link_to t('durham.doi.generate_doi'), '/doi/' + @collection.id %></span>
 </p>

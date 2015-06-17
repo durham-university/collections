@@ -32,7 +32,7 @@
     </p>
     <% if can? :edit, @generic_file %>
       <p>
-        <%= link_to 'Generate DOI', '/doi/' + @generic_file.id %>
+        <%= link_to t('durham.doi.generate_doi'), '/doi/' + @generic_file.id %>
       </p>
     <% end %>
     <!-- AddThis Button BEGIN -->

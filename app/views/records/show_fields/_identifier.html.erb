@@ -1,0 +1,12 @@
+<% record.identifier.each do |id| %>
+  <%= id %><br />
+<% end %>
+<% if not record.model.has_local_doi? %>
+  doi:<%= record.model.mock_doi %>
+  <% if can? :edit, record.model %>
+    <strong><%= link_to "[#{t('durham.doi.not_yet_published')}]", '/doi/' + record.model.id %></strong>
+  <% else %>
+    <strong><%= t('durham.doi.not_yet_published') %></strong>
+  <% end %>
+  <br />
+<% end %>

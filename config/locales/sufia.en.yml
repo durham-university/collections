@@ -5,6 +5,10 @@ en:
         institution_name: "Durham University"
         institution_name_full: "Durham University"
         background_attribution: ""
+    durham:
+      doi:
+          not_yet_published: "Not yet published"
+          generate_doi: "Generate DOI"
     simple_form:
         labels:
             generic_file:
