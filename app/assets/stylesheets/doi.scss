@@ -1,3 +1,9 @@
 // Place all the styles related to the doi controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.dropdown-menu .doi-icon {
+  background-image: asset-data-url("doi_icon.png");
+  width: 14px;
+  height: 14px;
+}
