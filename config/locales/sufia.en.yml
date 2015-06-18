@@ -16,19 +16,23 @@ en:
                 abstract: "Abstract"
                 funder: "Funder"
                 research_methods: "Research methods"
+                related_url:      "A URL or DOI for the work that cites this set of data"
             collection:
                 description: "Description"
                 abstract: "Abstract"
                 funder: "Funder"
                 research_methods: "Research methods"
+                related_url:      "A URL or DOI for the work that cites this set of data"
         metadata_help:
             generic_file:
                 description: "Other description information that does not fit into an existing category."
                 abstract_html: "A brief description of the resource and the context in which the resource was created."
                 funder_html: "Institution that provided financial support for the development of the resource."
                 research_methods_html: "The methodology employed for the study or research."
+                related_url: "A DOI or URL link to the work that cites/quotes this dataset. An example is the URL from a repository such ArXiv or the DOI from journal publisher."
             collection:
                 description: "Other description information that does not fit into an existing category."
                 abstract_html: "A brief description of the resource and the context in which the resource was created."
                 funder_html: "Institution that provided financial support for the development of the resource."
                 research_methods_html: "The methodology employed for the study or research."
+                related_url: "A DOI or URL link to the work that cites/quotes this dataset. An example is the URL from a repository such ArXiv or the DOI from journal publisher."
