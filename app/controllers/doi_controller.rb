@@ -17,7 +17,7 @@ class DoiController < ApplicationController
     #datacite.metadata(resource.doi_metadata_xml)
     #datacite.mint(resource.doi_landing_page,resource.mock_doi)
 
-    Sufia.queue.push(UpdateDataciteJob.new resource.id, do_mint: true)    
+    Sufia.queue.push(UpdateDataciteJob.new(resource.id, @current_user, do_mint: true))
   end
 
   # Action that mints the doi and sends metadata to Datacite

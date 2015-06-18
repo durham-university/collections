@@ -19,7 +19,7 @@ class CollectionsController < ApplicationController
       #datacite.metadata(@collection.doi_metadata_xml)
 
       # Queue a job instead of sending metadata here.
-      Sufia.queue.push(UpdateDataciteJob.new @collection.id)
+      Sufia.queue.push(UpdateDataciteJob.new(@collection.id, @current_user))
     end
   end
 

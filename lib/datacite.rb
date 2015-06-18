@@ -37,7 +37,7 @@ class Datacite
     if response.success?
       response
     else
-      raise response.response
+      raise RuntimeError.new response.to_s
     end
   end
 end
