@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150526153757) do
+ActiveRecord::Schema.define(version: 20150618091317) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       null: false
@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(version: 20150526153757) do
     t.integer "local_authority_id"
     t.string  "label"
     t.string  "uri"
+    t.string  "use_label"
   end
 
   add_index "local_authority_entries", ["local_authority_id", "label"], name: "entries_by_term_and_label"
