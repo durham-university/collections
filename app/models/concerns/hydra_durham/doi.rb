@@ -86,7 +86,7 @@ module HydraDurham
         # IsSupplementedBy is probably the most generic allowed type.
         # Loads of more specific ones in DataCite if we had better information
         # about the related resources.
-        {id: url, id_type: 'URL', relation_type: 'IsSupplementedBy'}
+        {id: url, id_type: 'URL', relation_type: 'IsCitedBy'}
       end
 
   		if self.class == GenericFile
