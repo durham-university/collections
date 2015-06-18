@@ -45,7 +45,7 @@ class DataciteXml
             xml.contributorName DOI_CONFIG['datacite_contributor']
           }
           xml.contributor(:contributorType=>'HostingInstitution') {
-            xml.contributorName DOI_CONFIG['datacite_contributor']
+            xml.contributorName DOI_CONFIG['datacite_hosting_institution']
           }
           if map[:funder].any? then
             map[:funder].each do |f|
