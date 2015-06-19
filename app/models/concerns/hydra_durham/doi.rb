@@ -75,13 +75,8 @@ module HydraDurham
       # change records they're not supposed to.
       data = {:identifier => mock_doi}
 
-      if not date_created.empty?
-        data[:publication_year] = Date.parse(date_created.first.to_s).strftime('%Y')
-      elsif respond_to? :date_uploaded and date_uploaded
-        data[:publication_year] = date_uploaded.strftime('%Y')
-      else
-        data[:publication_year] = "#{Time.new.year}"
-      end
+      # FixMe: This date should be stored and reused if DOI updated.
+      data[:publication_year] = "#{Time.new.year}"
 
   		data[:subject] = tag.to_a
       # TODO: When we have authors with affiliations, change this
@@ -149,7 +144,7 @@ module HydraDurham
 
         member_ids.reduce(data[:relatedIdentifier]) do |a,mid|
   				mobj = ActiveFedora::Base.find(mid)
-          if mobj.respond_to? :doi_landing_page
+          if mobj.respond_to? :doi_landing_page #FixMe: only public objects
             a << { id: mobj.doi_landing_page, id_type: 'URL', relation_type: 'HasPart' }
           else
             a
