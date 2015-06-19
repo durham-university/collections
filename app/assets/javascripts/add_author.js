@@ -1,10 +1,8 @@
 // This adds new author fields to the edit form.
 //
-// Copied from https://bitbucket.org/mjgiarlo/druw/pull-request/2/add-complex-creators-to-genericfile/diff#chg-app/inputs/agent_with_help_input.rb
-// Duplicated from https://github.com/aic-collections/aicdams-lakeshore/blob/0eda8f1407d89cb86fc7284ed6c235114407e020/app/assets/javascripts/add_annotation.js
+// Based loosely on https://github.com/aic-collections/aicdams-lakeshore/blob/0eda8f1407d89cb86fc7284ed6c235114407e020/app/assets/javascripts/add_annotation.js
 //
-// It uses handelbars.js to create a template into which is passed a field name (author), index value
-// and class. This returns a new html string with the fields for the author.
+// It clones the existing field, then updates the array indices This returns a new html string with the fields for the author.
 // The hydra-editor gem takes care of the bulk of the actions such attaching the listeners to the "Add" button
 // and inserting the new field into the html form.
 //
@@ -22,17 +20,6 @@
 //   - QA needs to be involved to query existing authors
 //
 //= require hydra-editor/hydra-editor
-//= require handlebars-v3.0.3
-
-var source = "<li class=\"field-wrapper input-group input-append\">" +
-  "<input class=\"string {{class}} optional form-control generic_file_{{name}} form-control multi-text-field\" name=\"generic_file[{{name}}_attributes][{{index}}][content]\" aria-labelledby=\"generic_file_{{name}}_label\" type=\"text\" id=\"generic_file_generic_file[{{name}}_attributes][{{index}}][content]\">" +
-  "<input name=\"generic_file[{{name}}_attributes][{{index}}][id]\" id=\"generic_file_{{name}}_attributes_0_id\" data-id=\"remote\" type=\"hidden\"/>" +
-  "<span class=\"input-group-btn field-controls\">" +
-    "<button class=\"btn btn-success add\"><i class=\"icon-white glyphicon-plus\"></i><span>Add</span></button>" +
-  "</span>" +
-"</li>";
-
-var template = Handlebars.compile(source);
 
 function AuthorsFieldManager(element, options) {
   HydraEditor.FieldManager.call(this, element, options); // call super constructor.
@@ -42,7 +29,7 @@ AuthorsFieldManager.prototype = Object.create(HydraEditor.FieldManager.prototype
   {
     createNewField: { value: function($activeField) {
       var fieldName = $activeField.find('input').data('attribute');
-      $newField = this.newFieldTemplate(fieldName);
+      $newField = this.newFieldClone($activeField);
       this.addBehaviorsToInput($newField)
       return $newField
     }},
@@ -57,9 +44,24 @@ AuthorsFieldManager.prototype = Object.create(HydraEditor.FieldManager.prototype
       return activeField.find('input.multi-text-field').val() === '';
     }},
 
-    newFieldTemplate: { value: function(fieldName) {
+    // Replaces newFieldTemplate.  Creates new elements by copying existing ones
+    newFieldClone: { value: function(activeField) {
       var index = this.maxIndex();
-      return $(template({ "name": fieldName, "index": index, "class": "author_with_help" }));
+      var newField = activeField.clone();
+      newChildren = newField.find('input, select');
+      newChildren.val('').removeProp('required');
+      newChildren.each(function(i, element) {
+        console.log($(element).attr('name'));
+        name = $(element).attr('name');
+        newname = name.replace(/\[[0-9]+\]/,"["+index+"]");
+        $(element).attr('name',newname);
+        console.log($(element).attr('name'));
+      });
+      newOptions = newField.find('option:selected');
+      newOptions.removeAttr('selected');
+      newChildren.first().focus();
+      this.element.trigger("managed_field:add", newChildren.first());
+      return newField;
     }},
 
     addBehaviorsToInput: { value: function($newField) {
