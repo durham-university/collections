@@ -85,7 +85,6 @@ class AuthorWithHelpInput < MultiValueWithHelpInput
                             name: field_name,
                             id: id_for(attribute_name, index, '_destroy'.freeze),
                             value: "0", data: { destroy: true })
-      out << template.label_tag(field_name, "Remove", class: "remove_author")
       out
     end
 
