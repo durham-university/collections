@@ -1,9 +1,6 @@
 <% if f.object.model_class == Collection %>
   <input name='<%= f.object_name %>[resource_type][]' value='Collection' type='hidden' />
 <% else %>
-  <% if f.object.class.multiple? key %>
-    <%= f.input key, as: :multi_value_with_help, input_html: { class: 'form-control' }, required: f.object.required?(key) %>
-  <% else %>
-    <%= f.input key, required: f.object.required?(key) %>
-  <% end %>  
+  <%= f.input :resource_type, as: :select_with_help, collection: Sufia.config.resource_types,
+    input_html: { class: 'form-control', multiple: true } %>
 <% end %>
