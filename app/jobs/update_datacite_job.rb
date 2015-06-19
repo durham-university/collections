@@ -48,6 +48,14 @@ class UpdateDataciteJob < ActiveFedoraIdBasedJob
     send_message('DataCite update FAILED',message)
   end
 
+  def remove_doi
+    full_doi="doi:#{object.mock_doi}"
+    if object.identifier.index full_doi
+      object.identifier.delete full_doi
+      object.update( { identifier: object.identifier } )
+    end
+  end
+
   def run
     # Accessing the object will raise an ObjectNotFoundError if it doesn't exist,
     # no need to check for that specifically
@@ -73,6 +81,7 @@ class UpdateDataciteJob < ActiveFedoraIdBasedJob
         Sufia.queue.push(UpdateDataciteJob.new(id,user_key,do_metadata: do_metadata, do_mint: do_mint, retry_count: retry_count-1, object_path: object_path ))
       else
         send_failed_message
+        remove_doi if @do_mint
         raise e
       end
     end
