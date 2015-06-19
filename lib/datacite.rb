@@ -3,6 +3,23 @@ require 'httparty'
 class Datacite
   include HTTParty
 
+  class DataciteUpdateException < Exception
+    attr_accessor :message
+    attr_accessor :body
+    attr_accessor :http_code
+    attr_accessor :cause
+    def initialize(message,body=nil,http_code=nil,cause=nil)
+      self.message=message
+      self.body=body
+      self.http_code=http_code
+      self.cause=cause
+    end
+
+    def to_s
+      "#{message} #{http_code} #{body}"
+    end
+  end
+
   def initialize
     @auth = {:username => Rails.application.secrets.mduser, :password => Rails.application.secrets.mdpassword}
     if Rails.env.production? then
@@ -25,7 +42,7 @@ class Datacite
     if response.success?
       response
     else
-      raise response.response
+      raise DataciteUpdateException.new(response.message,response.body,response.code,response)
     end
   end
 
@@ -37,7 +54,7 @@ class Datacite
     if response.success?
       response
     else
-      raise RuntimeError.new response.to_s
+      raise DataciteUpdateException.new(response.message,response.body,response.code,response)
     end
   end
 end

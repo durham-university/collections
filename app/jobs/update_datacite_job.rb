@@ -1,5 +1,7 @@
 class UpdateDataciteJob < ActiveFedoraIdBasedJob
 
+
+
   attr_accessor :user_key
   attr_accessor :do_metadata
   attr_accessor :do_mint
@@ -39,11 +41,14 @@ class UpdateDataciteJob < ActiveFedoraIdBasedJob
     send_message('DataCite update complete',message)
   end
 
-  def send_failed_message
+  def send_failed_message(error)
     message=if @do_mint
-      "DataCite metadata updated and DOI minting failed for #{link_to_object}"
+      "DataCite metadata updated and DOI minting failed for #{link_to_object}."
     else
-      "DataCite metadata updated failed for #{link_to_object}"
+      "DataCite metadata updated failed for #{link_to_object}."
+    end
+    if error
+      message << "<br />Error message : #{error}"
     end
     send_message('DataCite update FAILED',message)
   end
@@ -73,14 +78,13 @@ class UpdateDataciteJob < ActiveFedoraIdBasedJob
         datacite.mint(object.doi_landing_page,object.mock_doi)
       end
       send_success_message
-    rescue Exception=>e
-      # TODO: only retry HTTP 50X exceptions, or something
-      if retry_count>0
+    rescue Datacite::DataciteUpdateException=>e
+      if retry_count>0 and e.http_code and e.http_code>=500 and e.http_code<=599
         # TODO: Can we add a delay here?
         # TODO: How to add a log message that the job failed but will be retried later?
         Sufia.queue.push(UpdateDataciteJob.new(id,user_key,do_metadata: do_metadata, do_mint: do_mint, retry_count: retry_count-1, object_path: object_path ))
       else
-        send_failed_message
+        send_failed_message e
         remove_doi if @do_mint
         raise e
       end

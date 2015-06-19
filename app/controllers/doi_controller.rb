@@ -6,6 +6,8 @@ class DoiController < ApplicationController
 
     raise ActiveFedora::ObjectNotFoundError if not @resource
     raise "Resource doesn't support DOI functionality" if not @resource.respond_to? :doi
+
+    @metadata_errors = @resource.validate_doi_metadata
 	end
 
   # Mints the doi and sends metadata to Datacite
@@ -27,6 +29,13 @@ class DoiController < ApplicationController
     raise ActiveFedora::ObjectNotFoundError if not @resource
 
     authorize! :edit, @resource
+
+    raise "Resource doesn't support DOI functionality" if not @resource.respond_to? :doi
+
+    errors = @resource.validate_doi_metadata
+    if errors.any?
+      raise RuntimeError.new(errors.join('\n'))
+    end
 
     mint_doi @resource
 

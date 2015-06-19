@@ -15,9 +15,21 @@
 		<p>This resource has no DOI.</p>
 	<% end %>
 
-	<p>You can generate a new DOI for this resource. The generated DOI would be:
-	<ul><li>doi:<%= @resource.mock_doi %></li></ul>
-	<p><strong>You cannot reverse the publishing of a DOI</strong>. Once published, the existence of the resource will become public knowledge.</p>
-	<p><%= link_to "Publish DOI now", doi_path, method: 'put' %></p>
+	<% if @metadata_errors.any? %>
+		<p>A new DOI cannot be generated for this resource because it is missing
+			 some required metadata. See error messages below.<p>
+		<ul>
+			<% @metadata_errors.each do |error| %>
+				<li><%= error %></li>
+			<% end %>
+		</ul>
+		<p>A new DOI can be generated after fixing the above errors, it would be:</p>
+		<ul><li>doi:<%= @resource.mock_doi %></li></ul>
+	<% else %>
+		<p>You can generate a new DOI for this resource. The generated DOI would be:</p>
+		<ul><li>doi:<%= @resource.mock_doi %></li></ul>
+		<p><strong>You cannot reverse the publishing of a DOI</strong>. Once published, the existence of the resource will become public knowledge.</p>
+		<p><%= link_to "Publish DOI now", doi_path, method: 'put' %></p>
+	<% end %>
 <% end %>
 <p><%= link_to "Back", @resource %></p>

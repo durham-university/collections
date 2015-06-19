@@ -57,6 +57,17 @@ module HydraDurham
       DataciteXml.new.generate(doi_metadata)
     end
 
+    # Makes sure that the object has all the metadata required by Datacite.
+    # Returns an array with information of any missing matadata. Empty array
+    # indicates that no problems were detected.
+    def validate_doi_metadata
+      ret = []
+
+      ret << "The resource must have a creator" if creator.empty?
+
+      return ret
+    end
+
     # Gets the resource Datacite metadata as a hash.
     def doi_metadata
       # This must be mock_doi rather than any identifier defined in the object.
@@ -101,7 +112,7 @@ module HydraDurham
   			end
   		else #Add Collection metadata
   			data[:title] = [title] # Collection returns string, XML builder expects array
-        data[:description] = [description] unless description.empty?
+        data[:description] = ( description.empty? ? [] : [description] )
   			# FixMe: construct << {contributor, email}
         if not date_created.empty?
           data[:date_created] = Date.parse(date_created.first.to_s).strftime('%Y-%m-%d') unless date_created.empty?
