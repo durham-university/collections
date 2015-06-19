@@ -78,8 +78,8 @@ class UpdateDataciteJob < ActiveFedoraIdBasedJob
         datacite.mint(object.doi_landing_page,object.mock_doi)
       end
       send_success_message
-    rescue Datacite::DataciteUpdateException=>e
-      if retry_count>0 and e.http_code and e.http_code>=500 and e.http_code<=599
+    rescue Exception=>e
+      if retry_count>0 and e.is_a? Datacite::DataciteUpdateException and e.http_code and e.http_code>=500 and e.http_code<=599
         # TODO: Can we add a delay here?
         # TODO: How to add a log message that the job failed but will be retried later?
         Sufia.queue.push(UpdateDataciteJob.new(id,user_key,do_metadata: do_metadata, do_mint: do_mint, retry_count: retry_count-1, object_path: object_path ))

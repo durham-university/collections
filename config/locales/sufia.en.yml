@@ -16,13 +16,13 @@ en:
                 abstract: "Abstract"
                 funder: "Funder"
                 research_methods: "Research methods"
-                related_url:      "A URL or DOI for the work that cites this set of data"
+                related_url:      "Cited in"
             collection:
                 description: "Description"
                 abstract: "Abstract"
                 funder: "Funder"
                 research_methods: "Research methods"
-                related_url:      "A URL or DOI for the work that cites this set of data"
+                related_url:      "Cited in"
         metadata_help:
             generic_file:
                 description: "Other description information that does not fit into an existing category."
