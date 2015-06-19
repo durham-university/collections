@@ -8,7 +8,7 @@ en:
     durham:
       doi:
           not_yet_published: "Not yet published"
-          generate_doi: "Generate DOI"
+          generate_doi: "Publish DOI"
     simple_form:
         labels:
             generic_file:
