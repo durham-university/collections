@@ -22,4 +22,21 @@ class GenericFilesController < ApplicationController
     # TODO: Need to decide what happens here. Presumably something gets
     #       sent to datacite, but also need a gravestone here.
   end
+
+  def update
+		update_identifiers = if params[:generic_file]
+      edit_form_class.model_attributes(params[:generic_file])[:identifier]
+    else
+      []
+    end
+		@generic_file.identifier.each do |id|
+			if id.starts_with? "doi:#{DOI_CONFIG['doi_prefix']}/"
+				if (not update_identifiers) or (not update_identifiers.index id)
+					raise "Local DOI cannot be removed."
+				end
+			end
+		end
+		super
+	end
+
 end

@@ -7,3 +7,22 @@
   width: 14px;
   height: 14px;
 }
+
+.simple_form {
+  li.local_doi {
+    display: block;
+    width: 421px;
+
+    >input {
+      display: block;
+      float: none;
+    }
+
+    .field-controls {
+      button {
+        display: none
+      }
+      content: '&nbsp;';
+    }
+  }
+}
