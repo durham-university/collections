@@ -64,6 +64,8 @@ module HydraDurham
       ret = []
 
       ret << "The resource must have a creator" if creator.empty?
+      ret << "The resource must have a resource type" if resource_type.empty?
+      ret << "The resource must have a title" if title.empty?
 
       return ret
     end
