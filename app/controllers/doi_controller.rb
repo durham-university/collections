@@ -39,14 +39,6 @@ class DoiController < ApplicationController
 
     mint_doi @resource
 
-    @resource.add_doi
-    attrs = { identifier: @resource.identifier }
-    if @resource.respond_to? :date_modified
-      @resource.date_modified = DateTime.now
-      attrs[:date_modified]=@resource.date_modified
-    end
-    @resource.update( attrs )
-
     redirect_to @resource
 
 	end

@@ -7,14 +7,16 @@ class UpdateDataciteJob < ActiveFedoraIdBasedJob
   attr_accessor :do_mint
   attr_accessor :retry_count
   attr_accessor :object_path
+  attr_accessor :retry_notification_sent
 
-  def initialize(id,user,do_metadata: true,do_mint: false,retry_count: 5,object_path: nil)
+  def initialize(id,user,do_metadata: true,do_mint: false,retry_count: 5,object_path: nil, retry_notification_sent: false)
     super(id)
     self.user_key=( user.is_a? User) ? (user.user_key) : user
     self.do_metadata=do_metadata
     self.do_mint=do_mint
     self.retry_count=retry_count
     self.object_path= object_path || (Rails.application.routes.url_helpers.method(object.class.name.underscore+'_path').call(object) )
+    self.retry_notification_sent = retry_notification_sent
     @object=nil # must reset this otherwise the job can't be serialised for Resque
   end
 
@@ -53,11 +55,51 @@ class UpdateDataciteJob < ActiveFedoraIdBasedJob
     send_message('DataCite update FAILED',message)
   end
 
+  def send_retry_message
+    send_message('Retrying DataCite update','Datacite update failed but will be retried later.')
+  end
+
   def remove_doi
     full_doi="doi:#{object.mock_doi}"
     if object.identifier.index full_doi
       object.identifier.delete full_doi
       object.update( { identifier: object.identifier } )
+    end
+  end
+
+  def save_doi
+    object.add_doi
+    attrs = { identifier: object.identifier }
+    if object.respond_to? :date_modified
+      object.date_modified = DateTime.now
+      attrs[:date_modified]= object.date_modified
+    end
+    if object.respond_to? :doi_published and not object.doi_published
+      attrs[:doi_published]= object.doi_published
+    end
+
+    object.update( attrs )
+  end
+
+  # Sends data to Datacite and updates the object as needed. Does not send
+  # notifications or add any other jobs to Resque or retry in case of network
+  # problems
+  def do_update
+    datacite = Datacite.new
+    if @do_metadata
+
+      if object.respond_to? :doi_published and not object.doi_published
+        object.doi_published = DateTime.now
+      end
+
+      datacite.metadata(object.doi_metadata_xml)
+      # set do_metadata to false so that if minting fails and we end up retrying
+      # we don't send metadata again
+      self.do_metadata=false
+    end
+    if @do_mint
+      datacite.mint(object.doi_landing_page,object.mock_doi)
+      save_doi
     end
   end
 
@@ -67,25 +109,24 @@ class UpdateDataciteJob < ActiveFedoraIdBasedJob
     raise "Resource doesn't support DOI functionality" if not object.respond_to? :doi
 
     begin
-      datacite = Datacite.new
-      if @do_metadata
-        datacite.metadata(object.doi_metadata_xml)
-        # set do_metadata to false so that if minting fails and we end up retrying
-        # we don't send metadata again
-        self.do_metadata=false
-      end
-      if @do_mint
-        datacite.mint(object.doi_landing_page,object.mock_doi)
-      end
+      do_update
       send_success_message
     rescue Exception=>e
       if retry_count>0 and e.is_a? Datacite::DataciteUpdateException and e.http_code and e.http_code>=500 and e.http_code<=599
         # TODO: Can we add a delay here?
-        # TODO: How to add a log message that the job failed but will be retried later?
-        Sufia.queue.push(UpdateDataciteJob.new(id,user_key,do_metadata: do_metadata, do_mint: do_mint, retry_count: retry_count-1, object_path: object_path ))
+        if not @retry_notification_sent
+          send_retry_message
+        end
+        Sufia.queue.push(UpdateDataciteJob.new(id,user_key,
+                                    do_metadata: do_metadata,
+                                    do_mint: do_mint,
+                                    retry_count:
+                                    retry_count-1,
+                                    object_path: object_path,
+                                    retry_notification_sent: true
+                                    ))
       else
         send_failed_message e
-        remove_doi if @do_mint
         raise e
       end
     end

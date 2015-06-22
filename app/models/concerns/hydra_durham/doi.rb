@@ -75,8 +75,11 @@ module HydraDurham
       # change records they're not supposed to.
       data = {:identifier => mock_doi}
 
-      # FixMe: This date should be stored and reused if DOI updated.
-      data[:publication_year] = "#{Time.new.year}"
+      if respond_to? :doi_published and doi_published
+        data[:publication_year] = "#{doi_published.year}"
+      else
+        data[:publication_year] = "#{Time.new.year}"
+      end
 
   		data[:subject] = tag.to_a
       # TODO: When we have authors with affiliations, change this
