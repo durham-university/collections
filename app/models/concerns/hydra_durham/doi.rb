@@ -87,7 +87,7 @@ module HydraDurham
         data[:publication_year] = "#{Time.new.year}"
       end
 
-  		data[:subject] = tag.to_a
+      data[:subject] = ( tag.to_a + subject.to_a ).uniq
       # TODO: When we have authors with affiliations, change this
       #       and corresponding part in datacite_xml.rb
       data[:creator] = creator.map do |c| {:name => c} end
