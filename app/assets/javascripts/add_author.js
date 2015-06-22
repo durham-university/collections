@@ -48,8 +48,9 @@ AuthorsFieldManager.prototype = Object.create(HydraEditor.FieldManager.prototype
     newFieldClone: { value: function(activeField) {
       var index = this.maxIndex();
       var newField = activeField.clone();
-      newChildren = newField.find('input, select');
-      newChildren.val('').removeProp('required');
+      var newChildren = newField.find('input, select');
+      newChildren.removeProp('required');
+      // Update numeric IDs in fieldnames to next index number
       newChildren.each(function(i, element) {
         console.log($(element).attr('name'));
         name = $(element).attr('name');
@@ -57,8 +58,12 @@ AuthorsFieldManager.prototype = Object.create(HydraEditor.FieldManager.prototype
         $(element).attr('name',newname);
         console.log($(element).attr('name'));
       });
-      newOptions = newField.find('option:selected');
+      // Unselect any previously-selected options
+      var newOptions = newField.find('option:selected');
       newOptions.removeAttr('selected');
+      // Remove content from text attributes (not from all inputs, otherwise hidden ones and checkbox values are cleared too)
+      var newFields = newField.find(':text');
+      newFields.val('');
       newChildren.first().focus();
       this.element.trigger("managed_field:add", newChildren.first());
       return newField;
