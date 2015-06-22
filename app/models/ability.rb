@@ -10,6 +10,11 @@ class Ability
       can [:create, :show, :add_user, :remove_user, :index], Role
       can [:edit, :create, :destroy], :people_controller
     end
+
+    if current_user.id
+      can :show, :unpublished_doi
+    end
+
     # Limits deleting objects to a the admin user
     #
     # if current_user.admin?

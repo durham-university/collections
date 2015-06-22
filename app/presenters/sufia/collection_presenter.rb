@@ -15,9 +15,7 @@ module Sufia
     # delegate :depositor, :permissions, to: :model
 
     def terms_with_values
-      # always include identifier since we'll show the mock doi there even if
-      # no identifiers have been specified
-      terms.select { |t| self[t].present? or t==:identifier }
+      terms.select { |t| self[t].present? }
     end
 
     def [](key)
