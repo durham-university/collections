@@ -68,6 +68,10 @@ module HydraDurham
       return ret
     end
 
+    def member_visible? m
+      m.visibility=='open'
+    end
+
     # Gets the resource Datacite metadata as a hash.
     def doi_metadata
       # This must be mock_doi rather than any identifier defined in the object.
@@ -121,33 +125,41 @@ module HydraDurham
   			data[:rights] = rights.map do |crights|
   				{rights: "Collection rights - " + Sufia.config.cc_licenses_reverse[crights], rightsURI: crights }
   			end
-        data[:rights] += member_ids.map do |mid|
-  				mobj = ActiveFedora::Base.find(mid)
-  				if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
-  				{ # Do we allow for multiple licensing?
-						rights: filename + " - " + Sufia.config.cc_licenses_reverse[mobj.rights[0]],
-						rightsURI: mobj.rights[0]
-					}
+        members.reduce(data[:rights]) do |a,mobj|
+          if member_visible? mobj
+            if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
+            a << { # Do we allow for multiple licensing?
+              rights: filename + " - " + Sufia.config.cc_licenses_reverse[mobj.rights[0]],
+              rightsURI: mobj.rights[0]
+            }
+          else
+            a
+          end
   			end
 
-  			data[:format] = member_ids.reduce([]) do |a,mid|
-  				mobj = ActiveFedora::Base.find(mid)
-  				if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
-  				if mobj.content.mime_type.nil? then a end
-  				a << (filename + " - " + mobj.content.mime_type)
+        data[:format] = members.reduce([]) do |a,mobj|
+          if member_visible? mobj
+            if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
+            if mobj.content.mime_type.nil? then a end
+            a << (filename + " - " + mobj.content.mime_type)
+          else
+            a
+          end
   			end
 
-  			data[:size] = member_ids.reduce([]) do |a,mid|
-  				mobj = ActiveFedora::Base.find(mid)
-  				if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
-  				if mobj.content.size then a end
-  				a << "#{filename} - #{mobj.content.size}"# Should we preatyfier file size in bytes?
+        data[:size] = members.reduce([]) do |a,mobj|
+          if member_visible? mobj
+            if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
+            if mobj.content.size then a end
+            a << "#{filename} - #{mobj.content.size}"# Should we preatyfier file size in bytes?
+          else
+            a
+          end
   			end
 
 
-        member_ids.reduce(data[:relatedIdentifier]) do |a,mid|
-  				mobj = ActiveFedora::Base.find(mid)
-          if mobj.respond_to? :doi_landing_page #FixMe: only public objects
+        members.reduce(data[:relatedIdentifier]) do |a,mobj|
+          if member_visible? mobj and mobj.respond_to? :doi_landing_page #FixMe: only public objects
             a << { id: mobj.doi_landing_page, id_type: 'URL', relation_type: 'HasPart' }
           else
             a
