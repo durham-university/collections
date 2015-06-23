@@ -11,19 +11,16 @@ Sufia.config do |config|
   config.max_notifications_for_dashboard = 5
 
   config.cc_licenses = {
-    'Attribution 4.0 International (CC BY)' => 'http://creativecommons.org/licenses/by/4.0/',
-    'Attribution-ShareAlike 4.0 International (CC BY-SA)' => 'http://creativecommons.org/licenses/by-sa/4.0/',
-    'Attribution-NonCommercial 4.0 International (CC BY-NC)' => 'http://creativecommons.org/licenses/by-nc/4.0/',
-    'Attribution-NoDerivs 4.0 International (CC BY-ND)' => 'http://creativecommons.org/licenses/by-nd/4.0/',
-    'Attribution-NonCommercial-NoDerivs 4.0 International (CC BY-NC-ND)' => 'http://creativecommons.org/licenses/by-nc-nd/4.0/',
-    'Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)' => 'http://creativecommons.org/licenses/by-nc-sa/4.0/',
-    'Public Domain Mark 1.0' => 'http://creativecommons.org/publicdomain/mark/1.0/',
-    'CC0 1.0 Universal' => 'http://creativecommons.org/publicdomain/zero/1.0/',
-    'CC0 1.0 Universal' => 'http://creativecommons.org/publicdomain/zero/1.0/',
-    'Open Data Commons Attribution (ODC BY)' => 'http://opendatacommons.org/licenses/by/1.0/',
-    'Open Data Commons - Open Database (ODbL)' => 'http://opendatacommons.org/licenses/odbl/1.0/',
-    'Open Data Commons - Public Domain Dedication (ODC PDDL)' => 'http://opendatacommons.org/licenses/pddl/1.0/',
-    'All rights reserved' => 'All rights reserved'
+    'All rights reserved' => 'All rights reserved',
+    'Open Data Commons - Open Database (ODC-ODbL)' => 'http://opendatacommons.org/licenses/odbl/1.0/',
+    'Creative Commons Attribution 4.0 International (CC BY)' => 'http://creativecommons.org/licenses/by/4.0/',
+    'Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA)' => 'http://creativecommons.org/licenses/by-sa/4.0/',
+    'Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC)' => 'http://creativecommons.org/licenses/by-nc/4.0/',
+    'Creative Commons Attribution-NoDerivs 4.0 International (CC BY-ND)' => 'http://creativecommons.org/licenses/by-nd/4.0/',
+    'Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International (CC BY-NC-ND)' => 'http://creativecommons.org/licenses/by-nc-nd/4.0/',
+    'Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)' => 'http://creativecommons.org/licenses/by-nc-sa/4.0/',
+    'Creative Commons Public Domain Dedication (CC0 1.0)' => 'http://creativecommons.org/publicdomain/zero/1.0/',
+    'Public Domain Mark 1.0' => 'http://creativecommons.org/publicdomain/mark/1.0/'
   }
 
   config.cc_licenses_reverse = Hash[*config.cc_licenses.to_a.flatten.reverse]
