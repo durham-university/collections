@@ -1,0 +1,18 @@
+defaults: &defaults
+  landing_page_prefix: 'http://collections.durham.ac.uk/'
+  datacite_publisher: 'Durham University'
+  datacite_contributor: 'Durham University'
+  datacite_hosting_institution: 'Durham University'
+
+
+development:
+  <<: *defaults
+  doi_prefix: '10.4124'
+
+test:
+  <<: *defaults
+  doi_prefix: '10.4124'
+
+production:
+  <<: *defaults
+  doi_prefix: '10.15128'

@@ -67,4 +67,9 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+  resources :doi, only: [:show, :update]
+  resources :files, as: 'generic_file', except: [ :index ]
+  resources :collections
+
 end

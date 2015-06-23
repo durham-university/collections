@@ -70,6 +70,25 @@ Sufia.config do |config|
     "Other" => "http://schema.org/CreativeWork",
   }
 
+  config.resource_types_to_datacite = {
+    "Audio" => "Sound",
+    "Collection" => "Collection",
+    "Dataset" => "Dataset",
+    "Image" => "Image",
+    "Poster" => "Other",
+    "Presentation" => "Other",
+    "Software or Program Code" => "Software",
+    "Video" => "Audiovisual",
+    "Model" => "Model",
+    "Physical Object" => "PhysicalObject",
+    "Service" => "Service",
+    "Workflow" => "Workflow",
+    "Other" => "Other",
+  }
+
+  config.resource_types_to_datacite_reverse = Hash[*config.resource_types_to_datacite.to_a.flatten.reverse]
+
+
   config.permission_levels = {
     "Choose Access"=>"none",
     "View/Download" => "read",

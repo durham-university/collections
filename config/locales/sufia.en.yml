@@ -5,6 +5,10 @@ en:
         institution_name: "Durham University"
         institution_name_full: "Durham University"
         background_attribution: ""
+    durham:
+      doi:
+          not_yet_published: "Not yet published"
+          generate_doi: "Publish DOI"
     simple_form:
         labels:
             generic_file:
@@ -12,19 +16,23 @@ en:
                 abstract: "Abstract"
                 funder: "Funder"
                 research_methods: "Research methods"
+                related_url:      "Cited in"
             collection:
                 description: "Description"
                 abstract: "Abstract"
                 funder: "Funder"
                 research_methods: "Research methods"
+                related_url:      "Cited in"
         metadata_help:
             generic_file:
                 description: "Other description information that does not fit into an existing category."
                 abstract_html: "A brief description of the resource and the context in which the resource was created."
                 funder_html: "Institution that provided financial support for the development of the resource."
                 research_methods_html: "The methodology employed for the study or research."
+                related_url: "A DOI or URL link to the work that cites/quotes this dataset. An example is the URL from a repository such ArXiv or the DOI from journal publisher."
             collection:
                 description: "Other description information that does not fit into an existing category."
                 abstract_html: "A brief description of the resource and the context in which the resource was created."
                 funder_html: "Institution that provided financial support for the development of the resource."
                 research_methods_html: "The methodology employed for the study or research."
+                related_url: "A DOI or URL link to the work that cites/quotes this dataset. An example is the URL from a repository such ArXiv or the DOI from journal publisher."

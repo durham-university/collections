@@ -20,6 +20,11 @@ module HydraDurham
       property :creator, predicate: ::RDF::DC.creator, class_name: "Person" do |index|
         index.as :stored_searchable, :facetable
       end
+
+      property :doi_published, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#doi_published'), multiple: false do |index|
+        index.type :date
+        index.as :stored_searchable
+      end
     end
   end
 end
