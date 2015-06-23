@@ -8,7 +8,7 @@ authorizations: &AUTHORIZATIONS
   attribute: cn
   base: <%= Rails.application.secrets.ldap_base %>
   ssl: true
-  allow_unauthenticated_bind: true
+  allow_unauthenticated_bind: false
   require_attribute:
     objectClass: inetOrgPerson
     authorizationRole: postsAdmin
