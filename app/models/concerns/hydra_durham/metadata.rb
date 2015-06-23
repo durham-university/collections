@@ -22,9 +22,9 @@ module HydraDurham
         index.as :stored_searchable
       end
 
-      has_and_belongs_to_many :authors, predicate: ::RDF::DC.creator, class_name: "Author", inverse_of: :generic_files
+      has_and_belongs_to_many :authors, predicate: ::RDF::DC.contributor, class_name: "Author", inverse_of: :generic_files
 
-      accepts_nested_attributes_for :authors, allow_destroy: true
+      accepts_nested_attributes_for :authors, allow_destroy: true, reject_if: proc { |attributes| attributes['author_name'].first.blank? }
     end
   end
 end
