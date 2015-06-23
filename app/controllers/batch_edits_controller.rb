@@ -31,13 +31,34 @@ class BatchEditsController < ApplicationController
 
   def update_document(obj)
     obj.attributes = generic_file_params.except(:identifier)
-    obj.date_modified = Time.now.ctime
+    obj.date_modified = Time.now
     obj.visibility = params[:visibility]
-    # TODO: trigger DOI updates here
+
+    saved=obj.save
+
+    if saved and obj.respond_to? :doi and obj.manage_datacite?
+      obj.queue_doi_metadata_update
+    end
+  end
+
+  def update
+    batch.each do |doc_id|
+      obj = ActiveFedora::Base.find(doc_id, :cast=>true)
+      update_document(obj)
+    end
+    flash[:notice] = "Batch update complete"
+    after_update
   end
 
   def destroy_batch
-    # TODO: trigger DOI updates here
-    super
+    batch.each do |doc_id|
+      gf = ::GenericFile.find(doc_id)
+      if gf.respond_to? :doi and gf.manage_datacite?
+        gf.queue_doi_metadata_update(destroyed: true)
+      end
+      gf.destroy
+    end
+    after_update
   end
+
 end

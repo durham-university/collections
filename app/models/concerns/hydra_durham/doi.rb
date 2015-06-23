@@ -2,6 +2,19 @@ module HydraDurham
   module Doi
     extend ActiveSupport::Concern
 
+    def queue_doi_metadata_update(mint: false, user: nil, destroyed: false)
+      return if not manage_datacite?
+      if destroyed
+        # TODO: object was destroyed, send something to DataCite
+      else
+        user||=@current_user
+
+        Sufia.queue.push(UpdateDataciteJob.new(self.id, user, do_mint: mint))
+
+        # TODO: check if part of any collections and then update collections too
+      end
+    end
+
     # Returns all doi identifiers in the resource.
     def doi
       identifier.select do |ident|
