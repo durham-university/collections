@@ -19,6 +19,10 @@ Sufia.config do |config|
     'Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)' => 'http://creativecommons.org/licenses/by-nc-sa/4.0/',
     'Public Domain Mark 1.0' => 'http://creativecommons.org/publicdomain/mark/1.0/',
     'CC0 1.0 Universal' => 'http://creativecommons.org/publicdomain/zero/1.0/',
+    'CC0 1.0 Universal' => 'http://creativecommons.org/publicdomain/zero/1.0/',
+    'Open Data Commons Attribution (ODC BY)' => 'http://opendatacommons.org/licenses/by/1.0/',
+    'Open Data Commons - Open Database (ODbL)' => 'http://opendatacommons.org/licenses/odbl/1.0/',
+    'Open Data Commons - Public Domain Dedication (ODC PDDL)' => 'http://opendatacommons.org/licenses/pddl/1.0/',
     'All rights reserved' => 'All rights reserved'
   }
 
