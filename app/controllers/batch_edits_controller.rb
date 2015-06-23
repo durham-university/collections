@@ -7,7 +7,7 @@ class BatchEditsController < ApplicationController
      super
      @generic_file = ::GenericFile.new
      @generic_file.depositor = current_user.user_key
-     @terms = terms - [:title, :format, :resource_type, :identifier]
+     @terms = terms - [:title, :format, :resource_type, :identifier, :publisher]
 
      h  = {}
      @names = []
@@ -30,7 +30,7 @@ class BatchEditsController < ApplicationController
   end
 
   def update_document(obj)
-    obj.attributes = generic_file_params.except(:identifier)
+    obj.attributes = generic_file_params.except(:identifier, :publisher)
     obj.date_modified = Time.now
     obj.visibility = params[:visibility]
 
