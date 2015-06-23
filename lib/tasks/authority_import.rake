@@ -16,12 +16,12 @@ namespace :authority_import do
   desc "Downloads the language rdf"
   task :download_languages, [:force_download] do |t, args|
     args.with_defaults( force_download: false,
-                        languages_file: 'iso6392.rdf')
+                        languages_file: Rails.root.join('tmp','iso6392.rdf') )
 
     file=args.languages_file
     if args.force_download or not File.exists?(file)
       tempFile=Rails.root.join('tmp','languages-import-download.zip')
-      puts "Downloading languages rdf to #{tempFile}"
+      puts "Downloading compressed languages rdf to #{tempFile}"
       download_file('http://id.loc.gov/static/data/vocabularyiso639-2.rdfxml.zip',tempFile)
       begin
         found=false
@@ -46,7 +46,7 @@ namespace :authority_import do
   desc "Downloads the funders rdf"
   task :download_funders, [:force_download] do |t, args|
     args.with_defaults( force_download: false,
-                        funders_file: 'fundref_registry.rdf')
+                        funders_file: Rails.root.join('tmp','fundref_registry.rdf') )
 
     file=args.funders_file
     if args.force_download or not File.exists?(file)
@@ -59,7 +59,7 @@ namespace :authority_import do
 
   desc "Imports funders RDF registry. Download the RDF from http://www.crossref.org/fundref/fundref_registry.html. The RDF file name should be given as a parameter or be in the same directory."
   task :funders, [:funders_file,:funders_authority_name] => [:download_funders, :environment] do |t, args|
-    args.with_defaults( funders_file: 'fundref_registry.rdf',
+    args.with_defaults( funders_file: Rails.root.join('tmp','fundref_registry.rdf'),
                         funders_authority_name: 'la_fundref_registry' )
 
     file=args.funders_file
@@ -102,7 +102,7 @@ namespace :authority_import do
 
   desc "Imports languages RDF registry. Download the RDF from http://id.loc.gov/static/data/vocabularyiso639-2.rdfxml.zip. The RDF file name should be given as a parameter or be in the same directory."
   task :languages, [:languages_file,:languages_authority_name] => [:download_languages, :environment] do |t, args|
-    args.with_defaults( languages_file: 'iso6392.rdf',
+    args.with_defaults( languages_file: Rails.root.join('tmp','iso6392.rdf'),
                         languages_authority_name: 'la_languages_iso6392')
     file=args.languages_file
     la_name=args.languages_authority_name

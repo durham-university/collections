@@ -18,3 +18,6 @@ mkdir /tmp/fcrepo4-data
 ln -s /tmp/fcrepo4-data jetty/
 
 rake jetty:start
+
+# Downloads and imports languages and funders local authorities
+rake authority_import:all
