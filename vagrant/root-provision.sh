@@ -24,6 +24,7 @@ yum -y install \
 
 # Update clamav config file and database
 sed -i -e "s/^Example/#Example/" /etc/freshclam.conf
+sed -i "s/^FRESHCLAM_DELAY/#FRESHCLAM_DELAY/" /etc/sysconfig/freshclam
 freshclam
 
 # Download and set up FITS
