@@ -21,11 +21,9 @@ class DataciteXml
           map[:creator].each do |c|
             xml.creator {
               xml.creatorName c[:name]
-              # if c.key?(:affiliation)
-                # xml.affiliation c[:affiliation]
-              # else
-                # xml.affiliation affiliation
-              # end
+               if c.key?(:affiliation) and c[:affiliation].present?
+                 xml.affiliation c[:affiliation]
+               end
             }
           end
         }
