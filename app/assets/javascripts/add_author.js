@@ -52,11 +52,10 @@ AuthorsFieldManager.prototype = Object.create(HydraEditor.FieldManager.prototype
       newChildren.removeProp('required');
       // Update numeric IDs in fieldnames to next index number
       newChildren.each(function(i, element) {
-        console.log($(element).attr('name'));
         name = $(element).attr('name');
         newname = name.replace(/\[[0-9]+\]/,"["+index+"]");
         $(element).attr('name',newname);
-        console.log($(element).attr('name'));
+        $(element).attr('id',newname);
       });
       // Unselect any previously-selected options
       var newOptions = newField.find('option:selected');
