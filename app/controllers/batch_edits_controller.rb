@@ -42,12 +42,17 @@ class BatchEditsController < ApplicationController
   end
 
   def update
-    batch.each do |doc_id|
-      obj = ActiveFedora::Base.find(doc_id, :cast=>true)
-      update_document(obj)
+    case params["update_type"]
+      when "update"
+        batch.each do |doc_id|
+          obj = ActiveFedora::Base.find(doc_id, :cast=>true)
+          update_document(obj)
+        end
+        flash[:notice] = "Batch update complete"
+        after_update
+      when "delete_all"
+        destroy_batch
     end
-    flash[:notice] = "Batch update complete"
-    after_update
   end
 
   def destroy_batch
