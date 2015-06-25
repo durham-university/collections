@@ -100,5 +100,5 @@ $.fn.manage_comment_fields = function(option) {
 }
 
 Blacklight.onLoad(function() {
-  $('.generic_file_authors.form-group').manage_comment_fields();
+  $('.generic_file_authors.form-group , .collection_authors.form-group').manage_comment_fields();
 });

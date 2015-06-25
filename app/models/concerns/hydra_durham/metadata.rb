@@ -22,7 +22,7 @@ module HydraDurham
         index.as :stored_searchable
       end
 
-      has_many :authors, inverse_of: :generic_file
+      has_many :authors, inverse_of: :authorable
 
       accepts_nested_attributes_for :authors, allow_destroy: true, reject_if: proc { |attributes| attributes['author_name'].first.blank? }
 
