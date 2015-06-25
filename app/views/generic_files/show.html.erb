@@ -16,6 +16,9 @@
 
 <% content_for(:gscholar_meta) do %>
   <meta name="citation_title" content="<%= @presenter.title.first %>"/>
+  <% @presenter.authors.each do |author| %>
+  <meta name="citation_author" content="<%= author.to_s %>"/>
+  <% end %>
   <meta name="citation_publication_date" content="<%= @presenter.date_created.first %>"/>
   <meta name="citation_pdf_url" content="<%= sufia.download_url(@presenter) %>"/>
   <!-- Sufia does not yet support these metadata -->
