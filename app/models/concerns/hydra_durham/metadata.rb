@@ -26,9 +26,10 @@ module HydraDurham
 
       accepts_nested_attributes_for :authors, allow_destroy: true, reject_if: proc { |attributes| attributes['author_name'].first.blank? }
 
-      def to_solr
-        r=super
+      def to_solr(solr_doc={})
+        r=super(solr_doc)
         r["authors_tesim"]=authors.map do |author| author.to_s end
+        r["authors_sim"]=r["authors_tesim"] # this is needed for facets
         r
       end
     end
