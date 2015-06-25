@@ -1,7 +1,7 @@
 class Author < ActiveFedora::Base
   type ::RDF::DC.Agent
 
-  belongs_to :generic_file, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#contributor_to')
+  belongs_to :authorable, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#contributor_to'), class_name: 'ActiveFedora::Base' 
 
   property :author_name, predicate: ::RDF::FOAF.name do |index|
     index.as :stored_searchable
