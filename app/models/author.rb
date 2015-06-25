@@ -1,7 +1,7 @@
 class Author < ActiveFedora::Base
   type ::RDF::DC.Agent
 
-  has_many :generic_files, inverse_of: :authors, class_name: "GenericFile"
+  belongs_to :generic_file, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#contributor_to')
 
   property :author_name, predicate: ::RDF::FOAF.name do |index|
     index.as :stored_searchable

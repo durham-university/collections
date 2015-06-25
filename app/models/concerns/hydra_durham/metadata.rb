@@ -22,9 +22,15 @@ module HydraDurham
         index.as :stored_searchable
       end
 
-      has_and_belongs_to_many :authors, predicate: ::RDF::DC.contributor, class_name: "Author", inverse_of: :generic_files
+      has_many :authors, inverse_of: :generic_file
 
       accepts_nested_attributes_for :authors, allow_destroy: true, reject_if: proc { |attributes| attributes['author_name'].first.blank? }
+
+      def to_solr
+        r=super
+        r["authors_tesim"]=authors.map do |author| author.to_s end
+        r
+      end
     end
   end
 end
