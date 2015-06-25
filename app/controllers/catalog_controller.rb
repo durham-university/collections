@@ -28,12 +28,12 @@ class CatalogController < ApplicationController
   end
 
   configure_blacklight do |config|
-          config.view.gallery.partials = [:index_header, :index]
-          config.view.masonry.partials = [:index]
-          config.view.slideshow.partials = [:index]
+    config.view.gallery.partials = [:index_header, :index]
+    config.view.masonry.partials = [:index]
+    config.view.slideshow.partials = [:index]
 
-          config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
-          config.show.partials.insert(1, :openseadragon)
+    config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
+    config.show.partials.insert(1, :openseadragon)
 
     #Show gallery view
     config.view.gallery.partials = [:index_header, :index]
@@ -58,6 +58,7 @@ class CatalogController < ApplicationController
     #   The ordering of the field names is the order of the display
     config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
 #    config.add_facet_field solr_name("creator", :facetable), label: "Creator", limit: 5
+    config.add_facet_field solr_name("authors", :facetable), label: "Author", limit: 5
     config.add_facet_field solr_name("tag", :facetable), label: "Keyword", limit: 5
     config.add_facet_field solr_name("subject", :facetable), label: "Subject", limit: 5
     config.add_facet_field solr_name("language", :facetable), label: "Language", limit: 5
