@@ -21,15 +21,73 @@
     <span id="visibility_tooltip" class="h5"><%= visibility_help %></span>
   </h3>
   <div class="radio">
-    <label>
-      <input type="radio" id="visibility_open" name="visibility" value="<%=Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC %>" <% if !public_perm.blank? %> checked="true"<% end %>/> <span class="label label-success">Open Access</span> Visible to the world.
-    </label>
-    <label>
-      <input type="radio" id="visibility_psu" name="visibility" value="<%=Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>" <% if !registered_perm.blank? %> checked="true"<% end %> /><span class="label label-info"><%=t('sufia.institution_name') %></span> Visible to all <%=t('sufia.institution_name') %> users.
-    </label>
-    <label>
-      <input type="radio" id="visibility_restricted" name="visibility" value="<%=Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>"<% if registered_perm.blank? and public_perm.blank?%> checked="true"<% end %> /> <span class="label label-danger">Private</span> Visible to users specified below, if any.
-    </label>
+    <%
+      visibility_options=[
+        { id: 'visibility_open',
+          value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC,
+          checked: !public_perm.blank? ,
+          label_class: 'label-success',
+          label: 'Open Access',
+          label_info: 'Visible to the world.'
+        },
+        { id: 'visibility_open_pending',
+          value: 'open-pending',
+          checked: f.object.open_access_pending? ,
+          label_class: 'label-success',
+          label: 'Open Access Pending',
+          label_info: 'Visible to the world, pending review.'
+        },
+        { id: 'visibility_psu',
+          value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED,
+          checked: (public_perm.blank? && !registered_perm.blank? && !f.object.open_access_pending?) ,
+          label_class: 'label-info',
+          label: t('sufia.institution_name'),
+          label_info: "Visible to all #{t('sufia.institution_name')} users"
+        },
+        { id: 'visibility_open',
+          value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE,
+          checked: (registered_perm.blank? and public_perm.blank? && !f.object.open_access_pending?) ,
+          label_class: 'label-danger',
+          label: 'Private',
+          label_info: 'Visible to users specified below, if any.'
+        },
+      ]
+
+      visibility_options.each do |opts|
+        disabled= !(f.object.can_change_visibility? opts[:value], @current_user)
+        %>
+          <label <%= 'class="disabled"' if disabled %> >
+            <input type="radio" id="<%= opts[:id] %>" name="visibility"
+              value="<%= opts[:value] %>"
+              <%= 'checked="true"' if opts[:checked] %>
+              <%= 'disabled="true"' if disabled %> />
+            <span class="label <%= opts[:label_class] %>"><%= opts[:label] %></span> <%= opts[:label_info] %>
+          </label>
+        <%
+      end
+    %>
+  </div>
+  <div>
+    <% if f.object.open_access? %>
+      <p>
+      If you need to request that this item is withdrawn from open access,
+      please contact the system administrators giving the reasons for the
+      request. Withdrawing the item from open access cannot prevent its use by
+      people who have already obtained a copy of the item.
+      <p>
+    <% else %>
+      <p>
+      Items need to go through a review process before they can be made publicly
+      visible. You can select the option <strong>Open access pending</strong> to
+      indicate that you wish to change visibility to Open access. A notification
+      will be sent to a reviewer who review your request and then on approval
+      change the visibility.
+      </p>
+      <p>
+      Note that items that have been made open access cannot be freely changed
+      back to a more restricted visibility.
+      </p>
+    <% end %>
   </div>
 
   <!-- Share With -->
