@@ -79,7 +79,7 @@ var HydraEditor = (function($) {
 
           createNewField: function($activeField) {
               $newField = $activeField.clone();
-              $newChildren = $newField.children('input');
+              $newChildren = $newField.children('input, textarea');
               $newChildren.val('').removeProp('required');
               $newChildren.first().focus();
               this.element.trigger("managed_field:add", $newChildren.first());
