@@ -32,8 +32,10 @@ en:
                 funder_html: "Institution that provided financial support for the development of the resource."
                 research_methods_html: "The methodology employed for the study or research."
                 related_url: "A DOI or URL link to the work that cites/quotes this dataset. An example is the URL from a repository such ArXiv or the DOI from journal publisher."
+                subject:
                 subject_html: "Headings or index terms describing what the resource is about; these &lt;em&gt;do&lt;/em&gt; need to conform to an existing vocabulary. Currently supports FAST subject terms."
                 tag: "Words or phrases you select to describe what the resource is about. These can be used to search for content. Please enter each concept in a separate field."
+                title:
                 title_html: "A name for the resource to aid in identifying it. &lt;em&gt;This is a required field&lt;/em&gt;."
             collection:
                 description: "Other description information that does not fit into an existing category."
@@ -41,8 +43,10 @@ en:
                 funder_html: "Institution that provided financial support for the development of the resource."
                 research_methods_html: "The methodology employed for the study or research."
                 related_url: "A DOI or URL link to the work that cites/quotes this dataset. An example is the URL from a repository such ArXiv or the DOI from journal publisher."
+                title:
                 title_html: "A name for the resource to aid in identifying it. &lt;em&gt;This is a required field&lt;/em&gt;."
                 tag: "Words or phrases you select to describe what the resource is about. These can be used to search for content. Please enter each concept in a separate field."
+                subject:
                 subject_html: "Headings or index terms describing what the resource is about; these &lt;em&gt;do&lt;/em&gt; need to conform to an existing vocabulary. Currently supports FAST subject terms."
                 creator_html: "The person or group responsible for the resource. Usually this is the author of the content. Personal names should be entered with the last name first, e.g. &quot;Smith, John.&quot; &lt;em&gt;This is a required field&lt;/em&gt;."
                 based_near_html: "If the subject of the resource relates to particular geographic areas or places, enter their names here. Locations will be suggested as you type from the GeoNames web service (&lt;a href=&quot;http://www.geonames.org&quot;&gt;http://www.geonames.org&lt;/a&gt;)."
