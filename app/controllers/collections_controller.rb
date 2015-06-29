@@ -37,6 +37,16 @@ class CollectionsController < ApplicationController
     #       sent to datacite, but also need a gravestone here.
   end
 
+	def create
+		# This works around what seems to be a bug in Fedora. Without this
+		# line the authors association would retrieve all existing authors for the
+		# newly created collection because the owner.id is nil and the Fedora code
+		# doesn't check for this. Calling .loaded! sets the loaded flag to true and
+		# prevents it from loading any incorrect authors.
+		@collection.association(:authors).loaded!
+		super
+	end
+
 	def update
 		update_identifiers = collection_params[:identifier]
 		if update_identifiers
