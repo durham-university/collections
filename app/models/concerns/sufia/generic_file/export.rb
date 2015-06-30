@@ -8,11 +8,11 @@ module Sufia
         end_note_format = {
           '%T' => [:title, lambda { |x| x.first }],
           '%Q' => [:title, lambda { |x| x.drop(1) }],
-          '%A' => [:creator],
+#          '%A' => [:creator],
           '%C' => [:publication_place],
           '%D' => [:date_created],
           '%8' => [:date_uploaded],
-#          '%E' => [:contributor],
+          '%E' => [:contributors],
           '%I' => [:publisher],
           '%J' => [:series_title],
           '%@' => [:isbn],
@@ -53,11 +53,11 @@ module Sufia
         export_text << "url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Adc&rfr_id=info%3Asid%2Fblacklight.rubyforge.org%3Agenerator"
         field_map = {
           title: 'title',
-          creator: 'creator',
+#          creator: 'creator',
           subject: 'subject',
           description: 'description',
           publisher: 'publisher',
-#          contributor: 'contributor',
+          contributors: 'contributor',
           date_created: 'date',
           resource_type: 'format',
           identifier: 'identifier',
@@ -308,11 +308,11 @@ module Sufia
       end
 
       def get_author_list
-        self.creator.map { |author| clean_end_punctuation(CGI::escapeHTML(author)) }.uniq
+        self.contributor.map { |author| clean_end_punctuation(CGI::escapeHTML(author)) }.uniq
       end
 
       def get_all_authors
-        authors = self.creator
+        authors = self.contributor
         return authors.empty? ? nil : authors.map { |author| CGI::escapeHTML(author) }
       end
 

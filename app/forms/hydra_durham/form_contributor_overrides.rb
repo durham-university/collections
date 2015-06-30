@@ -1,22 +1,22 @@
 module HydraDurham
-  module FormAuthorOverrides
+  module FormContributorOverrides
     extend ActiveSupport::Concern
 
     module ClassMethods
       def build_permitted_params
         permitted = super
-        permitted.delete({ authors: [] })
-        permitted << { authors_attributes: permitted_authors_params }
+        permitted.delete({ contributors: [] })
+        permitted << { contributors_attributes: permitted_contributors_params }
         permitted
       end
 
       protected
-        def permitted_authors_params
+        def permitted_contributors_params
           [
             :id,
             :_destroy,
             {
-              author_name: [],
+              contributor_name: [],
               affiliation: []
             }
           ]

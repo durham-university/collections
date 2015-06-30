@@ -1,31 +1,31 @@
-// This adds new author fields to the edit form.
+// This adds new contributor fields to the edit form.
 //
 // Based loosely on https://github.com/aic-collections/aicdams-lakeshore/blob/0eda8f1407d89cb86fc7284ed6c235114407e020/app/assets/javascripts/add_annotation.js
 //
-// It clones the existing field, then updates the array indices This returns a new html string with the fields for the author.
+// It clones the existing field, then updates the array indices This returns a new html string with the fields for the contributor.
 // The hydra-editor gem takes care of the bulk of the actions such attaching the listeners to the "Add" button
 // and inserting the new field into the html form.
 //
 // Once inserted, the resulting html form should produce a parameters hash that looks like:
 //
 // {
-//   "authors_attributes" => {
-//     "0" => {"author_name"=>"Jane Doe", "_destroy"=>"0", "id"=>"37f13bdf-a664-4015-b590-4a66850a9ab6"},
-//     "1" => {"author_name"=>"John Doe", "_destroy"=>"0", "id"=>""}
+//   "contributors_attributes" => {
+//     "0" => {"contributor_name"=>"Jane Doe", "_destroy"=>"0", "id"=>"37f13bdf-a664-4015-b590-4a66850a9ab6"},
+//     "1" => {"contributor_name"=>"John Doe", "_destroy"=>"0", "id"=>""}
 //   }
 // }
 //
 // TODOs:
-//   - select needs to pull values from the Author class
-//   - QA needs to be involved to query existing authors
+//   - select needs to pull values from the Contributor class
+//   - QA needs to be involved to query existing contributors
 //
 //= require hydra-editor/hydra-editor
 
-function AuthorsFieldManager(element, options) {
+function ContributorsFieldManager(element, options) {
   HydraEditor.FieldManager.call(this, element, options); // call super constructor.
 }
 
-AuthorsFieldManager.prototype = Object.create(HydraEditor.FieldManager.prototype,
+ContributorsFieldManager.prototype = Object.create(HydraEditor.FieldManager.prototype,
   {
     createNewField: { value: function($activeField) {
       var fieldName = $activeField.find('input').data('attribute');
@@ -87,7 +87,7 @@ AuthorsFieldManager.prototype = Object.create(HydraEditor.FieldManager.prototype
     }}
   }
 );
-AuthorsFieldManager.prototype.constructor = AuthorsFieldManager;
+ContributorsFieldManager.prototype.constructor = ContributorsFieldManager;
 
 $.fn.manage_comment_fields = function(option) {
   return this.each(function() {
@@ -95,10 +95,10 @@ $.fn.manage_comment_fields = function(option) {
     var data  = $this.data('manage_fields');
     var options = $.extend({}, HydraEditor.FieldManager.DEFAULTS, $this.data(), typeof option == 'object' && option);
 
-    if (!data) $this.data('manage_fields', (data = new AuthorsFieldManager(this, options)));
+    if (!data) $this.data('manage_fields', (data = new ContributorsFieldManager(this, options)));
   })
 }
 
 Blacklight.onLoad(function() {
-  $('.generic_file_authors.form-group , .collection_authors.form-group').manage_comment_fields();
+  $('.generic_file_contributors.form-group , .collection_contributors.form-group').manage_comment_fields();
 });

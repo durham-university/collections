@@ -21,11 +21,11 @@ describe GenericFilesController do
       it { is_expected.to eq ["My Favorite Things"] }
     end
 
-    context "when adding an author" do
+    context "when adding a contributor" do
       let(:attributes) do
-        { 
-          title: ['My Favorite Things'], 
-          authors_attributes: [{ first_name: 'John', last_name: 'Coltrane' }],
+        {
+          title: ['My Favorite Things'],
+          contributors_attributes: [{ first_name: 'John', last_name: 'Coltrane' }],
           permissions_attributes: [{ type: 'person', name: 'archivist1', access: 'edit'}]
         }
       end
@@ -34,8 +34,8 @@ describe GenericFilesController do
       subject { generic_file.reload }
 
       it "sets the values using the parameters hash" do
-        expect(subject.authors.first.first_name).to eq "John"
-        expect(subject.authors.first.last_name).to eq "Coltrane"
+        expect(subject.contributors.first.first_name).to eq "John"
+        expect(subject.contributors.first.last_name).to eq "Coltrane"
       end
     end
   end

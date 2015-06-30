@@ -29,7 +29,7 @@ module Sufia
         property :creator, predicate: ::RDF::DC.creator do |index|
           index.as :stored_searchable, :facetable
         end
-# Contributor replaced by nested authors / OJL - Durham
+# Contributor replaced by nested contributors / OJL - Durham
 #        property :contributor, predicate: ::RDF::DC.contributor do |index|
 #          index.as :stored_searchable, :facetable
 #        end
