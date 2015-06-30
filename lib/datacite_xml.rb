@@ -68,7 +68,10 @@ class DataciteXml
 
         xml.subjects {
           map[:subject].each do |s|
-            xml.subject s
+            attrs={}
+            attrs[:subjectScheme] = s[:scheme] if s.key? :scheme and s[:scheme]
+            attrs[:schemeURI] = s[:schemeURI] if s.key? :schemeURI and s[:schemeURI]
+            xml.subject s[:label], attrs
           end
         }
 

@@ -93,7 +93,14 @@ module HydraDurham
         data[:publication_year] = "#{Time.new.year}"
       end
 
-      data[:subject] = ( tag.to_a + subject.to_a ).uniq
+      data[:subject] =
+        (subject.to_a.map do |e|
+          { scheme:'FAST', schemeURI: 'http://fast.oclc.org/', label: e }
+        end) +
+        (tag.to_a.map do |e|
+          { scheme: nil, schemeURI: nil, label: e}
+        end)
+
       # TODO: When we have authors with affiliations, change this
       #       and corresponding part in datacite_xml.rb
       data[:creator] = creator.map do |c| {:name => c} end
