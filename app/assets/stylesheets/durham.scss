@@ -199,3 +199,19 @@ div.heading-tile {
 	border-color: $dangerhighlight;
 	color: $dangerhighlight;
 }
+
+.single_value {
+	.field-wrapper {
+	  list-style-type: none;
+	}
+		
+	.listing {
+	  margin-left: 0;
+	  max-width: 40em;
+	  padding-left: 0px;
+
+		.input-group {
+		  margin-bottom: 1px;
+		}
+	}
+}
