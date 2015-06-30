@@ -14,9 +14,9 @@ describe GenericFile do
     it { is_expected.to eql ["My Favorite Things"] }
   end
 
-  describe "adding an author" do
-    before { file.authors_attributes = [{first_name: "John", last_name: "Coltrane"}] }
-    subject { file.authors.first }
-    it { is_expected.to be_kind_of Author }
+  describe "adding a contributor" do
+    before { file.contributors_attributes = [{first_name: "John", last_name: "Coltrane"}] }
+    subject { file.contributors.first }
+    it { is_expected.to be_kind_of Contributor }
   end
 end

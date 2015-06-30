@@ -22,14 +22,14 @@ module HydraDurham
         index.as :stored_searchable
       end
 
-      has_many :authors, inverse_of: :authorable, as: 'authorable'
+      has_many :contributors, inverse_of: :contributorable, as: 'contributorable'
 
-      accepts_nested_attributes_for :authors, allow_destroy: true, reject_if: proc { |attributes| attributes['author_name'].first.blank? }
+      accepts_nested_attributes_for :contributors, allow_destroy: true, reject_if: proc { |attributes| attributes['contributor_name'].first.blank? }
 
       def to_solr(solr_doc={})
         r=super(solr_doc)
-        r["authors_tesim"]=authors.map do |author| author.to_s end
-        r["authors_sim"]=r["authors_tesim"] # this is needed for facets
+        r["contributors_tesim"]=contributors.map do |contributor| contributor.to_s end
+        r["contributors_sim"]=r["contributors_tesim"] # this is needed for facets
         r
       end
     end

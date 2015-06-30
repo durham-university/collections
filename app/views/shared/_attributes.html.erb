@@ -4,8 +4,8 @@
           <td><%= work.title %></td>
         </tr>
         <tr>
-          <th><span class="attribute-label h4">Author:</span></th>
-          <td><%= (work.to_model.authors.map do |author| author.to_s end).join '; ' %></td>
+          <th><span class="attribute-label h4">Contributors:</span></th>
+          <td><%= (work.to_model.contributors.map do |contributor| contributor.to_s end).join '; ' %></td>
         </tr>
         <tr>
           <th><span class="attribute-label h4">Description:</span></th>

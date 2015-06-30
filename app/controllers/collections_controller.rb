@@ -7,11 +7,11 @@ class CollectionsController < ApplicationController
 	      publisher: [], date_created: [], subject: [],
 	      language: [], rights: [], resource_type: [], identifier: [], based_near: [],
 	      tag: [], related_url: [], funder: [], abstract: [], research_methods: [],
-					authors_attributes: [
+					contributors_attributes: [
 						:id,
 						:_destroy,
 						{
-							author_name: [],
+							contributor_name: [],
 							affiliation: []
 						}
 					]

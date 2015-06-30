@@ -58,7 +58,7 @@ class CatalogController < ApplicationController
     #   The ordering of the field names is the order of the display
     config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
 #    config.add_facet_field solr_name("creator", :facetable), label: "Creator", limit: 5
-    config.add_facet_field solr_name("authors", :facetable), label: "Author", limit: 5
+    config.add_facet_field solr_name("contributors", :facetable), label: "Contributor", limit: 5
     config.add_facet_field solr_name("tag", :facetable), label: "Keyword", limit: 5
     config.add_facet_field solr_name("subject", :facetable), label: "Subject", limit: 5
     config.add_facet_field solr_name("language", :facetable), label: "Language", limit: 5
@@ -79,7 +79,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("subject", :stored_searchable), label: "Subject", itemprop: 'about'
 #    config.add_index_field solr_name("creator", :stored_searchable), label: "Creator", itemprop: 'creator'
 #    config.add_index_field solr_name("contributor", :stored_searchable), label: "Contributor", itemprop: 'contributor'
-    config.add_index_field solr_name("authors", :stored_searchable), label: "Author", itemprop: 'authors'
+    config.add_index_field solr_name("contributors", :stored_searchable), label: "Contributor", itemprop: 'contributors'
     config.add_index_field solr_name("publisher", :stored_searchable), label: "Publisher", itemprop: 'publisher'
     config.add_index_field solr_name("based_near", :stored_searchable), label: "Location", itemprop: 'contentLocation'
     config.add_index_field solr_name("language", :stored_searchable), label: "Language", itemprop: 'inLanguage'
@@ -99,7 +99,7 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("subject", :stored_searchable), label: "Subject"
 #    config.add_show_field solr_name("creator", :stored_searchable), label: "Creator"
 #    config.add_show_field solr_name("contributor", :stored_searchable), label: "Contributor"
-    config.add_show_field solr_name("authors", :stored_searchable), label: "Authors"
+    config.add_show_field solr_name("contributors", :stored_searchable), label: "Contributors"
     config.add_show_field solr_name("publisher", :stored_searchable), label: "Publisher"
     config.add_show_field solr_name("based_near", :stored_searchable), label: "Location"
     config.add_show_field solr_name("language", :stored_searchable), label: "Language"
@@ -166,9 +166,9 @@ class CatalogController < ApplicationController
 #      }
 #    end
 
-    config.add_search_field('authors') do |field|
-      field.solr_parameters = { :"spellcheck.dictionary" => "authors" }
-      solr_name = solr_name("authors", :stored_searchable)
+    config.add_search_field('contributors') do |field|
+      field.solr_parameters = { :"spellcheck.dictionary" => "contributors" }
+      solr_name = solr_name("contributors", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name

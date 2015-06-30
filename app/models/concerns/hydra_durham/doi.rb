@@ -63,7 +63,7 @@ module HydraDurham
     def validate_doi_metadata
       ret = []
 
-      ret << "The resource must have an author" if authors.empty?
+      ret << "The resource must have a contributor" if contributors.empty?
       ret << "The resource must have a resource type" if resource_type.empty?
       ret << "The resource must have a title" if title.empty?
 
@@ -88,11 +88,11 @@ module HydraDurham
       end
 
       data[:subject] = ( tag.to_a + subject.to_a ).uniq
-      # TODO: When we have roles in authors, use actual creators here
+      # TODO: When we have roles in contributors, use actual creators here
       #       and put others in contributors with the right contributorType.
-      #       Also make sure validation makes sure that authors has a creator.
-      data[:creator] = authors.map do |c|
-        { name: c.author_name.first,
+      #       Also make sure validation makes sure that contributors has a creator.
+      data[:creator] = contributors.map do |c|
+        { name: c.contributor_name.first,
           affiliation: c.affiliation.first
         }
       end

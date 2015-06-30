@@ -1,6 +1,10 @@
-class AuthorInput < MultiValueWithHelpInput
+class ContributorWithHelpInput < MultiValueWithHelpInput
   def input(wrapper_options)
     super
+  end
+
+  def input_type
+    'contributors_multi_value'
   end
 
   protected
@@ -8,7 +12,7 @@ class AuthorInput < MultiValueWithHelpInput
     def collection
       @collection ||= Array.wrap(object[attribute_name]).reject do
         |value| value.to_s.strip.blank?
-      end
+      end + [Contributor.new()]
     end
 
     def build_field(value, index)
@@ -30,46 +34,46 @@ class AuthorInput < MultiValueWithHelpInput
     end
 
     def build_components(attribute_name, value, index, options)
-      @html << "<div class='row'>"
+      @html << "<div class='block' style='padding-bottom: 0.5em'>"
 
-      # --- First Name
-      field = :first_name
+      # --- Contributor Name
+      field = :contributor_name
 
       field_value = value.send(field).first
       field_name = name_for(attribute_name, index, field)
 
-      @html << "  <div class='col-md-2'>"
+      @html << "<div class='row'>"
+      @html << "  <div class='col-md-4'>"
+      @html << template.label_tag(field_name, "Name", required: true)
+      @html << "  </div>"
+
+      @html << "  <div class='col-md-8'>"
+      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name))
+      @html << "  </div>"
+      @html << "</div>"
+
+      # --- Last Name
+      field = :affiliation
+
+      field_value = value.send(field).first
+      field_name = name_for(attribute_name, index, field)
+
+      @html << "<div class='row'>"
+      @html << "  <div class='col-md-4'>"
       @html << template.label_tag(field_name, field.to_s.humanize, required: true)
       @html << "  </div>"
 
-      @html << "  <div class='col-md-3'>"
+      @html << "  <div class='col-md-8'>"
       @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name))
       @html << "  </div>"
-
-      # --- Last Name
-      field = :last_name
-
-      field_value = value.send(field).first
-      field_name = name_for(attribute_name, index, field)
-
-      @html << "  <div class='col-md-2'>"
-      @html << template.label_tag(field_name, field.to_s.humanize, required: false)
-      @html << "  </div>"
-
-      @html << "  <div class='col-md-3'>"
-      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name))
-      @html << "  </div>"
-
-      @html << "</div>" # row
-
-      @html << "<div class='row'>"
+      @html << "</div>"
 
       # delete checkbox
       @html << "  <div class='col-md-3'>"
       @html << destroy_widget(attribute_name, index)
       @html << "  </div>"
 
-      @html << "</div>" # class=row
+      @html << "</div>" # block
 
       @html
     end
@@ -77,11 +81,10 @@ class AuthorInput < MultiValueWithHelpInput
     def destroy_widget(attribute_name, index)
       out = ''
       field_name = destroy_name_for(attribute_name, index)
-      out << @builder.check_box(attribute_name,
+      out << @builder.hidden_field(attribute_name,
                             name: field_name,
                             id: id_for(attribute_name, index, '_destroy'.freeze),
-                            value: "true", data: { destroy: true })
-      out << template.label_tag(field_name, "Remove", class: "remove_author")
+                            value: "0", data: { destroy: true })
       out
     end
 
