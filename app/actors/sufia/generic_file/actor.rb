@@ -18,7 +18,6 @@ module Sufia::GenericFile
       time_in_utc = DateTime.now.new_offset(0)
       generic_file.date_uploaded = time_in_utc
       generic_file.date_modified = time_in_utc
-      generic_file.creator = [user.name]
 
       if batch_id
         generic_file.batch_id = batch_id
