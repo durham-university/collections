@@ -5,7 +5,7 @@ module HydraDurham
     # Returns all doi identifiers in the resource.
     def doi
       identifier.select do |ident|
-  			(/doi:/ =~ ident || /info:doi/ =~ ident || /dx.doi.org/ =~ ident)
+  			(/doi:/i =~ ident || /info:doi/i =~ ident || /dx.doi.org/i =~ ident)
       end
     end
 
@@ -13,7 +13,7 @@ module HydraDurham
     # Does not save the resource or mint the doi.
     def add_doi
       if not has_local_doi?
-        identifier << "doi:#{mock_doi}"
+        identifier << full_mock_doi
       end
     end
 
@@ -25,7 +25,7 @@ module HydraDurham
 
     # Returns true if the resource has a doi reserved by this application.
     def has_local_doi?
-      not not ( identifier.index "doi:#{mock_doi}" )
+      not not ( identifier.index full_mock_doi )
     end
 
     # Returns true if the management of the resource in Datacite is our
@@ -39,6 +39,12 @@ module HydraDurham
     # uri scheme.
     def mock_doi
       "#{DOI_CONFIG['doi_prefix']}/#{id}"
+    end
+
+    # Returns the reserved doi the resource would be assigned by this application,
+    # whether or not it has been already assigned. Does include the "doi:" uri scheme.
+    def full_mock_doi
+      "doi:#{mock_doi}"
     end
 
     # Returns the landing page to be used for the resource.
