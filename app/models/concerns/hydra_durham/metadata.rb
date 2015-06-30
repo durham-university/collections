@@ -28,7 +28,8 @@ module HydraDurham
 
       def to_solr(solr_doc={})
         r=super(solr_doc)
-        r["contributors_tesim"]=contributors.map do |contributor| contributor.to_s end
+        r["contributors_tesim"]=(contributors.to_a.select do |contributor| !contributor.marked_for_destruction? end)
+                                             .map do |contributor| contributor.to_s end
         r["contributors_sim"]=r["contributors_tesim"] # this is needed for facets
         r
       end
