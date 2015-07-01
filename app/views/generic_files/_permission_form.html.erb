@@ -1,6 +1,6 @@
 <% depositor = f.object.depositor || batch.generic_files.first.depositor %>
 <% public_perm = f.object.permissions.map { |perm| perm.access if perm.agent_name == "public"}.compact.first %>
-<% public_perm = true if params[:controller] == 'batch' %>
+<% # public_perm = true if params[:controller] == 'batch' %>
 <% registered_perm = f.object.permissions.map { |perm| perm.access if perm.agent_name == "registered"}.compact.first %>
 
 <h2><% if params[:controller] == 'batch' %>Bulk <% end %>Permissions <% if params[:controller] == 'batch' %>
@@ -22,6 +22,9 @@
   </h3>
   <div class="radio">
     <%
+      open_pending = (f.object.respond_to? :open_access_pending?) ?
+                        f.object.open_access_pending? :
+                        false
       visibility_options=[
         { id: 'visibility_open',
           value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC,
@@ -32,21 +35,21 @@
         },
         { id: 'visibility_open_pending',
           value: 'open-pending',
-          checked: f.object.open_access_pending? ,
+          checked: open_pending ,
           label_class: 'label-success',
           label: 'Open Access Pending',
           label_info: 'Visible to the world, pending review.'
         },
         { id: 'visibility_psu',
           value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED,
-          checked: (public_perm.blank? && !registered_perm.blank? && !f.object.open_access_pending?) ,
+          checked: (public_perm.blank? && !registered_perm.blank? && !open_pending) ,
           label_class: 'label-info',
           label: t('sufia.institution_name'),
           label_info: "Visible to all #{t('sufia.institution_name')} users"
         },
         { id: 'visibility_open',
           value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE,
-          checked: (registered_perm.blank? and public_perm.blank? && !f.object.open_access_pending?) ,
+          checked: (registered_perm.blank? and public_perm.blank? && !open_pending) ,
           label_class: 'label-danger',
           label: 'Private',
           label_info: 'Visible to users specified below, if any.'
@@ -54,7 +57,9 @@
       ]
 
       visibility_options.each do |opts|
-        disabled= !(f.object.can_change_visibility? opts[:value], @current_user)
+        disabled = (f.object.respond_to? :can_change_visibility?) ?
+                      !(f.object.can_change_visibility? opts[:value], @current_user) :
+                      !(f.object.model.can_change_visibility? opts[:value], @current_user)
         %>
           <label <%= 'class="disabled"' if disabled %> >
             <input type="radio" id="<%= opts[:id] %>" name="visibility"
@@ -68,7 +73,7 @@
     %>
   </div>
   <div>
-    <% if f.object.open_access? %>
+    <% if (f.object.respond_to? :open_access?) && f.object.open_access? %>
       <p>
       If you need to request that this item is withdrawn from open access,
       please contact the system administrators giving the reasons for the
