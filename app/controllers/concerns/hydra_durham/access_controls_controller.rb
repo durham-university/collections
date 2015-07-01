@@ -3,12 +3,19 @@ module HydraDurham
     extend ActiveSupport::Concern
 
     included do
-      before_action :visibility_handling, only: [:update]
+      before_action :check_can_change_visibility, only: [:update]
+      before_action :check_can_destroy, only: [:destroy]
     end
 
     private
 
-      def visibility_handling
+      def check_can_destroy
+        resource=@resource || instance_variable_get("@#{controller_name.singularize}")
+        user=@current_user || nil
+        raise "Deleting resource forbidden" if not resource.can_destroy? user
+      end
+
+      def check_can_change_visibility
         resource=@resource || instance_variable_get("@#{controller_name.singularize}")
         user=@current_user || nil
 

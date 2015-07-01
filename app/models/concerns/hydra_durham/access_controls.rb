@@ -11,6 +11,16 @@ module HydraDurham
       !open_access? && request_for_visibility_change==Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     end
 
+    def can_delete?(user=nil)
+      can_destroy?(user)
+    end
+
+    def can_destroy?(user=nil)
+      return false if user.nil?
+      return true if user.admin?
+      return visibility!='open'
+    end
+
     def can_change_visibility?(new_visibility,user=nil)
       case new_visibility
       when Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
