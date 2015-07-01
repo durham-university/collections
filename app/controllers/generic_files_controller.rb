@@ -24,18 +24,17 @@ class GenericFilesController < ApplicationController
   end
 
   def update
-		update_identifiers = if params[:generic_file]
-      edit_form_class.model_attributes(params[:generic_file])[:identifier]
-    else
-      []
+    if params[:generic_file]
+      update_identifiers = edit_form_class.model_attributes(params[:generic_file])[:identifier]
+      if update_identifiers
+        local_doi=@generic_file.full_mock_doi.downcase
+        @generic_file.identifier.each do |id|
+          if id==local_doi && !update_identifiers.index(id)
+            raise "Local DOI cannot be removed."
+          end
+        end
+      end
     end
-		@generic_file.identifier.each do |id|
-			if id.starts_with? "doi:#{DOI_CONFIG['doi_prefix']}/"
-				if (not update_identifiers) or (not update_identifiers.index id)
-					raise "Local DOI cannot be removed."
-				end
-			end
-		end
 		super
 	end
 
