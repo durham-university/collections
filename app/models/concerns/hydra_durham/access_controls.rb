@@ -2,9 +2,12 @@ module HydraDurham
   module AccessControls
     extend ActiveSupport::Concern
     include Hydra::AccessControls::WithAccessRight
+    include HydraDurham::VisibilityParams
 
     included do
       property :request_for_visibility_change, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#request_for_access_change'), multiple: false
+
+      validates :request_for_visibility_change, acceptance: { accept: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC }
     end
 
     # Check if the document is in the state of open access pending.

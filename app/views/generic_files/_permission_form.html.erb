@@ -20,6 +20,13 @@
   <h3>Visibility - <small>who should have the ability to read and download</small>
     <span id="visibility_tooltip" class="h5"><%= visibility_help %></span>
   </h3>
+  <% if params[:controller].start_with? 'batch' %>
+  <p>
+    Visibility changes are restricted based on the current visibility of documents.
+    If the documents have different visibilities to start with, your changes might
+    only get applied to some of the documents and not to others.
+  </p>
+  <% end %>
   <div class="radio">
     <%
       open_pending = (f.object.respond_to? :open_access_pending?) ?
@@ -28,38 +35,44 @@
       visibility_options=[
         { id: 'visibility_open',
           value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC,
-          checked: !public_perm.blank? ,
+          checked: !public_perm.blank? && (!params[:controller].start_with? 'batch'),
           label_class: 'label-success',
-          label: 'Open Access',
+          label: t('sufia.visibility.open'),
           label_info: 'Visible to the world.'
         },
         { id: 'visibility_open_pending',
           value: 'open-pending',
-          checked: open_pending ,
+          checked: open_pending && (!params[:controller].start_with? 'batch'),
           label_class: 'label-success',
-          label: 'Open Access Pending',
+          label: t('sufia.visibility.open_pending'),
           label_info: 'Visible to the world, pending review.'
         },
         { id: 'visibility_psu',
           value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED,
-          checked: (public_perm.blank? && !registered_perm.blank? && !open_pending) ,
+          checked: public_perm.blank? && !registered_perm.blank? && !open_pending && (!params[:controller].start_with? 'batch') ,
           label_class: 'label-info',
           label: t('sufia.institution_name'),
           label_info: "Visible to all #{t('sufia.institution_name')} users"
         },
         { id: 'visibility_open',
           value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE,
-          checked: (registered_perm.blank? and public_perm.blank? && !open_pending) ,
+          checked: registered_perm.blank? && public_perm.blank? && !open_pending && (!params[:controller].start_with? 'batch') ,
           label_class: 'label-danger',
-          label: 'Private',
+          label: t('sufia.visibility.private'),
           label_info: 'Visible to users specified below, if any.'
         },
       ]
 
       visibility_options.each do |opts|
-        disabled = (f.object.respond_to? :can_change_visibility?) ?
-                      !(f.object.can_change_visibility? opts[:value], @current_user) :
-                      !(f.object.model.can_change_visibility? opts[:value], @current_user)
+        disabled = begin
+          if (params[:controller].start_with? 'batch')
+            false
+          elsif f.object.respond_to? :can_change_visibility?
+            !(f.object.can_change_visibility? opts[:value], @current_user)
+          else
+            !(f.object.model.can_change_visibility? opts[:value], @current_user)
+          end
+        end
         %>
           <label <%= 'class="disabled"' if disabled %> >
             <input type="radio" id="<%= opts[:id] %>" name="visibility"

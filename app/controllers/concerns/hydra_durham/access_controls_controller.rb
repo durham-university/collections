@@ -1,9 +1,10 @@
 module HydraDurham
   module AccessControlsController
     extend ActiveSupport::Concern
+    include HydraDurham::VisibilityParams
 
     included do
-      before_action :check_can_change_visibility, only: [:update]
+      before_action :pending_visibility_handler, only: [:update]
       before_action :check_can_destroy, only: [:destroy]
     end
 
@@ -15,7 +16,7 @@ module HydraDurham
         raise "Deleting resource forbidden" if not resource.can_destroy? user
       end
 
-      def check_can_change_visibility
+      def pending_visibility_handler
         resource=@resource || instance_variable_get("@#{controller_name.singularize}")
         user=@current_user || nil
 
@@ -25,14 +26,7 @@ module HydraDurham
           if not resource.can_change_visibility? params[:visibility], user
             raise "Changing of visibility to #{params[:visibility]} forbidden"
           end
-          if params[:visibility]=='open-pending'
-            params.delete :visibility
-            params[metadata_key]={} unless params.key? metadata_key
-            params[metadata_key][:request_for_visibility_change]=Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-          elsif params[:visibility]!=resource.visibility
-            params[metadata_key]={} unless params.key? metadata_key
-            params[metadata_key][:request_for_visibility_change]=nil
-          end
+          handle_pending_visibility_params(params,resource,metadata_key)
         end
 
       end

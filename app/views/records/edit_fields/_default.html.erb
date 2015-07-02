@@ -1,4 +1,10 @@
-<% autocomplete_classes=get_field_autocomplete_class(f.object.model,key) %>
+<%  autocomplete_classes=if f.object.is_a? ActiveFedora::Base
+      get_field_autocomplete_class(f.object,key)
+    elsif f.object.respond_to? :model and f.object.model.is_a? ActiveFedora::Base
+      get_field_autocomplete_class(f.object.model,key)
+    else
+      []
+    end %>
 <% if f.object.class.multiple? key %>
   <%= f.input key, as: :multi_value_with_help, input_html: { class: ['form-control']+autocomplete_classes }, required: f.object.required?(key) %>
 <% else %>
