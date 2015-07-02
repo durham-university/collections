@@ -67,6 +67,8 @@ module HydraDurham
       ret << "The resource must have a resource type" if resource_type.empty?
       ret << "The resource must have a title" if title.empty?
 
+      ret << "The resource must be Open Access" if (respond_to? :can_mint_doi?) && !can_mint_doi?
+
       return ret
     end
 
