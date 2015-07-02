@@ -6,6 +6,8 @@ en:
         institution_name: "Durham University"
         institution_name_full: "Durham University"
         background_attribution: ""
+        visibility:
+          open_pending: "Open Access Pending"
     durham:
       doi:
           not_yet_published: "Not yet published"
