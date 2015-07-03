@@ -87,6 +87,14 @@ Sufia.config do |config|
     "Other" => "Other",
   }
 
+  config.contributor_roles = {
+    "Creator" => "http://id.loc.gov/vocabulary/relators/cre",
+    "Contact person" => "http://id.loc.gov/vocabulary/relators/mdc",
+    "Data collector" => "http://id.loc.gov/vocabulary/relators/col",
+    "Data curator" => "http://id.loc.gov/vocabulary/relators/cur",
+    "Editor" => "http://id.loc.gov/vocabulary/relators/edt"
+  }
+
   config.resource_types_to_datacite_reverse = Hash[*config.resource_types_to_datacite.to_a.flatten.reverse]
 
 

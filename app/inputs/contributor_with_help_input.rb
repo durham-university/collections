@@ -52,7 +52,7 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       @html << "  </div>"
       @html << "</div>"
 
-      # --- Last Name
+      # --- Affiliation
       field = :affiliation
 
       field_value = value.send(field).first
@@ -65,6 +65,27 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
 
       @html << "  <div class='col-md-8'>"
       @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name))
+      @html << "  </div>"
+      @html << "</div>"
+
+      # --- Role
+      field = :role
+
+      field_value = value.send(field).first
+      field_name = name_for(attribute_name, index, field)
+      label_method, value_method = detect_collection_methods
+
+      @html << "<div class='row'>"
+      @html << "  <div class='col-md-4'>"
+      @html << template.label_tag(field_name, field.to_s.humanize, required: true)
+      @html << "  </div>"
+
+      @html << "  <div class='col-md-8'>"
+      @html << @builder.collection_select(field, 
+        Sufia.config.contributor_roles, 
+        :value, 
+        :name,
+        options.merge(value: field_value, name: field_name))
       @html << "  </div>"
       @html << "</div>"
 
