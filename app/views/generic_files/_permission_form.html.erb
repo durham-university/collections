@@ -22,9 +22,9 @@
   </h3>
   <% if params[:controller].start_with? 'batch' %>
   <p>
-    Visibility changes are restricted based on the current visibility of documents.
-    If the documents have different visibilities to start with, your changes might
-    only get applied to some of the documents and not to others.
+    Visibility changes may have restrictions based on the current visibility of
+    each document. If the documents have different visibilities to start with,
+    your changes might only get applied to some of the documents and not to others.
   </p>
   <% end %>
   <div class="radio">
@@ -97,12 +97,14 @@
       <p>
       Items need to go through a review process before they can be made publicly
       visible. You can select the option <strong>Open access pending</strong> to
-      indicate that you wish to change visibility to Open access. A notification
-      will be sent to a reviewer who review your request and then on approval
-      change the visibility.
+      indicate that you wish to change the visibility to Open access. A notification
+      will be sent to a reviewer who will then review your request and on approval
+      change the visibility to be fully Open Access. While in the pending state,
+      the document will be visible to all <%= t('sufia.institution_name') %> users
+      but not to anyone else.
       </p>
       <p>
-      Note that items that have been made open access cannot be freely changed
+      Note that items that have been made Open Access cannot be freely changed
       back to a more restricted visibility.
       </p>
     <% end %>
