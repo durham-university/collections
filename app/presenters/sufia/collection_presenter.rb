@@ -5,7 +5,7 @@ module Sufia
 
     self.model_class = ::Collection
     # Terms is the list of fields displayed by app/views/collections/_show_descriptions.html.erb
-    self.terms = [:title, :total_items, :size, :resource_type, :description, :creator, :contributor,
+    self.terms = [:title, :total_items, :size, :resource_type, :description, :contributors,
                   :funder, :abstract, :research_methods,
                   :tag, :rights, :publisher, :date_created, :subject, :language, :identifier,
                   :based_near, :related_url]

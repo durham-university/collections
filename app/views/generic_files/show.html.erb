@@ -16,8 +16,8 @@
 
 <% content_for(:gscholar_meta) do %>
   <meta name="citation_title" content="<%= @presenter.title.first %>"/>
-  <% @presenter.creator.each do |creator| %>
-  <meta name="citation_author" content="<%= creator %>"/>
+  <% @presenter.contributors.each do |contributor| %>
+  <meta name="citation_author" content="<%= contributor.to_s %>"/>
   <% end %>
   <meta name="citation_publication_date" content="<%= @presenter.date_created.first %>"/>
   <meta name="citation_pdf_url" content="<%= sufia.download_url(@presenter) %>"/>

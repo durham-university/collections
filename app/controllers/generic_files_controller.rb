@@ -37,5 +37,4 @@ class GenericFilesController < ApplicationController
     end
 		super
 	end
-
 end

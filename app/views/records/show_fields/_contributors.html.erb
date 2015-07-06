@@ -1,0 +1,4 @@
+<% record.contributors.each do |contributor| %>
+  <%= link_to_facet(contributor.to_s, Solrizer.solr_name("contributors", :facetable)) %>
+  <br />
+<% end %>

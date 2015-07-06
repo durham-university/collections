@@ -2,8 +2,10 @@ module Sufia
   module Forms
     class CollectionEditForm
       include HydraEditor::Form
+      include HydraDurham::FormContributorOverrides
+
       self.model_class = ::Collection
-      self.terms = [:resource_type, :title, :creator, :contributor, :description, :tag, :rights,
+      self.terms = [:resource_type, :title, :contributors, :description, :tag, :rights,
                   :funder, :abstract, :research_methods,
                   :publisher, :date_created, :subject, :language, :identifier, :based_near, :related_url]
 
@@ -13,6 +15,7 @@ module Sufia
       def required?(key)
         model_class.validators_on(key).any?{|v| v.kind_of? ActiveModel::Validations::PresenceValidator}
       end
+
     end
   end
 end

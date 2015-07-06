@@ -69,7 +69,7 @@ module HydraDurham
     def validate_doi_metadata
       ret = []
 
-      ret << "The resource must have a creator" if creator.empty?
+      ret << "The resource must have a contributor" if contributors.empty?
       ret << "The resource must have a resource type" if resource_type.empty?
       ret << "The resource must have a title" if title.empty?
 
@@ -101,19 +101,22 @@ module HydraDurham
           { scheme: nil, schemeURI: nil, label: e}
         end)
 
-      # TODO: When we have authors with affiliations, change this
-      #       and corresponding part in datacite_xml.rb
-      data[:creator] = creator.map do |c| {:name => c} end
+      # TODO: When we have roles in contributors, use actual creators here
+      #       and put others in contributors with the right contributorType.
+      #       Also make sure validation makes sure that contributors has a creator.
+      data[:creator] = contributors.map do |c|
+        { name: c.contributor_name.first,
+          affiliation: c.affiliation.first
+        }
+      end
 
       data[:abstract] = abstract.to_a
       data[:research_methods] = research_methods.to_a
       data[:funder] = funder.to_a
-      data[:contributor] = contributor.to_a
+      data[:contributor] = []
 
       data[:relatedIdentifier] = related_url.map do |url|
-        # IsSupplementedBy is probably the most generic allowed type.
-        # Loads of more specific ones in DataCite if we had better information
-        # about the related resources.
+        # related field is now titled cited by, so use that as the relation type
         {id: url, id_type: 'URL', relation_type: 'IsCitedBy'}
       end
 

@@ -27,12 +27,13 @@ class CatalogController < ApplicationController
     solr_name('date_modified', :stored_sortable, type: :date)
   end
 
-  configure_blacklight do |config|          config.view.gallery.partials = [:index_header, :index]
-          config.view.masonry.partials = [:index]
-          config.view.slideshow.partials = [:index]
+  configure_blacklight do |config|
+    config.view.gallery.partials = [:index_header, :index]
+    config.view.masonry.partials = [:index]
+    config.view.slideshow.partials = [:index]
 
-          config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
-          config.show.partials.insert(1, :openseadragon)
+    config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
+    config.show.partials.insert(1, :openseadragon)
 
     #Show gallery view
     config.view.gallery.partials = [:index_header, :index]
@@ -56,7 +57,8 @@ class CatalogController < ApplicationController
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
     config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
-    config.add_facet_field solr_name("creator", :facetable), label: "Creator", limit: 5
+#    config.add_facet_field solr_name("creator", :facetable), label: "Creator", limit: 5
+    config.add_facet_field solr_name("contributors", :facetable), label: "Contributor", limit: 5
     config.add_facet_field solr_name("tag", :facetable), label: "Keyword", limit: 5
     config.add_facet_field solr_name("subject", :facetable), label: "Subject", limit: 5
     config.add_facet_field solr_name("language", :facetable), label: "Language", limit: 5
@@ -75,8 +77,9 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("description", :stored_searchable), label: "Description", itemprop: 'description'
     config.add_index_field solr_name("tag", :stored_searchable), label: "Keyword", itemprop: 'keywords'
     config.add_index_field solr_name("subject", :stored_searchable), label: "Subject", itemprop: 'about'
-    config.add_index_field solr_name("creator", :stored_searchable), label: "Creator", itemprop: 'creator'
-    config.add_index_field solr_name("contributor", :stored_searchable), label: "Contributor", itemprop: 'contributor'
+#    config.add_index_field solr_name("creator", :stored_searchable), label: "Creator", itemprop: 'creator'
+#    config.add_index_field solr_name("contributor", :stored_searchable), label: "Contributor", itemprop: 'contributor'
+    config.add_index_field solr_name("contributors", :stored_searchable), label: "Contributor", itemprop: 'contributors'
     config.add_index_field solr_name("publisher", :stored_searchable), label: "Publisher", itemprop: 'publisher'
     config.add_index_field solr_name("based_near", :stored_searchable), label: "Location", itemprop: 'contentLocation'
     config.add_index_field solr_name("language", :stored_searchable), label: "Language", itemprop: 'inLanguage'
@@ -94,8 +97,9 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("description", :stored_searchable), label: "Description"
     config.add_show_field solr_name("tag", :stored_searchable), label: "Keyword"
     config.add_show_field solr_name("subject", :stored_searchable), label: "Subject"
-    config.add_show_field solr_name("creator", :stored_searchable), label: "Creator"
-    config.add_show_field solr_name("contributor", :stored_searchable), label: "Contributor"
+#    config.add_show_field solr_name("creator", :stored_searchable), label: "Creator"
+#    config.add_show_field solr_name("contributor", :stored_searchable), label: "Contributor"
+    config.add_show_field solr_name("contributors", :stored_searchable), label: "Contributors"
     config.add_show_field solr_name("publisher", :stored_searchable), label: "Publisher"
     config.add_show_field solr_name("based_near", :stored_searchable), label: "Location"
     config.add_show_field solr_name("language", :stored_searchable), label: "Language"
@@ -138,24 +142,33 @@ class CatalogController < ApplicationController
     # of Solr search fields.
     # creator, title, description, publisher, date_created,
     # subject, language, resource_type, format, identifier, based_near,
-    config.add_search_field('contributor') do |field|
-      # solr_parameters hash are sent to Solr as ordinary url query params.
-      field.solr_parameters = { :"spellcheck.dictionary" => "contributor" }
+#    config.add_search_field('contributor') do |field|
+#      # solr_parameters hash are sent to Solr as ordinary url query params.
+#      field.solr_parameters = { :"spellcheck.dictionary" => "contributor" }
+#
+#      # :solr_local_parameters will be sent using Solr LocalParams
+#      # syntax, as eg {! qf=$title_qf }. This is neccesary to use
+#      # Solr parameter de-referencing like $title_qf.
+#      # See: http://wiki.apache.org/solr/LocalParams
+#      solr_name = solr_name("contributor", :stored_searchable)
+#      field.solr_local_parameters = {
+#        qf: solr_name,
+#        pf: solr_name
+#      }
+#    end
 
-      # :solr_local_parameters will be sent using Solr LocalParams
-      # syntax, as eg {! qf=$title_qf }. This is neccesary to use
-      # Solr parameter de-referencing like $title_qf.
-      # See: http://wiki.apache.org/solr/LocalParams
-      solr_name = solr_name("contributor", :stored_searchable)
-      field.solr_local_parameters = {
-        qf: solr_name,
-        pf: solr_name
-      }
-    end
+#    config.add_search_field('creator') do |field|
+#      field.solr_parameters = { :"spellcheck.dictionary" => "creator" }
+#      solr_name = solr_name("creator", :stored_searchable)
+#      field.solr_local_parameters = {
+#        qf: solr_name,
+#        pf: solr_name
+#      }
+#    end
 
-    config.add_search_field('creator') do |field|
-      field.solr_parameters = { :"spellcheck.dictionary" => "creator" }
-      solr_name = solr_name("creator", :stored_searchable)
+    config.add_search_field('contributors') do |field|
+      field.solr_parameters = { :"spellcheck.dictionary" => "contributors" }
+      solr_name = solr_name("contributors", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
