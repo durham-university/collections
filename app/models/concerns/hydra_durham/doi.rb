@@ -2,6 +2,7 @@ module HydraDurham
   module Doi
     extend ActiveSupport::Concern
 
+    # Queues a metadata update job
     def queue_doi_metadata_update(mint: false, user: nil, destroyed: false)
       return if not manage_datacite?
       if destroyed
@@ -15,10 +16,15 @@ module HydraDurham
       end
     end
 
+    # Checks if the given identifier is a doi identifier
+    def doi_identifier? ident
+      (/doi:/i =~ ident || /info:doi/i =~ ident || /dx.doi.org/i =~ ident)
+    end
+
     # Returns all doi identifiers in the resource.
     def doi
       identifier.select do |ident|
-  			(/doi:/i =~ ident || /info:doi/i =~ ident || /dx.doi.org/i =~ ident)
+        doi_identifier? ident
       end
     end
 
@@ -65,10 +71,10 @@ module HydraDurham
       # is there a way to get this somehow with url_for or some such?
       url = DOI_CONFIG['landing_page_prefix']
       if self.class == Collection
-  			url + "collections/" + id
-  		else
-  			url + "files/" + id
-  		end
+        url + "collections/" + id
+      else
+        url + "files/" + id
+      end
     end
 
     # Gets the resource Datacite metadata as XML.
@@ -91,6 +97,60 @@ module HydraDurham
 
     def member_visible? m
       m.visibility=='open'
+    end
+
+    # Guesses the type of the identifier based on its contents. Returns
+    # The a hash containing the type and the identifier possibly reformatted.
+    def guess_identifier_type ident
+      def remove_prefix(ident,prefix,case_insensitive=true)
+        original=ident
+        ident=ident.downcase if case_insensitive
+        if ident.start_with? prefix
+          return original[prefix.length .. -1]
+        else
+          return original
+        end
+      end
+
+      prefix=nil
+      ind=ident.index ':'
+      prefix=ident[0 .. (ind-1)].downcase if ind
+
+      (/doi:/i =~ ident || /info:doi/i =~ ident || /dx.doi.org/i =~ ident)
+
+      rules=[{regex: /^doi:(.*)/i, type: 'DOI', value: '\1' },
+             {regex: /^info:doi\/(.*)/i, type: 'DOI', value: '\1' },
+             {regex: /^.*dx\.doi\.org\/(.*)/i, type: 'DOI', value: '\1' },
+             {regex: /^arxiv:(.*)/i, type: 'arXiv', value: 'arXiv:\1'},
+             {regex: /^.*arxiv\.org\/[^\/]+\/(.*)/i, type: 'arXiv', value: 'arXiv:\1'},
+             'issn', 'isbn', 'istc', 'lissn',
+             {prefix: 'urn:lsid:', type: 'LSID', keep_prefix: true}, 'pmid',
+             {regex: /^purl:(.*)/i, type: 'PURL', value: '\1'},
+             {regex: /(.*([\W]|^)purl\W.*)/i, type: 'PURL', value: '\1'},
+             'upc',
+             {prefix: 'urn', type: 'URN', keep_prefix: true},  # urn should be second to last because LSID also starts with urn
+             {regex: /(.*)/, type: 'URL', value: '\1'} ]
+
+      rules.each do |rule|
+        if rule.class==String
+          rule={ prefix: "#{rule}:", type: rule.upcase }
+        end
+        if rule.key? :regex
+          if rule[:regex] =~ ident
+            return { id_type: rule[:type], id: (ident.sub rule[:regex], rule[:value])}
+          end
+        else
+          if ident.downcase.start_with?(rule[:prefix])
+            if rule[:keep_prefix]
+              return { id_type: rule[:type], id: ident }
+            else
+              return { id_type: rule[:type], id: ident[(rule[:prefix].length) .. -1]}
+            end
+          end
+        end
+      end
+
+
     end
 
     # Gets the resource Datacite metadata as a hash.
@@ -130,32 +190,32 @@ module HydraDurham
 
       data[:relatedIdentifier] = related_url.map do |url|
         # related field is now titled cited by, so use that as the relation type
-        {id: url, id_type: 'URL', relation_type: 'IsCitedBy'}
+        (guess_identifier_type url).tap do |ident| ident[:relation_type]='IsCitedBy' end
       end
 
-  		if self.class == GenericFile
-  			data[:title] = title
+      if self.class == GenericFile
+        data[:title] = title
         data[:description] = description.to_a
         data[:resource_type] = resource_type.first # Only maping first choice from the list
         data[:size] = [content.size]
-  			data[:format] = [content.mime_type]
-  			data[:date_uploaded] = date_uploaded.strftime('%Y-%m-%d')
+        data[:format] = [content.mime_type]
+        data[:date_uploaded] = date_uploaded.strftime('%Y-%m-%d')
         data[:rights] = rights.map do |frights|
-  				{rights: Sufia.config.cc_licenses_reverse[frights], rightsURI: frights}
-  			end
-  		else #Add Collection metadata
-  			data[:title] = [title] # Collection returns string, XML builder expects array
+          {rights: Sufia.config.cc_licenses_reverse[frights], rightsURI: frights}
+        end
+      else #Add Collection metadata
+        data[:title] = [title] # Collection returns string, XML builder expects array
         data[:description] = ( description.empty? ? [] : [description] )
-  			# FixMe: construct << {contributor, email}
+        # FixMe: construct << {contributor, email}
         if not date_created.empty?
           data[:date_created] = Date.parse(date_created.first.to_s).strftime('%Y-%m-%d') unless date_created.empty?
         end
         data[:resource_type] = 'Collection'
 
-  			#Add members metadata
-  			data[:rights] = rights.map do |crights|
-  				{rights: "Collection rights - " + Sufia.config.cc_licenses_reverse[crights], rightsURI: crights }
-  			end
+        #Add members metadata
+        data[:rights] = rights.map do |crights|
+          {rights: "Collection rights - " + Sufia.config.cc_licenses_reverse[crights], rightsURI: crights }
+        end
         members.reduce(data[:rights]) do |a,mobj|
           if member_visible? mobj
             if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
@@ -166,7 +226,7 @@ module HydraDurham
           else
             a
           end
-  			end
+        end
 
         data[:format] = members.reduce([]) do |a,mobj|
           if member_visible? mobj
@@ -176,7 +236,7 @@ module HydraDurham
           else
             a
           end
-  			end
+        end
 
         data[:size] = members.reduce([]) do |a,mobj|
           if member_visible? mobj
@@ -186,7 +246,7 @@ module HydraDurham
           else
             a
           end
-  			end
+        end
 
 
         members.reduce(data[:relatedIdentifier]) do |a,mobj|
@@ -195,8 +255,8 @@ module HydraDurham
           else
             a
           end
-  			end
-  		end
+        end
+      end
       return data
     end
   end
