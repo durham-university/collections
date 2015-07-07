@@ -1,5 +1,6 @@
 class CollectionsController < ApplicationController
   include Sufia::CollectionsControllerBehavior
+  include HydraDurham::DoiResourceBehaviour
 
   def collection_params
     form_class.model_attributes(
@@ -19,29 +20,4 @@ class CollectionsController < ApplicationController
     )
   end
 
-  after_filter :update_datacite, only: [ :update ]
-  after_filter :destroy_datacite, only: [ :destroy ]
-
-  def update_datacite
-    # queue_doi_metadata_update makes sure that this collection has a local doi and needs a datacite update
-    @collection.queue_doi_metadata_update @current_user
-  end
-
-  def destroy_datacite
-    @collection.queue_doi_metadata_update @current_user, destroyed: true
-  end
-
-  def update
-    update_identifiers = collection_params[:identifier]
-    if update_identifiers
-      @collection.identifier.each do |id|
-        if id.starts_with? "doi:#{DOI_CONFIG['doi_prefix']}/"
-          if not update_identifiers.index id
-            raise "Local DOI cannot be removed."
-          end
-        end
-      end
-    end
-    super
-  end
 end

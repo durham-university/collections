@@ -53,9 +53,11 @@ module HydraDurham
       not doi.empty?
     end
 
-    # Returns true if the resource has a doi reserved by this application.
-    def has_local_doi?
-      not not ( identifier.index full_mock_doi )
+    # Returns true if the resource, or the given id collection, has a doi
+    # reserved by this application.
+    def has_local_doi? ids=nil
+      ids||=identifier
+      not not ( ids.index full_mock_doi )
     end
 
     # Returns true if the management of the resource in Datacite is our
