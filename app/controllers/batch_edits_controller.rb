@@ -37,7 +37,7 @@ class BatchEditsController < ApplicationController
     saved=obj.save
 
     if saved and obj.respond_to? :doi and obj.manage_datacite?
-      obj.queue_doi_metadata_update
+      obj.queue_doi_metadata_update @current_user
     end
   end
 
@@ -59,7 +59,7 @@ class BatchEditsController < ApplicationController
     batch.each do |doc_id|
       gf = ::GenericFile.find(doc_id)
       if gf.respond_to? :doi and gf.manage_datacite?
-        gf.queue_doi_metadata_update(destroyed: true)
+        gf.queue_doi_metadata_update @current_user, destroyed: true
       end
       gf.destroy
     end

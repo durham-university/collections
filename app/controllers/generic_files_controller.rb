@@ -8,19 +8,14 @@ class GenericFilesController < ApplicationController
 
   def update_datacite
     if @generic_file.manage_datacite?
-      #datacite = Datacite.new
-      #datacite.metadata(@generic_file.doi_metadata_xml)
-
-      # Queue a job instead of sending metadata here.
-      Sufia.queue.push(UpdateDataciteJob.new(@generic_file.id, @current_user))
-
-      # TODO: Also update any collections this file may belong to?
+      @generic_file.queue_doi_metadata_update @current_user
     end
   end
 
   def destroy_datacite
-    # TODO: Need to decide what happens here. Presumably something gets
-    #       sent to datacite, but also need a gravestone here.
+    if @generic_file.manage_datacite?
+      @generic_file.queue_doi_metadata_update @current_user, destroyed: true
+    end
   end
 
   def update
@@ -35,6 +30,6 @@ class GenericFilesController < ApplicationController
         end
       end
     end
-		super
-	end
+    super
+  end
 end

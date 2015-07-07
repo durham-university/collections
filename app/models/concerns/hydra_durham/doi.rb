@@ -3,13 +3,12 @@ module HydraDurham
     extend ActiveSupport::Concern
 
     # Queues a metadata update job
-    def queue_doi_metadata_update(mint: false, user: nil, destroyed: false)
-      return if not manage_datacite?
+    def queue_doi_metadata_update(user, mint: false, destroyed: false)
+      return if not (manage_datacite? || mint)
+      raise "Cannot mint and destroy DOI at the same time" if mint && destroyed
       if destroyed
         # TODO: object was destroyed, send something to DataCite
       else
-        user||=@current_user
-
         Sufia.queue.push(UpdateDataciteJob.new(self.id, user, do_mint: mint))
 
         # TODO: check if part of any collections and then update collections too
