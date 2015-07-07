@@ -23,15 +23,12 @@ class CollectionsController < ApplicationController
   after_filter :destroy_datacite, only: [ :destroy ]
 
   def update_datacite
-    if @collection.manage_datacite?
-      @collection.queue_doi_metadata_update @current_user
-    end
+    # queue_doi_metadata_update makes sure that this collection has a local doi and needs a datacite update
+    @collection.queue_doi_metadata_update @current_user
   end
 
   def destroy_datacite
-    if @collection.manage_datacite?
-      @collection.queue_doi_metadata_update @current_user, destroyed: true
-    end
+    @collection.queue_doi_metadata_update @current_user, destroyed: true
   end
 
   def update

@@ -4,14 +4,26 @@ module HydraDurham
 
     # Queues a metadata update job
     def queue_doi_metadata_update(user, mint: false, destroyed: false)
-      return if not (manage_datacite? || mint)
       raise "Cannot mint and destroy DOI at the same time" if mint && destroyed
-      if destroyed
-        # TODO: object was destroyed, send something to DataCite
-      else
+      if manage_datacite? || mint
         Sufia.queue.push(UpdateDataciteJob.new(self.id, user, do_mint: mint))
+      elsif manage_datacite? && destroyed
+        # TODO: object was destroyed, send something to DataCite
+      end
 
-        # TODO: check if part of any collections and then update collections too
+      # Update all dependent items
+      dependent_doi_items.each do |collection|
+        Sufia.queue.push(UpdateDataciteJob.new(collection.id, collection.depositor))
+      end
+    end
+
+    # Gets all items that are managed in DataCite and that depend on this item.
+    def dependent_doi_items
+      # if this resource isn't open access or isn't collectible then just return an empty list
+      return [] if (!respond_to? :collections) || visibility!=Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+      # return all collections this is part of that are managed in DataCite
+      collections.to_a.select do |collection|
+        (collection.respond_to? :doi) && collection.manage_datacite?
       end
     end
 

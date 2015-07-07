@@ -7,15 +7,13 @@ class GenericFilesController < ApplicationController
   after_filter :destroy_datacite, only: [ :destroy ]
 
   def update_datacite
-    if @generic_file.manage_datacite?
-      @generic_file.queue_doi_metadata_update @current_user
-    end
+    # queue_doi_metadata_update makes sure that this file has a local doi and needs a datacite update
+    @generic_file.queue_doi_metadata_update @current_user
   end
 
   def destroy_datacite
-    if @generic_file.manage_datacite?
-      @generic_file.queue_doi_metadata_update @current_user, destroyed: true
-    end
+    # queue_doi_metadata_update makes sure that this file has a local doi and needs a datacite update
+    @generic_file.queue_doi_metadata_update @current_user, destroyed: true
   end
 
   def update
