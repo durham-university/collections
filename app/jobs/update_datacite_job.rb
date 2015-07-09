@@ -68,17 +68,24 @@ class UpdateDataciteJob < ActiveFedoraIdBasedJob
   end
 
   def save_doi
-    object.add_doi
-    attrs = { identifier: object.identifier }
+    attrs = {
+      identifier: object.identifier,
+      doi_published: object.doi_published,
+      datacite_document: object.datacite_document
+    }
     if object.respond_to? :date_modified
       object.date_modified = DateTime.now
       attrs[:date_modified]= object.date_modified
     end
-    if object.respond_to? :doi_published and not object.doi_published
-      attrs[:doi_published]= object.doi_published
-    end
 
-    object.update( attrs )
+    # It is important to set this before saving. Otherwise the save would trigger
+    # another datacite update and go in an infinite loop.
+    object.skip_update_datacite = true
+    begin
+      object.update( attrs )
+    ensure
+      object.skip_update_datacite = false
+    end
   end
 
   # Sends data to Datacite and updates the object as needed. Does not send
@@ -88,18 +95,22 @@ class UpdateDataciteJob < ActiveFedoraIdBasedJob
     datacite = Datacite.new
     if @do_metadata
 
-      if object.respond_to? :doi_published and not object.doi_published
-        object.doi_published = DateTime.now
-      end
+      object.add_doi
+      object.doi_published = DateTime.now if not object.doi_published
 
-      datacite.metadata(object.doi_metadata_xml)
+      metadata=object.doi_metadata
+      datacite.metadata(object.doi_metadata_xml(metadata))
+
+      object.datacite_document=metadata.to_json
+
+      save_doi
+
       # set do_metadata to false so that if minting fails and we end up retrying
       # we don't send metadata again
       self.do_metadata=false
     end
     if @do_mint
       datacite.mint(object.doi_landing_page,object.mock_doi)
-      save_doi
     end
   end
 

@@ -2,6 +2,79 @@ module HydraDurham
   module Doi
     extend ActiveSupport::Concern
 
+    included do
+      property :doi_published, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#doi_published'), multiple: false do |index|
+        index.type :date
+        index.as :stored_searchable
+      end
+
+      # This is a JSON serialised version of the document sent to DataCite.
+      property :datacite_document, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#datacite_document'), multiple: false
+
+      attr_accessor :skip_update_datacite
+
+      validate :validate_doi_and_datacite_fields
+
+      after_save { update_datacite_metadata unless @skip_update_datacite }
+      after_destroy { update_datacite_destroyed unless @skip_update_datacite }
+    end
+
+    def update_datacite_metadata
+      queue_doi_metadata_update depositor
+    end
+
+    def update_datacite_destroyed
+      queue_doi_metadata_update depositor, destroyed: true
+    end
+
+    # perform model level validation before saving
+    def validate_doi_and_datacite_fields
+      errors.add(:doi_published, "can't be changed after set once") \
+          if !changed_attributes["doi_published"].nil? &&
+              changed_attributes["doi_published"]!=doi_published
+
+      errors.add(:identifier, "can't have local DOI removed after set once") \
+          if changed_attributes["identifier"] &&
+             (changed_attributes["identifier"].index full_mock_doi) &&
+             !(identifier.index full_mock_doi)
+
+      if !manage_datacite? # i.e. no local doi identifier set
+        errors.add(:doi_published, "can't be set if not managing datacite") \
+            if !doi_published.nil?
+        errors.add(:datacite_document, "can't be set if not managing datacite") \
+            if !datacite_document.nil?
+      else
+        errors.add(:doi_published, "must be set when managing datacite") \
+            if doi_published.nil?
+        errors.add(:datacite_document, "must be set when managing datacite") \
+            if datacite_document.nil?
+
+        if !datacite_document.nil?
+          old_doc=JSON.parse datacite_document
+          # cycling serialisation makes sure that keys are strings instead of symbols
+          new_doc=JSON.parse(doi_metadata.to_json)
+
+          restricted_mandatory_datacite_fields.each do |field|
+            errors.add(field[:source], "cannot be changed when DOI has been published") \
+                if old_doc[field[:dest].to_s]!=new_doc[field[:dest].to_s]
+          end
+
+        end
+      end
+
+    end
+
+    # Fields that cannot be changed after a DOI has been published.
+    # The source is the field name in our model, dest in the datacite model.
+    def restricted_mandatory_datacite_fields
+      # Publisher is not here because it is hardcoded in datacite_xml.rb.
+      # Publication year is also managed internally.
+      [ { source: :title, dest: :title},
+        { source: :contributors, dest: :creator },
+        { source: :resource_type, dest: :resource_type } ]
+    end
+
+
     # Queues a metadata update job
     def queue_doi_metadata_update(user, mint: false, destroyed: false)
       raise "Cannot mint and destroy DOI at the same time" if mint && destroyed
@@ -91,8 +164,9 @@ module HydraDurham
     end
 
     # Gets the resource Datacite metadata as XML.
-    def doi_metadata_xml
-      DataciteXml.new.generate(doi_metadata)
+    def doi_metadata_xml metadata=nil
+      metadata||=doi_metadata
+      DataciteXml.new.generate(metadata)
     end
 
     # Makes sure that the object has all the metadata required by Datacite.
@@ -101,9 +175,19 @@ module HydraDurham
     def validate_doi_metadata
       ret = []
 
+      # Restrict to single values of various fields because we can't guarantee the
+      # ordering and choosing the first one might choose different one each time
+
       ret << "The resource must have a contributor" if contributors.empty?
       ret << "The resource must have a resource type" if resource_type.empty?
+      ret << "The resource can only have a single resource_type" if (resource_type.is_a? Array) && resource_type.length>1
       ret << "The resource must have a title" if title.empty?
+      ret << "The resource can only have a single title" if (title.is_a? Array) && title.length>1
+
+      ret << "Contributors can only have a single name and affiliation" if \
+        (contributors.to_a.select do |c|
+          c.contributor_name.length>1 || c.affiliation.length>1
+        end).any?
 
       return ret
     end
@@ -190,7 +274,9 @@ module HydraDurham
       # TODO: When we have roles in contributors, use actual creators here
       #       and put others in contributors with the right contributorType.
       #       Also make sure validation makes sure that contributors has a creator.
-      data[:creator] = contributors.map do |c|
+      data[:creator] = (contributors.to_a.select do |c|
+        !c.marked_for_destruction?
+      end).map do |c|
         { name: c.contributor_name.first,
           affiliation: c.affiliation.first
         }
@@ -209,7 +295,7 @@ module HydraDurham
       if self.class == GenericFile
         data[:title] = title
         data[:description] = description.to_a
-        data[:resource_type] = resource_type.first # Only maping first choice from the list
+        data[:resource_type] = Sufia.config.resource_types_to_datacite[resource_type.first] # Only maping first choice from the list
         data[:size] = [content.size]
         data[:format] = [content.mime_type]
         data[:date_uploaded] = date_uploaded.strftime('%Y-%m-%d')
@@ -223,7 +309,7 @@ module HydraDurham
         if not date_created.empty?
           data[:date_created] = Date.parse(date_created.first.to_s).strftime('%Y-%m-%d') unless date_created.empty?
         end
-        data[:resource_type] = 'Collection'
+        data[:resource_type] = Sufia.config.resource_types_to_datacite['Collection']
 
         #Add members metadata
         data[:rights] = rights.map do |crights|

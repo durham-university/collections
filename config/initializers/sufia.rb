@@ -84,7 +84,8 @@ Sufia.config do |config|
     "Physical Object" => "PhysicalObject",
     "Service" => "Service",
     "Workflow" => "Workflow",
-    "Other" => "Other",
+    "Map or Cartographic Material" => "Other",
+    "Other" => "Other"
   }
 
   config.resource_types_to_datacite_reverse = Hash[*config.resource_types_to_datacite.to_a.flatten.reverse]
