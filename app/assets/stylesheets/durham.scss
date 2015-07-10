@@ -12,238 +12,238 @@ $border-radius-large: 0;
 $border-radius-small: 0;
 
 * {
-	border-radius: $border-radius-base !important;
+  border-radius: $border-radius-base !important;
 }
 
 
 a:link {
-	color: $darkhighlight;
+  color: $darkhighlight;
 }
 
 a:visited {
-	color: $purple;
+  color: $purple;
 }
 
 #content a {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
 #homeTabs a, #content a.btn, #content a.btn-primary, #content .home_share_work a, #content .nav a, #content .tagcloud a, #content a.visibility-link, #content .dropdown-menu a {
-	text-decoration: none;
+  text-decoration: none;
 }
 
 div#masthead, div#footer {
-	font-family: "Lato", Helvetica, Arial, sans-serif;
+  font-family: "Lato", Helvetica, Arial, sans-serif;
 }
 div#masthead{
-	background-color: $purple;
+  background-color: $purple;
 }
 div#footer {
-	background-color: $footer-bg-color
+  background-color: $footer-bg-color
 }
 
 div#masthead_controls {
-	background: linear-gradient(#ffffff, #f7f7f7) repeat scroll 0 0 rgba(0, 0, 0, 0);
-	border-top: 0px $border-color solid;
-	border-bottom: 1px $border-color solid;
-	.navbar {
-		background: linear-gradient(#ffffff, #f7f7f7) repeat scroll 0 0 rgba(0, 0, 0, 0);
-		margin-right: -15px;
+  background: linear-gradient(#ffffff, #f7f7f7) repeat scroll 0 0 rgba(0, 0, 0, 0);
+  border-top: 0px $border-color solid;
+  border-bottom: 1px $border-color solid;
+  .navbar {
+    background: linear-gradient(#ffffff, #f7f7f7) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    margin-right: -15px;
 
-		a:link, a:visited {
-			background: transparent;
-			color: $purple;
-		}
-		a:hover {
-			background: $border-color;
+    a:link, a:visited {
+      background: transparent;
+      color: $purple;
+    }
+    a:hover {
+      background: $border-color;
 
-		}
-		li.btn-group {
-			.btn {
-				padding-bottom: 15px;
-			}
-			.dropdown-menu {
-				li {
-					a {
-						padding-bottom: 10px;
-						padding-top: 10px;
-					}
-				}
-			}
-		}
-		li {
-			a {
-				padding-bottom: 17px;
-			}
-		}
-		li:first-child {
-			border-left: 0px;
-		}
-		li, li:first-child {
-			border-right: 0px;
-		}
+    }
+    li.btn-group {
+      .btn {
+        padding-bottom: 15px;
+      }
+      .dropdown-menu {
+        li {
+          a {
+            padding-bottom: 10px;
+            padding-top: 10px;
+          }
+        }
+      }
+    }
+    li {
+      a {
+        padding-bottom: 17px;
+      }
+    }
+    li:first-child {
+      border-left: 0px;
+    }
+    li, li:first-child {
+      border-right: 0px;
+    }
 
-	}
-	.navbar-default {
-		.navbar-nav > .active {
-			& > a, & > a:hover, & > a:focus {
-				background: #d2d9d6;
-				color: $purple;
-			}
-		}
-	}
-	#search-field-header {
-		border-radius: 0;
-	}
-	#search-submit-header {
-		background-color: #006388;
-	}
+  }
+  .navbar-default {
+    .navbar-nav > .active {
+      & > a, & > a:hover, & > a:focus {
+        background: #d2d9d6;
+        color: $purple;
+      }
+    }
+  }
+  #search-field-header {
+    border-radius: 0;
+  }
+  #search-submit-header {
+    background-color: #006388;
+  }
 }
 
 #home_header {
-	background-image: asset-url($background);
-	background-position: 50% 82%;
+  background-image: asset-url($background);
+  background-position: 50% 82%;
 }
 
 a#logo {
-	display: inline-block;
-	vertical-align: text-bottom;
-	margin-top: 1em
+  display: inline-block;
+  vertical-align: text-bottom;
+  margin-top: 1em
 }
 
 #masthead {
-	min-height: 6.2em;
+  min-height: 6.2em;
 }
 
 .add, .btn-primary, a.add, a.btn-primary {
-	background-color: $darkhighlight;
-	border-color: $darkhighlight;
-	color: white;
+  background-color: $darkhighlight;
+  border-color: $darkhighlight;
+  color: white;
 }
 
 .add:hover, .add:focus, .btn-primary:hover, .btn-primary:focus {
-	color: $darkhighlight;
-	border-color: $darkhighlight;
+  color: $darkhighlight;
+  border-color: $darkhighlight;
 }
 
 .alert-info {
-	background-color: $palehighlight;
-	border-color: $palehighlight;
-	color: inherit;
+  background-color: $palehighlight;
+  border-color: $palehighlight;
+  color: inherit;
 }
 .panel-heading {
-	border-radius: $border-radius-base;
+  border-radius: $border-radius-base;
 }
 
 .dashboard .panel-default > .dashboard-panel {
-	background-color: $darkhighlight;
+  background-color: $darkhighlight;
 }
 
 div.heading-tile {
-	.glyphicon, .help-icon, .glyphicon-chevron-right-helper .chevron, .glyphicon-chevron-right-helper .chevron {
-		background-color: $purple;
-	}
+  .glyphicon, .help-icon, .glyphicon-chevron-right-helper .chevron, .glyphicon-chevron-right-helper .chevron {
+    background-color: $purple;
+  }
 }
 
 .dashboard .badge {
-	background-color: $palehighlight;
+  background-color: $palehighlight;
 }
 
 .btn-info.disabled, .btn-info[disabled], fieldset[disabled] .btn-info {
-	&, &:hover, &:focus, &:active, &.active {
-		background-color: $disabled;
-		border-color: $disabled;
-	}
+  &, &:hover, &:focus, &:active, &.active {
+    background-color: $disabled;
+    border-color: $disabled;
+  }
 }
 
 .btn-info.disabled, .btn-info.disabled:hover, .btn-info.disabled:focus, .btn-info.disabled.focus, .btn-info.disabled:active, .btn-info.disabled.active, .btn-info[disabled], .btn-info[disabled]:hover, .btn-info[disabled]:focus, .btn-info.focus[disabled], .btn-info[disabled]:active, .btn-info.active[disabled], fieldset[disabled] .btn-info, fieldset[disabled] .btn-info:hover, fieldset[disabled] .btn-info:focus, fieldset[disabled] .btn-info.focus, fieldset[disabled] .btn-info:active, fieldset[disabled] .btn-info.active {
-	background-color: $disabled;
-	border-color: $disabled;
+  background-color: $disabled;
+  border-color: $disabled;
 }
 
 .btn-warning {
-	background-color: $dangerhighlight;
-	border-color: $dangerhighlight;
+  background-color: $dangerhighlight;
+  border-color: $dangerhighlight;
 }
 
 .btn-warning:hover, .btn-warning:focus, .btn-warning.focus, .btn-warning:active, .btn-warning.active, .open > .btn-warning.dropdown-toggle {
-	color: $dangerhighlight;
-	border-color: $dangerhighlight;
+  color: $dangerhighlight;
+  border-color: $dangerhighlight;
 }
 
 .label-info {
-	background-color: $purple;
+  background-color: $purple;
 }
 
 .btn-info {
-	background-color: $purple;
-	border-color: $purple;
+  background-color: $purple;
+  border-color: $purple;
 }
 
 .btn-info:hover, .btn-info:focus, .btn-info.focus, .btn-info:active, .btn-info.active, .open > .btn-info.dropdown-toggle {
-	background-color: white;
-	border-color: $purple;
-	color: $purple;
+  background-color: white;
+  border-color: $purple;
+  color: $purple;
 }
 
 .label-danger {
-	background-color: $dangerhighlight;
+  background-color: $dangerhighlight;
 }
 
 .remove {
-	background-color: $dangerhighlight;
-	border-color: $dangerhighlight;
+  background-color: $dangerhighlight;
+  border-color: $dangerhighlight;
 }
 
 .remove:hover, .remove:focus, .btn-danger:hover, .appliedFilter .remove:hover, .btn-danger:focus, .appliedFilter .remove:focus:hover, .appliedFilter .remove:focus:active {
-	border-color: $dangerhighlight;
-	color: $dangerhighlight;
+  border-color: $dangerhighlight;
+  color: $dangerhighlight;
 }
 
 .single_value {
-	.field-wrapper {
-	  list-style-type: none;
-	}
-		
-	.listing {
-	  margin-left: 0;
-	  max-width: 40em;
-	  padding-left: 0px;
+  .field-wrapper {
+    list-style-type: none;
+  }
 
-		.input-group {
-		  margin-bottom: 1px;
-		}
-	}
+  .listing {
+    margin-left: 0;
+    max-width: 40em;
+    padding-left: 0px;
+
+    .input-group {
+      margin-bottom: 1px;
+    }
+  }
 }
 
 .contributors_multi_value {
-	.listing {
-		margin-left: 0;
-		padding-left: 0;
-		max-width: 40em;
+  .listing {
+    margin-left: 0;
+    padding-left: 0;
+    max-width: 40em;
     .input-group {
       margin-bottom: 1px;
     }
 
-		label {
-			padding-top: 6px;
-			padding-bottom: 6px;
-		}
+    label {
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
 
-		.btn {
-			top: -3px;
-		}
-	}
+    .btn {
+      top: -3px;
+    }
+  }
 
-	.col-md-4 {
-		width: 25%;
-	}
+  .col-md-4 {
+    width: 25%;
+  }
 
-	.col-md-8 {
-		width: 75%;
-	}
+  .col-md-8 {
+    width: 75%;
+  }
 
-	.message{
+  .message{
     background-size: 40px 40px;
     background-image: linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
     transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
@@ -258,8 +258,29 @@ div.heading-tile {
     border-radius: $border-radius-base;
   }
 
-	.has-warning {
-		background-color: #eaaf51;
-	  border-color: #d99a36;
-	}
+  .has-warning {
+    background-color: #eaaf51;
+    border-color: #d99a36;
+  }
+}
+
+.simple_form {
+  li.readonly_field, .form-group.readonly_field li.field-wrapper {
+    display: block;
+    width: 421px;
+  }
+
+  li.readonly_field, .form-group.readonly_field {
+    input {
+      display: block;
+      float: none;
+    }
+
+    .field-controls {
+      button {
+        display: none
+      }
+      content: '&nbsp;';
+    }
+  }
 }

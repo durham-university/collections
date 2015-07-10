@@ -64,6 +64,24 @@ module HydraDurham
 
     end
 
+    # Checks if an edit field should be disabled due to the resource having a
+    # published DOI and the field is one of the restricted fields. Also checks
+    # For a local doi in the identifier field.
+    def field_readonly?(field,value=nil)
+      # Some other behaviours might want to use field_readonly as well.
+      # Try to play nice and call super if it's defined and there's no need
+      # to disable the field due to DOIs.
+      ret= if manage_datacite? && \
+              ((restricted_mandatory_datacite_fields.map do |x| x[:source] end) \
+                .include? field)
+        true
+      else
+        (field==:identifier && value==full_mock_doi)
+      end
+      return ret if ret || !defined?(super)
+      super
+    end
+
     # Fields that cannot be changed after a DOI has been published.
     # The source is the field name in our model, dest in the datacite model.
     def restricted_mandatory_datacite_fields
