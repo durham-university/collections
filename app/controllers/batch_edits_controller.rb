@@ -39,17 +39,31 @@ class BatchEditsController < ApplicationController
 
   def destroy_collection
     destroy_batch
-    flash[:notice] = "Batch delete complete"
+    flash[:notice] = "Batch delete complete" if flash[:alert].blank?
     after_destroy_collection
   end
 
   protected
 
     def destroy_batch
+      not_deleted=[]
       batch.each do |doc_id|
         gf = ::GenericFile.find(doc_id)
-        gf.destroy if gf.can_destroy? @current_user
+        if gf.can_destroy? @current_user
+          gf.destroy
+        else
+          not_deleted << gf
+        end
       end
+
+      if not_deleted.any?
+        if batch.length==1
+          flash[:alert]="#{not_deleted[0]} is Open Access and could not be deleted."
+        else
+          flash[:alert]="Some of the selected files are Open Access and could not be deleted: #{(not_deleted.each &:to_s).join ', '}"
+        end
+      end
+
     end
 
 end
