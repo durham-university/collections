@@ -46,7 +46,7 @@ module HydraDurham
       when Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         return open_access? || (user && user.admin?)
       when 'open-pending'
-        return !open_access?
+        return !open_access? || (user && user.admin?)
       when Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
         return !open_access? || (user && user.admin?)
       when Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE

@@ -63,16 +63,13 @@
         },
       ]
 
+      # Test for ability to change visibility on an empty file. f.object and
+      # f.object.model have combined visibility attributes which isn't suitable
+      # for access testing.
+      visibility_tester=GenericFile.new
+
       visibility_options.each do |opts|
-        disabled = begin
-          if (params[:controller].start_with? 'batch')
-            false
-          elsif f.object.respond_to? :can_change_visibility?
-            !(f.object.can_change_visibility? opts[:value], @current_user)
-          else
-            !(f.object.model.can_change_visibility? opts[:value], @current_user)
-          end
-        end
+        disabled = !(visibility_tester.can_change_visibility? opts[:value], @current_user)
         %>
           <label <%= 'class="disabled"' if disabled %> >
             <input type="radio" id="<%= opts[:id] %>" name="visibility"

@@ -9,6 +9,12 @@ Bundler.require(*Rails.groups)
 module Sufia
   class Application < Rails::Application
 
+    config.to_prepare do
+      BatchUpdateJob.class_eval do
+        prepend BatchUpdateJobPatch # in app/jobs/batch_update_job_patch.rb
+      end
+    end
+
     config.generators do |g|
       g.test_framework :rspec, :spec => true
     end

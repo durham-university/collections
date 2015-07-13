@@ -2,6 +2,9 @@ module HydraDurham
   module VisibilityParams
     extend ActiveSupport::Concern
 
+    # Handles open-pending visibility case which is translated to authenticate
+    # before persisting object. request_for_visibility_change is also set for
+    # open-pending, and unset for any other visibility.
     def handle_pending_visibility_params(params,resource,metadata_key)
       # NOTE: params usually has not been sanitised, be careful!
       if params[:visibility]=='open-pending'
