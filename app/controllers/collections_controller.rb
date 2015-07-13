@@ -1,23 +1,23 @@
 class CollectionsController < ApplicationController
-	include Sufia::CollectionsControllerBehavior
+  include Sufia::CollectionsControllerBehavior
 
   def collection_params
     form_class.model_attributes(
-	    params.require(:collection).permit(:title, :description, :members, part_of: [],
-	      publisher: [], date_created: [], subject: [],
-	      language: [], rights: [], resource_type: [], identifier: [], based_near: [],
-	      tag: [], related_url: [], funder: [], abstract: [], research_methods: [],
-					contributors_attributes: [
-						:id,
-						:_destroy,
-						{
-							contributor_name: [],
-							affiliation: []
-						}
-					]
-				)
-	  )
-	end
+      params.require(:collection).permit(:title, :members, description: [], part_of: [],
+        publisher: [], date_created: [], subject: [],
+        language: [], rights: [], resource_type: [], identifier: [], based_near: [],
+        tag: [], related_url: [], funder: [], abstract: [], research_methods: [],
+          contributors_attributes: [
+            :id,
+            :_destroy,
+            {
+              contributor_name: [],
+              affiliation: []
+            }
+          ]
+        )
+    )
+  end
 
   after_filter :update_datacite, only: [ :update ]
   after_filter :destroy_datacite, only: [ :destroy ]
@@ -37,17 +37,17 @@ class CollectionsController < ApplicationController
     #       sent to datacite, but also need a gravestone here.
   end
 
-	def update
-		update_identifiers = collection_params[:identifier]
-		if update_identifiers
-			@collection.identifier.each do |id|
-				if id.starts_with? "doi:#{DOI_CONFIG['doi_prefix']}/"
-					if not update_identifiers.index id
-						raise "Local DOI cannot be removed."
-					end
-				end
-			end
-		end
-		super
-	end
+  def update
+    update_identifiers = collection_params[:identifier]
+    if update_identifiers
+      @collection.identifier.each do |id|
+        if id.starts_with? "doi:#{DOI_CONFIG['doi_prefix']}/"
+          if not update_identifiers.index id
+            raise "Local DOI cannot be removed."
+          end
+        end
+      end
+    end
+    super
+  end
 end

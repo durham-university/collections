@@ -16,7 +16,7 @@ module Hydra::Collections
       property :title, predicate: RDF::DC.title, multiple: false do |index|
         index.as :stored_searchable
       end
-      property :description, predicate: RDF::DC.description, multiple: false do |index|
+      property :description, predicate: RDF::DC.description, multiple: true do |index|
         index.type :text
         index.as :stored_searchable
       end
