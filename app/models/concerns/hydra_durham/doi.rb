@@ -88,8 +88,7 @@ module HydraDurham
       # Publisher is not here because it is hardcoded in datacite_xml.rb.
       # Publication year is also managed internally.
       [ { source: :title, dest: :title},
-        { source: :contributors, dest: :creator },
-        { source: :resource_type, dest: :resource_type } ]
+        { source: :contributors, dest: :creator } ]
     end
 
 
@@ -349,10 +348,14 @@ module HydraDurham
         members.reduce(data[:rights]) do |a,mobj|
           if member_visible? mobj
             if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
-            a << { # Do we allow for multiple licensing?
-              rights: filename + " - " + Sufia.config.cc_licenses_reverse[mobj.rights[0]],
-              rightsURI: mobj.rights[0]
-            }
+            if mobj.rights.any?
+              a << { # Do we allow for multiple licensing?
+                rights: filename + " - " + Sufia.config.cc_licenses_reverse[mobj.rights[0]],
+                rightsURI: mobj.rights[0]
+              }
+            else
+              a
+            end
           else
             a
           end

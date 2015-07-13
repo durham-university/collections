@@ -8,6 +8,14 @@ class DoiController < ApplicationController
     raise "Resource doesn't support DOI functionality" if not @resource.respond_to? :doi
 
     @metadata_errors = @resource.validate_doi_metadata
+
+    if @resource.is_a? Collection
+      @presenter = Sufia::CollectionPresenter.new @resource
+      @model_class = "collection"
+    else
+      @presenter = Sufia::GenericFilePresenter.new @resource
+      @model_class = "generic_file"
+    end
   end
 
   # Mints the doi and sends metadata to Datacite

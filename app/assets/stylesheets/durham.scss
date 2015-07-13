@@ -284,3 +284,10 @@ div.heading-tile {
     }
   }
 }
+
+#confirm-label.error { 
+  color: red;
+  float: none;
+  padding-left: inherit;
+  vertical-align: inherit;
+}
