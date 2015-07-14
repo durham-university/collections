@@ -12,7 +12,8 @@ class CollectionsController < ApplicationController
             :_destroy,
             {
               contributor_name: [],
-              affiliation: []
+              affiliation: [],
+              role: []
             }
           ]
         )

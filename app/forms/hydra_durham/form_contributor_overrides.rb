@@ -17,7 +17,8 @@ module HydraDurham
             :_destroy,
             {
               contributor_name: [],
-              affiliation: []
+              affiliation: [],
+              role: []
             }
           ]
         end

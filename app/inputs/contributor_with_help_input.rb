@@ -1,4 +1,5 @@
 class ContributorWithHelpInput < MultiValueWithHelpInput
+
   def input(wrapper_options)
     super
   end
@@ -73,7 +74,6 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
 
       field_value = value.send(field).first
       field_name = name_for(attribute_name, index, field)
-      label_method, value_method = detect_collection_methods
 
       @html << "<div class='row'>"
       @html << "  <div class='col-md-4'>"
@@ -81,11 +81,15 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       @html << "  </div>"
 
       @html << "  <div class='col-md-8'>"
-      @html << @builder.collection_select(field, 
-        Sufia.config.contributor_roles, 
-        :value, 
-        :name,
-        options.merge(value: field_value, name: field_name))
+
+      merged_input_options = merge_wrapper_options(input_html_options, options)
+
+      @html << @builder.collection_select(
+          attribute_name, 
+          Sufia.config.contributor_roles, :last, :first,
+          input_options.merge(selected: field_value), merged_input_options.merge(name: field_name)
+        )
+
       @html << "  </div>"
       @html << "</div>"
 
