@@ -19,13 +19,14 @@ en:
                 research_methods: "Research methods"
                 related_url:      "Cited in"
             collection:
-                description: "Description"
+                description: "Other description"
                 abstract: "Abstract"
                 funder: "Funder"
                 research_methods: "Research methods"
                 related_url:      "Cited in"
         metadata_help:
             generic_file:
+                contributors_html: "A person or group you want to recognize for playing a role in the creation of the file."
                 based_near_html: "If the subject of the resource relates to particular geographic areas or places, enter their names here. Locations will be suggested as you type from the GeoNames web service (&lt;a href=&quot;http://www.geonames.org&quot;&gt;http://www.geonames.org&lt;/a&gt;)."
                 description: "Other description information that does not fit into an existing category."
                 abstract_html: "A brief description of the resource and the context in which the resource was created."
@@ -50,7 +51,7 @@ en:
                 subject_html: "Headings or index terms describing what the resource is about; these &lt;em&gt;do&lt;/em&gt; need to conform to an existing vocabulary. Currently supports FAST subject terms."
                 creator_html: "The person or group responsible for the resource. Usually this is the author of the content. Personal names should be entered with the last name first, e.g. &quot;Smith, John.&quot; &lt;em&gt;This is a required field&lt;/em&gt;."
                 based_near_html: "If the subject of the resource relates to particular geographic areas or places, enter their names here. Locations will be suggested as you type from the GeoNames web service (&lt;a href=&quot;http://www.geonames.org&quot;&gt;http://www.geonames.org&lt;/a&gt;)."
-                contributor_html: "A person or group you want to recognize for playing a role in the creation of the resource, but not the primary role."
+                contributors_html: "A person or group you want to recognize for playing a role in the creation of the resource."
                 date_created: "The date on which the resource was generated. Dates are accepted in the form YYYY-MM-DD, e.g. 1776-07-04."
                 description: "Other description information that does not fit into an existing category."
                 identifier: "A handle or code that is unqiue to this resource. An example would be a DOI for a journal article, or an ISBN or OCLC number for a book."

@@ -5,9 +5,11 @@ module Sufia
       include HydraDurham::FormContributorOverrides
 
       self.model_class = ::Collection
-      self.terms = [:resource_type, :title, :contributors, :description, :tag, :rights,
+      self.terms = [:resource_type, :title, :contributors,
                   :funder, :abstract, :research_methods,
-                  :publisher, :date_created, :subject, :language, :identifier, :based_near, :related_url]
+                  :description, :tag, :subject, :based_near, :language,
+                  :related_url, :identifier,
+                  :publisher, :date_created ]
 
       # Test to see if the given field is required
       # @param [Symbol] key a field

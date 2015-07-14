@@ -204,7 +204,7 @@ div.heading-tile {
 	.field-wrapper {
 	  list-style-type: none;
 	}
-		
+
 	.listing {
 	  margin-left: 0;
 	  max-width: 40em;
@@ -262,4 +262,20 @@ div.heading-tile {
 		background-color: #eaaf51;
 	  border-color: #d99a36;
 	}
+}
+
+/* Override Sufia style */
+@media only screen and (min-width: 992px) {
+	.collection_description {
+		color: inherit;
+	  font-family: inherit;
+	  font-size: inherit;
+	  font-weight: inherit;
+	  line-height: inherit;
+	  letter-spacing: inherit;
+	}
+}
+
+.simple_form .collection_title>input {
+	max-width: 520px;
 }

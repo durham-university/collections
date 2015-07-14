@@ -18,7 +18,7 @@ module HydraDurham
     # Returns all doi identifiers in the resource.
     def doi
       identifier.select do |ident|
-  			(/doi:/i =~ ident || /info:doi/i =~ ident || /dx.doi.org/i =~ ident)
+        (/doi:/i =~ ident || /info:doi/i =~ ident || /dx.doi.org/i =~ ident)
       end
     end
 
@@ -65,10 +65,10 @@ module HydraDurham
       # is there a way to get this somehow with url_for or some such?
       url = DOI_CONFIG['landing_page_prefix']
       if self.class == Collection
-  			url + "collections/" + id
-  		else
-  			url + "files/" + id
-  		end
+        url + "collections/" + id
+      else
+        url + "files/" + id
+      end
     end
 
     # Gets the resource Datacite metadata as XML.
@@ -125,6 +125,7 @@ module HydraDurham
 
       data[:abstract] = abstract.to_a
       data[:research_methods] = research_methods.to_a
+      data[:description] = description.to_a
       data[:funder] = funder.to_a
       data[:contributor] = []
 
@@ -133,30 +134,29 @@ module HydraDurham
         {id: url, id_type: 'URL', relation_type: 'IsCitedBy'}
       end
 
-  		if self.class == GenericFile
-  			data[:title] = title
-        data[:description] = description.to_a
+      if self.class == GenericFile
+        data[:title] = title
         data[:resource_type] = resource_type.first # Only maping first choice from the list
         data[:size] = [content.size]
-  			data[:format] = [content.mime_type]
-  			data[:date_uploaded] = date_uploaded.strftime('%Y-%m-%d')
+        data[:format] = [content.mime_type]
+        data[:date_uploaded] = date_uploaded.strftime('%Y-%m-%d')
         data[:rights] = rights.map do |frights|
-  				{rights: Sufia.config.cc_licenses_reverse[frights], rightsURI: frights}
-  			end
-  		else #Add Collection metadata
-  			data[:title] = [title] # Collection returns string, XML builder expects array
-        data[:description] = ( description.empty? ? [] : [description] )
-  			# FixMe: construct << {contributor, email}
+          {rights: Sufia.config.cc_licenses_reverse[frights], rightsURI: frights}
+        end
+      else #Add Collection metadata
+        data[:title] = [title] # Collection returns string, XML builder expects array
+        # FixMe: construct << {contributor, email}
         if not date_created.empty?
           data[:date_created] = Date.parse(date_created.first.to_s).strftime('%Y-%m-%d') unless date_created.empty?
         end
         data[:resource_type] = 'Collection'
 
-  			#Add members metadata
-  			data[:rights] = rights.map do |crights|
-  				{rights: "Collection rights - " + Sufia.config.cc_licenses_reverse[crights], rightsURI: crights }
-  			end
-        members.reduce(data[:rights]) do |a,mobj|
+        #Add members metadata
+#  			data[:rights] = rights.map do |crights|
+#  				{rights: "Collection rights - " + Sufia.config.cc_licenses_reverse[crights], rightsURI: crights }
+#  			end
+#       members.reduce(data[:rights]) do |a,mobj|
+        data[:rights] = members.reduce([]) do |a,mobj|
           if member_visible? mobj
             if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
             a << { # Do we allow for multiple licensing?
@@ -166,7 +166,7 @@ module HydraDurham
           else
             a
           end
-  			end
+        end
 
         data[:format] = members.reduce([]) do |a,mobj|
           if member_visible? mobj
@@ -176,7 +176,7 @@ module HydraDurham
           else
             a
           end
-  			end
+        end
 
         data[:size] = members.reduce([]) do |a,mobj|
           if member_visible? mobj
@@ -186,7 +186,7 @@ module HydraDurham
           else
             a
           end
-  			end
+        end
 
 
         members.reduce(data[:relatedIdentifier]) do |a,mobj|
@@ -195,8 +195,8 @@ module HydraDurham
           else
             a
           end
-  			end
-  		end
+        end
+      end
       return data
     end
   end
