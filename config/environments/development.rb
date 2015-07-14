@@ -41,4 +41,8 @@ Rails.application.configure do
 
   # Allow web console for development
   config.web_console.whitelisted_ips = '10.0.0.0/16'
+
+  # Where submitted contact forms will be sent
+  config.contact_email = 'm.e.phillips@durham.ac.uk'
+  config.from_email = "Collections Contact Form <noreply@durham.ac.uk>"
 end

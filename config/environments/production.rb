@@ -76,4 +76,8 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # Where submitted contact forms will be sent
+  config.contact_email = 'itservicedesk@durham.ac.uk'
+  config.from_email = "Collections Contact Form <noreply@durham.ac.uk>"
 end
