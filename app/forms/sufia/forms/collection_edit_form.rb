@@ -8,7 +8,7 @@ module Sufia
       self.terms = [:resource_type, :title, :contributors,
                   :funder, :abstract, :research_methods,
                   :description, :tag, :subject, :based_near, :language,
-                  :related_url, :identifier, :rights,
+                  :related_url, :identifier,
                   :publisher, :date_created ]
 
       # Test to see if the given field is required

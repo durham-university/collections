@@ -40,9 +40,6 @@ module Hydra::Collections
       property :language, predicate: RDF::DC.language do |index|
         index.as :stored_searchable, :facetable
       end
-      property :rights, predicate: RDF::DC.rights do |index|
-        index.as :stored_searchable
-      end
       property :resource_type, predicate: RDF::DC.type do |index|
         index.as :stored_searchable, :facetable
       end

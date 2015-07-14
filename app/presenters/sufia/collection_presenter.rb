@@ -9,7 +9,7 @@ module Sufia
     self.terms = [:resource_type, :title, :total_items, :size, :contributors,
                 :funder, :abstract, :research_methods,
                 :description, :tag, :subject, :based_near, :language,
-                :related_url, :identifier, :rights,
+                :related_url, :identifier,
                 :publisher, :date_created ]
 
     # Depositor and permissions are not displayed in app/views/collections/_show_descriptions.html.erb
