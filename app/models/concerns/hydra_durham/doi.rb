@@ -125,6 +125,7 @@ module HydraDurham
 
       data[:abstract] = abstract.to_a
       data[:research_methods] = research_methods.to_a
+      data[:description] = description.to_a
       data[:funder] = funder.to_a
       data[:contributor] = []
 
@@ -135,7 +136,6 @@ module HydraDurham
 
       if self.class == GenericFile
         data[:title] = title
-        data[:description] = description.to_a
         data[:resource_type] = resource_type.first # Only maping first choice from the list
         data[:size] = [content.size]
         data[:format] = [content.mime_type]
@@ -145,7 +145,6 @@ module HydraDurham
         end
       else #Add Collection metadata
         data[:title] = [title] # Collection returns string, XML builder expects array
-        data[:description] = ( description.empty? ? [] : [description] )
         # FixMe: construct << {contributor, email}
         if not date_created.empty?
           data[:date_created] = Date.parse(date_created.first.to_s).strftime('%Y-%m-%d') unless date_created.empty?
