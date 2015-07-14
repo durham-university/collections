@@ -33,8 +33,8 @@ module HydraDurham
     # has rights to edit this document.
     def can_destroy?(user=nil)
       return false if user.nil?
-      return true if user.admin?
-      return visibility!=Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+      return false if visibility==Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+      return true
     end
 
     # Checks if the visibility fo the document can be changed by the given
