@@ -94,6 +94,7 @@ Sufia.config do |config|
     "Data curator" => "http://id.loc.gov/vocabulary/relators/cur",
     "Editor" => "http://id.loc.gov/vocabulary/relators/edt"
   }
+  config.contributor_roles_reverse = Hash[*config.contributor_roles.to_a.flatten.reverse]
 
   config.resource_types_to_datacite_reverse = Hash[*config.resource_types_to_datacite.to_a.flatten.reverse]
 

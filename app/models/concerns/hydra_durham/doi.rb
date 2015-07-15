@@ -82,7 +82,10 @@ module HydraDurham
     def validate_doi_metadata
       ret = []
 
-      ret << "The resource must have a contributor" if contributors.empty?
+      creator_role=Sufia.config.contributor_roles['Creator']
+
+      ret << "The resource must have a creator" if \
+        (contributors.to_a.select do |c| c.role.include? creator_role end).empty?
       ret << "The resource must have a resource type" if resource_type.empty?
       ret << "The resource must have a title" if title.empty?
 
@@ -91,6 +94,23 @@ module HydraDurham
 
     def member_visible? m
       m.visibility=='open'
+    end
+
+    def contributor_role_to_datacite r
+      r=Sufia.config.contributor_roles_reverse[r]
+      return nil if r.nil? || r=='Creator' # creators go in their own field
+
+      val=r.gsub(/\s+/,'_').camelize
+
+      allowed_values=['ContactPerson','DataCollector','DataCurator',
+        'DataManager','Distributor','Editor','Funder','HostingInstitution',
+        'Producer','ProjectLeader','ProjectManager','ProjectMember',
+        'RegistrationAgency','RegistrationAuthority','RelatedPerson',
+        'Researcher','ResearchGroup','RightsHolder','Sponsor','Supervisor',
+        'WorkPackageLeader','Other']
+
+      return val if allowed_values.include? val
+      return 'Other'
     end
 
     # Gets the resource Datacite metadata as a hash.
@@ -114,10 +134,8 @@ module HydraDurham
           { scheme: nil, schemeURI: nil, label: e}
         end)
 
-      # TODO: When we have roles in contributors, use actual creators here
-      #       and put others in contributors with the right contributorType.
-      #       Also make sure validation makes sure that contributors has a creator.
-      data[:creator] = contributors.map do |c|
+      creator_role=Sufia.config.contributor_roles['Creator']
+      data[:creator] = (contributors.to_a.select do |c| c.role.include? creator_role end).map do |c|
         { name: c.contributor_name.first,
           affiliation: c.affiliation.first
         }
@@ -127,7 +145,21 @@ module HydraDurham
       data[:research_methods] = research_methods.to_a
       data[:description] = description.to_a
       data[:funder] = funder.to_a
-      data[:contributor] = []
+      data[:contributor] = contributors.to_a.reduce([]) do |a,c|
+        # Creator role is converted to nil in contributor_role_to_datacite and then removed with compact
+        roles=c.role.map do |r| contributor_role_to_datacite r end
+        roles.compact!
+        next a if roles.empty?
+        roles.each do |r|
+          a << {
+            name: c.contributor_name.first,
+            affiliation: c.affiliation.first,
+            contributor_type: r
+          }
+        end
+        a
+      end
+
 
       data[:relatedIdentifier] = related_url.map do |url|
         # related field is now titled cited by, so use that as the relation type

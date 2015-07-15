@@ -1,7 +1,7 @@
 defaults: &defaults
   landing_page_prefix: 'http://collections.durham.ac.uk/'
   datacite_publisher: 'Durham University'
-  datacite_contributor: 'Durham University'
+  datacite_rights_holder: 'Durham University'
   datacite_hosting_institution: 'Durham University'
 
 
