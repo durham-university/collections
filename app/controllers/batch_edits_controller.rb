@@ -25,12 +25,23 @@ class BatchEditsController < ApplicationController
     obj.date_modified = Time.now
 
     obj.visibility = obj_params[:visibility] if obj_params[:visibility]
+
+    # obj.save wipes changed_attributes so we need to check this before save
+    needs_notifications = needs_open_pending_notifications(obj)
+    if obj.save && needs_notifications
+      send_open_pending_notifications obj, @current_user
+    end
   end
 
   def update
     case params["update_type"]
       when "update"
-        super
+        batch.each do |doc_id|
+          obj = ActiveFedora::Base.find(doc_id, :cast=>true)
+          update_document(obj)
+        end
+        flash[:notice] = "Batch update complete"
+        after_update
       when "delete_all"
         destroy_batch
         after_update

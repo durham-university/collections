@@ -29,7 +29,14 @@ module BatchUpdateJobPatch
 
     self.visibility=params[:visibility]
 
+    old_request_value=gf.request_for_visibility_change
+
     super
+
+    new_request_value=gf.request_for_visibility_change
+    if new_request_value=='open' && new_request_value!=old_request_value && saved.last==gf
+      send_open_pending_notifications gf, user
+    end
 
     # restore the stored params for next file
     self.file_attributes=original_attributes
