@@ -13,7 +13,8 @@ class CollectionsController < ApplicationController
             {
               contributor_name: [],
               affiliation: [],
-              role: []
+              role: [],
+              order: []
             }
           ]
         )

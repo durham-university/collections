@@ -18,7 +18,8 @@ module HydraDurham
             {
               contributor_name: [],
               affiliation: [],
-              role: []
+              role: [],
+              order: []
             }
           ]
         end

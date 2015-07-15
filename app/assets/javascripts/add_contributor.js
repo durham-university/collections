@@ -63,6 +63,10 @@ ContributorsFieldManager.prototype = Object.create(HydraEditor.FieldManager.prot
       // Remove content from text attributes (not from all inputs, otherwise hidden ones and checkbox values are cleared too)
       var newFields = newField.find(':text');
       newFields.val('');
+      // Update 'order' field if present
+      var newOrderField = newField.find("input[name*='[order]']");
+      newOrderField.val(index);
+
       newChildren.first().focus();
       this.element.trigger("managed_field:add", newChildren.first());
       return newField;

@@ -15,6 +15,10 @@ class Contributor < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :order, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#contributor_order') do |index|
+    index.as :stored_searchable
+  end
+
   def to_s
   	string = ""
   	string += contributor_name.any? { |string| string.strip.length > 0 } ? contributor_name.first + " " : ""

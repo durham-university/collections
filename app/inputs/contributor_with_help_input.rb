@@ -93,10 +93,21 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       @html << "  </div>"
       @html << "</div>"
 
+      # --- Order
+      field = :order
+
+      @html << index
+
+      field_value = value.send(field).first
+      field_value ||= index
+      field_name = name_for(attribute_name, index, field)
+
+      @html << @builder.hidden_field(attribute_name,
+                            name: field_name,
+                            value: field_value)
+
       # delete checkbox
-      @html << "  <div class='col-md-3'>"
       @html << destroy_widget(attribute_name, index)
-      @html << "  </div>"
 
       @html << "</div>" # block
 
