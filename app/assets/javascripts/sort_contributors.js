@@ -8,7 +8,9 @@ function saveSort(event, ui) {
 
 Blacklight.onLoad(function() {
   $('.contributors-editor .listing').sortable({
-  		placeholder: "contributor-placeholder",
   		stop: saveSort
-  	});
+  	});  
+  $('.contributors-editor .listing li.input-group').prepend(
+  	"<span class='glyphicon glyphicon-sort' style='float:right; margin-right: -7em' title='Drag to re-order contributors'></span>");
+
 });
