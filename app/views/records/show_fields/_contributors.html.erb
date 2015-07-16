@@ -1,4 +1,5 @@
-<% record.contributors.each do |contributor| %>
+<% contribs = record.contributors.sort { |x,y| x.send(:order).first.to_i <=> y.send(:order).first.to_i } %>
+<% contribs.each do |contributor| %>
   <%= link_to_facet(contributor.to_s, Solrizer.solr_name("contributors", :facetable)) %>
   <br />
 <% end %>

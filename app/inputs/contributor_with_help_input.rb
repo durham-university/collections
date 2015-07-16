@@ -10,6 +10,19 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
 
   protected
 
+    def buffer_each(collection)
+      collection.sort! { |x,y|
+        if(y.send(:order).first == nil)
+          -1
+        else
+          x.send(:order).first.to_i <=> y.send(:order).first.to_i
+        end
+      }
+      collection.each_with_object('').with_index do |(value, buffer), index|
+        buffer << yield(value, index)
+      end
+    end
+
     def collection
       @collection ||= Array.wrap(object[attribute_name]).reject do
         |value| value.to_s.strip.blank?
@@ -98,8 +111,7 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
 
       @html << index
 
-      field_value = value.send(field).first
-      field_value ||= index
+      field_value = index
       field_name = name_for(attribute_name, index, field)
 
       @html << @builder.hidden_field(attribute_name,
