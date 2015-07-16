@@ -39,8 +39,4 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
-
-  # Where submitted contact forms will be sent
-  config.contact_email = 'library.systems@durham.ac.uk'
-  config.from_email = "Collections Contact Form <noreply@durham.ac.uk>"
 end
