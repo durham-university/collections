@@ -311,3 +311,10 @@ div.heading-tile {
 .fileHeight {
   max-height: 100px;
 }
+
+#new_contact_form .field_with_errors {
+  color: red;
+  display: block;
+  padding: 0;
+  background-color: inherit;
+}
