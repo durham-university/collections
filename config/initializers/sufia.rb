@@ -1,13 +1,6 @@
 # Returns an array containing the vhost 'CoSign service' value and URL
 Sufia.config do |config|
 
-  config.enable_contact_form_delivery = true
-  config.contact_form_delivery_body = <<-EOM
-    Thank you for contacting us with your question or issue about the Collections service.
-    Our service team will review the submitted form and get back to you with a more specific response.
-  EOM
-  config.contact_form_delivery_from = 'noreply@durham.ac.uk'
-
   config.fits_to_desc_mapping= {
     file_title: :title,
     file_author: :creator
