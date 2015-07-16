@@ -7,7 +7,7 @@ class Contributor < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation, predicate: ::RDF::FOAF.currentProject do |index|
+  property :affiliation, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#contributor_affiliation') do |index|
     index.as :stored_searchable
   end
 
