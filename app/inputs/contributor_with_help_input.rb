@@ -11,21 +11,16 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
   protected
 
     def buffer_each(collection)
-      collection.sort! { |x,y|
-        if(y.send(:order).first == nil)
-          -1
-        else
-          x.send(:order).first.to_i <=> y.send(:order).first.to_i
-        end
-      }
       collection.each_with_object('').with_index do |(value, buffer), index|
         buffer << yield(value, index)
       end
     end
 
     def collection
-      @collection ||= Array.wrap(object[attribute_name]).reject do
+      @collection ||= (Array.wrap(object[attribute_name]).reject do
         |value| value.to_s.strip.blank?
+      end).sort do |x,y|
+        x.order.first.to_i <=> y.order.first.to_i
       end + [Contributor.new()]
     end
 
@@ -98,7 +93,7 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       merged_input_options = merge_wrapper_options(input_html_options, options)
 
       @html << @builder.collection_select(
-          attribute_name, 
+          attribute_name,
           Sufia.config.contributor_roles, :last, :first,
           input_options.merge(selected: field_value), merged_input_options.merge(name: field_name)
         )

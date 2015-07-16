@@ -1,5 +1,4 @@
-<% contribs = record.contributors.sort { |x,y| x.order.first.to_i <=> y.order.first.to_i } %>
-<% contribs.each do |contributor| %>
+<% record.to_model.contributors_sorted.each do |contributor| %>
   <% (contributor.role.any? ? contributor.role : [nil]).each do |role| %>
     <% if role %>
       <span class="contributor_role"><%= Sufia.config.contributor_roles_reverse[role] %>: </span>

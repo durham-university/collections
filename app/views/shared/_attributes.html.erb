@@ -5,7 +5,7 @@
         </tr>
         <tr>
           <th><span class="attribute-label h4">Contributors:</span></th>
-          <td><% work.to_model.contributors.map do |contributor|
+          <td><% work.to_model.contributors_sorted.map do |contributor|
             (contributor.role.any? ? contributor.role : [nil]).map do |role| %>
               <% if role %>
                 <span class="contributor_role"><%= Sufia.config.contributor_roles_reverse[role] %>: </span>

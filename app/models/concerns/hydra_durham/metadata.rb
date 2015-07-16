@@ -26,10 +26,17 @@ module HydraDurham
 
       accepts_nested_attributes_for :contributors, allow_destroy: true, reject_if: proc { |attributes| attributes['contributor_name'].first.blank? }
 
+      def contributors_sorted
+        contributors.sort do |x,y| x.order.first.to_i <=> y.order.first.to_i end
+      end
+
       def to_solr(solr_doc={})
         r=super(solr_doc)
-        r["contributors_tesim"]=(contributors.to_a.select do |contributor| !contributor.marked_for_destruction? end)
-                                             .map do |contributor| contributor.to_s end
+        r["contributors_tesim"]=(contributors_sorted.to_a.select do |contributor|
+                !contributor.marked_for_destruction?
+              end).map do |contributor|
+                contributor.to_s
+              end
         r["contributors_sim"]=r["contributors_tesim"] # this is needed for facets
         r
       end

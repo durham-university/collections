@@ -145,7 +145,7 @@ module HydraDurham
       data[:research_methods] = research_methods.to_a
       data[:description] = description.to_a
       data[:funder] = funder.to_a
-      data[:contributor] = contributors.to_a.reduce([]) do |a,c|
+      data[:contributor] = contributors_sorted.reduce([]) do |a,c|
         # Creator role is converted to nil in contributor_role_to_datacite and then removed with compact
         roles=c.role.map do |r| contributor_role_to_datacite r end
         roles.compact!
