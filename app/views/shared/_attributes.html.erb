@@ -5,7 +5,15 @@
         </tr>
         <tr>
           <th><span class="attribute-label h4">Contributors:</span></th>
-          <td><%= (work.to_model.contributors.map do |contributor| contributor.to_s end).join '; ' %></td>
+          <td><% work.to_model.contributors.map do |contributor|
+            (contributor.role.any? ? contributor.role : [nil]).map do |role| %>
+              <% if role %>
+                <span class="contributor_role"><%= Sufia.config.contributor_roles_reverse[role] %>: </span>
+              <% end %>
+              <%= contributor.to_s %>
+              <br />
+            <% end %>
+          <% end %></td>
         </tr>
         <tr>
           <th><span class="attribute-label h4">Description:</span></th>

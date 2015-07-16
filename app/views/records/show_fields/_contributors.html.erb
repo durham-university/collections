@@ -1,5 +1,10 @@
-<% contribs = record.contributors.sort { |x,y| x.send(:order).first.to_i <=> y.send(:order).first.to_i } %>
+<% contribs = record.contributors.sort { |x,y| x.order.first.to_i <=> y.order.first.to_i } %>
 <% contribs.each do |contributor| %>
-  <%= link_to_facet(contributor.to_s, Solrizer.solr_name("contributors", :facetable)) %>
-  <br />
+  <% (contributor.role.any? ? contributor.role : [nil]).each do |role| %>
+    <% if role %>
+      <span class="contributor_role"><%= Sufia.config.contributor_roles_reverse[role] %>: </span>
+    <% end %>
+    <%= link_to_facet(contributor.to_s, Solrizer.solr_name("contributors", :facetable)) %>
+    <br />
+  <% end %>
 <% end %>
