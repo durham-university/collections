@@ -3,10 +3,11 @@ require 'mail_form'
 class ContactForm < MailForm::Base
   ISSUE_TYPES = [
       ["Depositing content", "Depositing content"],
+      ["Obtaining a DOI", "Obtaining a DOI"],
       ["Making changes to my content", "Making changes to my content"],
       ["Browsing and searching", "Browsing and searching"],
       ["Reporting a problem", "Reporting a problem"],
-      ["General inquiry or request", "General inquiry or request"]
+      ["General enquiry or request", "General enquiry or request"]
     ]
   attribute :contact_method, captcha: true
   attribute :category, validate: true
@@ -20,7 +21,7 @@ class ContactForm < MailForm::Base
   # in ActionMailer accepts.
   def headers
     {
-      subject: "Contact Form:#{subject}",
+      subject: "#{subject}",
       to: Sufia.config.contact_email,
       from: Sufia.config.from_email
     }
