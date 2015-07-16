@@ -13,7 +13,7 @@
     <%= link_to raw('<i class="glyphicon glyphicon-pencil" aria-hidden="true"></i> Edit File'), sufia.edit_generic_file_path(id),
       class: 'itemicon itemedit', title: 'Edit File' %>
     </li>
-    <% if not gf.has_local_doi? %>
+    <% if (not gf.has_local_doi?) and (gf.can_mint_doi?) %>
       <li role="menuitem" tabindex="-1">
         <%= link_to raw('<i class="glyphicon doi-icon" aria-hidden="true"></i> Publish DOI'), doi_path(id),
           class: 'itemicon itemedit', title: 'Publish DOI' %>
@@ -23,11 +23,13 @@
     <%= link_to raw('<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i> Download File'), sufia.download_path(id),
       class: 'itemicon itemdownload', title: 'Download File', target: '_new' %>
     </li>
-    <li role="menuitem" tabindex="-1">
-    <%= link_to raw('<i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete File'), sufia.generic_file_path(id),
-      class: 'itemicon itemtrash', title: 'Delete File', method: :delete, data: {
-      confirm: "Deleting a file from #{t('sufia.product_name')} is permanent. Click OK to delete this file from #{t('sufia.product_name')}, or Cancel to cancel this operation" } %>
-    </li>
+    <% if gf.can_destroy? @user %>
+      <li role="menuitem" tabindex="-1">
+      <%= link_to raw('<i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete File'), sufia.generic_file_path(id),
+        class: 'itemicon itemtrash', title: 'Delete File', method: :delete, data: {
+        confirm: "Deleting a file from #{t('sufia.product_name')} is permanent. Click OK to delete this file from #{t('sufia.product_name')}, or Cancel to cancel this operation" } %>
+      </li>
+    <% end %>
     <li role="menuitem" tabindex="-1">
       <%= display_trophy_link(@user, id) do |text| %>
         <i aria-hidden="true" class='glyphicon glyphicon-star'></i> <%= text %>

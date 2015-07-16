@@ -27,4 +27,12 @@ class Ability
     #   can [:create], ActiveFedora::Base
     # end
   end
+
+  def test_edit(id)
+    (current_user.admin?) || super
+  end
+
+  def test_read(id)
+    (current_user.admin?) || super
+  end
 end

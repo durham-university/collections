@@ -2,6 +2,7 @@
 class GenericFilesController < ApplicationController
   include Sufia::Controller
   include Sufia::FilesControllerBehavior
+  include HydraDurham::AccessControlsController
 
   after_filter :update_datacite, only: [ :update ]
   after_filter :destroy_datacite, only: [ :destroy ]
