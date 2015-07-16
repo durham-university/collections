@@ -109,8 +109,6 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       # --- Order
       field = :order
 
-      @html << index
-
       field_value = index
       field_name = name_for(attribute_name, index, field)
 
