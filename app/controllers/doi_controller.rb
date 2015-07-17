@@ -1,6 +1,6 @@
 class DoiController < ApplicationController
   # Show information related to DOI generation.
- 	def show
+   def show
     @id = params[:id]
     @resource = ActiveFedora::Base.find(@id)
 
@@ -8,7 +8,15 @@ class DoiController < ApplicationController
     raise "Resource doesn't support DOI functionality" if not @resource.respond_to? :doi
 
     @metadata_errors = @resource.validate_doi_metadata
-	end
+
+    if @resource.is_a? Collection
+      @presenter = Sufia::CollectionPresenter.new @resource
+      @model_class = "collection"
+    else
+      @presenter = Sufia::GenericFilePresenter.new @resource
+      @model_class = "generic_file"
+    end
+  end
 
   # Mints the doi and sends metadata to Datacite
   def mint_doi(resource)
@@ -20,11 +28,11 @@ class DoiController < ApplicationController
     #datacite.metadata(resource.doi_metadata_xml)
     #datacite.mint(resource.doi_landing_page,resource.mock_doi)
 
-    Sufia.queue.push(UpdateDataciteJob.new(resource.id, @current_user, do_mint: true))
+    resource.queue_doi_metadata_update @current_user, mint: true
   end
 
   # Action that mints the doi and sends metadata to Datacite
-	def update
+  def update
     @id = params[:id]
     @resource = ActiveFedora::Base.find(@id)
     raise ActiveFedora::ObjectNotFoundError if not @resource
@@ -43,5 +51,5 @@ class DoiController < ApplicationController
 
     redirect_to @resource
 
-	end
+  end
 end

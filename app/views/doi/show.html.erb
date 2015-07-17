@@ -1,41 +1,88 @@
 <h1>DOI for <%= @resource.title.is_a? Array and @resource.title.first or @resource.title %> (<%= @id %>)</h1>
 
 <% if @resource.has_local_doi? %>
-	<p>This resource already has a local DOI:</p>
-	<ul><li><%= @resource.doi.first %></li></ul>
+  <p>This resource already has a local DOI:</p>
+  <ul><li><%= @resource.doi.first %></li></ul>
 <% else %>
-	<% if @resource.has_doi? %>
-	<p>This resource has an outside DOI already</p>
-	<ul>
-		<% @resource.doi.each do |doi| %>
-			<li><%= doi %></li>
-		<% end %>
-	</ul>
-	<% else %>
-		<p>This resource has no DOI.</p>
-	<% end %>
+  <% if @resource.has_doi? %>
+  <p>This resource has an outside DOI already</p>
+  <ul>
+    <% @resource.doi.each do |doi| %>
+      <li><%= doi %></li>
+    <% end %>
+  </ul>
+  <% else %>
+    <p>This resource has no DOI.</p>
+  <% end %>
 
-	<% if @metadata_errors.any? %>
-		<p>A new DOI cannot be generated for this resource because it is missing
-			 some required metadata. See error messages below.<p>
-		<ul>
-			<% @metadata_errors.each do |error| %>
-				<li><%= error %></li>
-			<% end %>
-		</ul>
-		<p>A new DOI can be generated after fixing the above errors, it would be:</p>
-		<ul><li>doi:<%= @resource.mock_doi %></li></ul>
-	<% else %>
-		<p>You can generate a new DOI for this resource. The generated DOI would be:</p>
-		<ul><li>doi:<%= @resource.mock_doi %></li></ul>
-		<p><strong>You cannot reverse the publishing of a DOI</strong>. Once published, the existence of the resource will become public knowledge permanently.</p>
-		<p>Publishing the DOI may take a while and the document page will say that
-			 the DOI has not yet been published until the whole process is complete.
-			 Usually this only takes a minute or two but in some cases can take longer.
-			 You will get a notification when the publishing process is complete. If
-			 you haven't gotten one within 24 hours, you should try generating the
-			 DOI again or contacting support. </p>
-		<p><%= link_to "Publish DOI now", doi_path, method: 'put' %></p>
-	<% end %>
+  <% if @metadata_errors.any? %>
+    <p>A new DOI cannot be generated for this resource because it is missing
+       some required metadata. See error messages below.<p>
+    <ul>
+      <% @metadata_errors.each do |error| %>
+        <li><%= error %></li>
+      <% end %>
+    </ul>
+    <p>A new DOI can be generated after fixing the above errors, it would be:</p>
+    <ul><li>doi:<%= @resource.mock_doi %></li></ul>
+  <% else %>
+    <p>You can generate a new DOI for this resource. The generated DOI would be:</p>
+    <ul><li>doi:<%= @resource.mock_doi %></li></ul>
+    <p><strong>You cannot reverse the publishing of a DOI</strong>. Once published, the existence of the resource will become public knowledge permanently.</p>
+    <p><strong>When a DOI is published, some key information about the resource is locked and
+       cannot be modified any longer</strong>. Carefully check this key information below and
+       make sure it is correct. If there are any errors, go back and correct the
+       information before continuing with publishing a DOI.</p>
+
+    <dl>
+      <%
+      terms = @resource.restricted_mandatory_datacite_fields.map do |x| x[:source] end
+      present_terms(@presenter,terms) do |r, term| %>
+      <dt><%= r.label(term) %></dt>
+          <dd><%= r.value(term) %></dd>
+      <% end %>
+    </dl>
+
+
+    <p>Publishing the DOI may take a while and the document page will say that
+       the DOI has not yet been published until the whole process is complete.
+       Usually this only takes a minute or two but in some cases can take longer.
+       You will get a notification when the publishing process is complete. If
+       you haven't gotten one within 24 hours, you should try generating the
+       DOI again or contacting support. </p>
+
+    <p>
+      <%= form_for @resource, url: doi_path do |f| %>
+        <input id="confirm-checkbox" type="checkbox" name="confirm"/>
+        <label id="confirm-label" for="confirm-checkbox">I have read the above warning and checked that the information is correct.</label>
+        <br />
+        <script type="text/javascript">
+          function checkConfirmBox() {
+            var checked=$('#confirm-checkbox').prop('checked');
+            if(checked){
+              var button=$("#publish-doi-submit");
+              if(button.data('submitted')) return false;
+              button.data('submitted',true);
+              return true;
+            }
+            else {
+              $("#confirm-label").addClass('error');
+              return false;
+            }
+          }
+        </script>
+        <input id="publish-doi-submit" type="submit" value="Publish DOI now" onclick="return checkConfirmBox()" />
+      <% end %>
+    </p>
+
+  <% end %>
 <% end %>
-<p><%= link_to "Back", @resource %></p>
+<br />
+<p><%= link_to "Back", @resource %>&nbsp;|&nbsp;<%=
+  if @model_class=="generic_file"
+    link_to 'Edit file', edit_generic_file_path(@resource)
+  else
+    link_to 'Edit collection', edit_collection_path(@resource)
+  end
+  %>
+</p>

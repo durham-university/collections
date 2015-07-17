@@ -264,6 +264,34 @@ div.heading-tile {
   }
 }
 
+.simple_form {
+  li.readonly_field, .form-group.readonly_field li.field-wrapper {
+    display: block;
+    width: 421px;
+  }
+
+  li.readonly_field, .form-group.readonly_field {
+    input {
+      display: block;
+      float: none;
+    }
+
+    .field-controls {
+      button {
+        display: none
+      }
+      content: '&nbsp;';
+    }
+  }
+}
+
+#confirm-label.error {
+  color: red;
+  float: none;
+  padding-left: inherit;
+  vertical-align: inherit;
+}
+
 /* Override Sufia style */
 @media only screen and (min-width: 992px) {
   .collection_description {

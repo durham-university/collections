@@ -57,8 +57,10 @@ class BatchEditsController < ApplicationController
 
     saved=obj.save
 
-    if saved and obj.respond_to? :doi and obj.manage_datacite?
-      obj.queue_doi_metadata_update
+    if saved and obj.respond_to? :doi
+      # Queue method checks that the object has a local doi.
+      # It will also push metadata updates on any dependent documents.
+      obj.queue_doi_metadata_update @current_user
     end
 
     if saved && needs_notifications
@@ -78,14 +80,15 @@ class BatchEditsController < ApplicationController
       when "delete_all"
         destroy_batch
         after_update
-      end
     end
+  end
 
-    def destroy_collection
-      destroy_batch
-      flash[:notice] = "Batch delete complete" if flash[:alert].blank?
-      after_destroy_collection
-    end
+
+  def destroy_collection
+    destroy_batch
+    flash[:notice] = "Batch delete complete" if flash[:alert].blank?
+    after_destroy_collection
+  end
 
 
   protected
@@ -111,8 +114,10 @@ class BatchEditsController < ApplicationController
       batch.each do |doc_id|
         gf = ::GenericFile.find(doc_id)
         if gf.can_destroy? @current_user
-          if gf.respond_to? :doi and gf.manage_datacite?
-            gf.queue_doi_metadata_update(destroyed: true)
+          if gf.respond_to? :doi
+            # Queue method checks that the object has a local doi.
+            # It will also push metadata updates on any dependent documents.
+            gf.queue_doi_metadata_update @current_user, destroyed: true
           end
           gf.destroy
         else
