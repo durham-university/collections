@@ -3,5 +3,6 @@ class GenericFilesController < ApplicationController
   include Sufia::Controller
   include Sufia::FilesControllerBehavior
   include HydraDurham::DoiResourceBehaviour
+  include HydraDurham::AccessControlsController
 
 end

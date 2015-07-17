@@ -219,6 +219,8 @@ module HydraDurham
           c.contributor_name.length>1 || c.affiliation.length>1
         end).any?
 
+      ret << "The resource must be Open Access" if (respond_to? :can_mint_doi?) && !can_mint_doi?
+
       return ret
     end
 
@@ -298,6 +300,7 @@ module HydraDurham
 
       data[:abstract] = abstract.to_a
       data[:research_methods] = research_methods.to_a
+      data[:description] = description.to_a
       data[:funder] = funder.to_a
       data[:contributor] = []
 
@@ -308,7 +311,6 @@ module HydraDurham
 
       if self.class == GenericFile
         data[:title] = title
-        data[:description] = description.to_a
         data[:resource_type] = Sufia.config.resource_types_to_datacite[resource_type.first] # Only maping first choice from the list
         data[:size] = [content.size]
         data[:format] = [content.mime_type]
@@ -318,7 +320,6 @@ module HydraDurham
         end
       else #Add Collection metadata
         data[:title] = [title] # Collection returns string, XML builder expects array
-        data[:description] = ( description.empty? ? [] : [description] )
         # FixMe: construct << {contributor, email}
         if not date_created.empty?
           data[:date_created] = Date.parse(date_created.first.to_s).strftime('%Y-%m-%d') unless date_created.empty?
@@ -326,10 +327,11 @@ module HydraDurham
         data[:resource_type] = Sufia.config.resource_types_to_datacite['Collection']
 
         #Add members metadata
-        data[:rights] = rights.map do |crights|
-          {rights: "Collection rights - " + Sufia.config.cc_licenses_reverse[crights], rightsURI: crights }
-        end
-        members.reduce(data[:rights]) do |a,mobj|
+#  			data[:rights] = rights.map do |crights|
+#  				{rights: "Collection rights - " + Sufia.config.cc_licenses_reverse[crights], rightsURI: crights }
+#  			end
+#       members.reduce(data[:rights]) do |a,mobj|
+        data[:rights] = members.reduce([]) do |a,mobj|
           if member_visible? mobj
             if mobj.content.original_name.nil? then filename = mobj.id else filename = mobj.content.original_name end
             if mobj.rights.any?

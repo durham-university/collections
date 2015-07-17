@@ -285,9 +285,29 @@ div.heading-tile {
   }
 }
 
-#confirm-label.error { 
+#confirm-label.error {
   color: red;
   float: none;
   padding-left: inherit;
   vertical-align: inherit;
+}
+
+/* Override Sufia style */
+@media only screen and (min-width: 992px) {
+  .collection_description {
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+  }
+}
+
+.simple_form .collection_title>input {
+  max-width: 520px;
+}
+
+.fileHeight {
+  max-height: 100px;
 }

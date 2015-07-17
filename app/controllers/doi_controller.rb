@@ -22,6 +22,7 @@ class DoiController < ApplicationController
   def mint_doi(resource)
     raise "Resource doesn't support DOI functionality" if not resource.respond_to? :doi
     raise "Resource already has a DOI" if resource.has_local_doi?
+    raise "Cannot mint DOI for this resource" if (resource.respond_to? :can_mint_doi?) && !resource.can_mint_doi?
 
     #datacite = Datacite.new
     #datacite.metadata(resource.doi_metadata_xml)
@@ -39,6 +40,7 @@ class DoiController < ApplicationController
     authorize! :edit, @resource
 
     raise "Resource doesn't support DOI functionality" if not @resource.respond_to? :doi
+    raise "Cannot mint DOI for this resource" if (@resource.respond_to? :can_mint_doi?) && !@resource.can_mint_doi?
 
     errors = @resource.validate_doi_metadata
     if errors.any?

@@ -1,0 +1,13 @@
+defaults: &defaults
+  visibility_notification_users: []
+
+
+development:
+  <<: *defaults
+  visibility_notification_users: []
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
