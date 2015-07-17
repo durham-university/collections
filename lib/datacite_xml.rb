@@ -40,7 +40,7 @@ class DataciteXml
 
         xml.contributors {
           xml.contributor(:contributorType=>'RightsHolder') {
-            xml.contributorName DOI_CONFIG['datacite_contributor']
+            xml.contributorName DOI_CONFIG['datacite_rights_holder']
           }
           xml.contributor(:contributorType=>'HostingInstitution') {
             xml.contributorName DOI_CONFIG['datacite_hosting_institution']
@@ -56,8 +56,11 @@ class DataciteXml
           end
           if map[:contributor].any? then
             map[:contributor].each do |f|
-              xml.contributor(:contributorType=>'ContactPerson') {
-                xml.contributorName f
+              xml.contributor(:contributorType=>f[:contributor_type]) {
+                xml.contributorName f[:name]
+                if f.key?(:affiliation) and f[:affiliation].present?
+                  xml.affiliation f[:affiliation]
+                end
                 # xml.nameIdentifier :nameIdentifierScheme=>'URI mailto', schemeURI=>'<mailto:upload.name@durham.ac.uk>'
               }
             end

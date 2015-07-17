@@ -1,4 +1,9 @@
-<% record.contributors.each do |contributor| %>
-  <%= link_to_facet(contributor.to_s, Solrizer.solr_name("contributors", :facetable)) %>
-  <br />
+<% record.to_model.contributors_sorted.each do |contributor| %>
+  <% (contributor.role.any? ? contributor.role : [nil]).each do |role| %>
+    <% if role %>
+      <span class="contributor_role"><%= Sufia.config.contributor_roles_reverse[role] %>: </span>
+    <% end %>
+    <%= link_to_facet(contributor.to_s, Solrizer.solr_name("contributors", :facetable)) %>
+    <br />
+  <% end %>
 <% end %>

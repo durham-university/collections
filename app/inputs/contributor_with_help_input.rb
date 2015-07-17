@@ -1,4 +1,5 @@
 class ContributorWithHelpInput < MultiValueWithHelpInput
+
   def input(wrapper_options)
     super
   end
@@ -11,8 +12,10 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
 
     def collection
       @collection ||= begin
-        c=Array.wrap(object[attribute_name]).reject do
+        c=(Array.wrap(object[attribute_name]).reject do
           |value| value.to_s.strip.blank?
+        end).sort do |x,y|
+          x.order.first.to_i <=> y.order.first.to_i
         end
         # Only include the last if not read only. The super class implementation
         # won't work for nested attributes.
@@ -58,7 +61,7 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       @html << "  </div>"
       @html << "</div>"
 
-      # --- Last Name
+      # --- Affiliation
       field = :affiliation
 
       field_value = value.send(field).first
@@ -70,14 +73,47 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       @html << "  </div>"
 
       @html << "  <div class='col-md-8'>"
-      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name))
+      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name, id: field_name))
       @html << "  </div>"
       @html << "</div>"
 
-      # delete checkbox
-      @html << "  <div class='col-md-3'>"
-      @html << destroy_widget(attribute_name, index)
+      # --- Role
+      field = :role
+
+      field_value = value.send(field).first
+      field_name = name_for(attribute_name, index, field)
+
+      @html << "<div class='row'>"
+      @html << "  <div class='col-md-4'>"
+      @html << template.label_tag(field_name, field.to_s.humanize, required: true)
       @html << "  </div>"
+
+      @html << "  <div class='col-md-8'>"
+
+      merged_input_options = merge_wrapper_options(input_html_options, options)
+
+      @html << @builder.collection_select(
+          attribute_name,
+          Sufia.config.contributor_roles, :last, :first,
+          input_options.merge(selected: field_value), merged_input_options.merge(name: field_name, id: field_name)
+        )
+
+      @html << "  </div>"
+      @html << "</div>"
+
+      # --- Order
+      field = :order
+
+      field_value = index
+      field_name = name_for(attribute_name, index, field)
+
+      @html << @builder.hidden_field(attribute_name,
+                            name: field_name,
+                            value: field_value,
+                            id: field_name)
+
+      # delete checkbox
+      @html << destroy_widget(attribute_name, index)
 
       @html << "</div>" # block
 

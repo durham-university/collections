@@ -205,18 +205,22 @@ module HydraDurham
     def validate_doi_metadata
       ret = []
 
+      creator_role=Sufia.config.contributor_roles['Creator']
+
+      ret << "The resource must have a creator" if \
+        (contributors.to_a.select do |c| c.role.include? creator_role end).empty?
+
       # Restrict to single values of various fields because we can't guarantee the
       # ordering and choosing the first one might choose different one each time
 
-      ret << "The resource must have a contributor" if contributors.empty?
       ret << "The resource must have a resource type" if resource_type.empty?
       ret << "The resource can only have a single resource_type" if (resource_type.is_a? Array) && resource_type.length>1
       ret << "The resource must have a title" if title.empty?
       ret << "The resource can only have a single title" if (title.is_a? Array) && title.length>1
 
-      ret << "Contributors can only have a single name and affiliation" if \
+      ret << "Contributors can only have a single name, affiliation and role" if \
         (contributors.to_a.select do |c|
-          c.contributor_name.length>1 || c.affiliation.length>1
+          c.contributor_name.length>1 || c.affiliation.length>1 || c.role.length>1
         end).any?
 
       ret << "The resource must be Open Access" if (respond_to? :can_mint_doi?) && !can_mint_doi?
@@ -226,6 +230,23 @@ module HydraDurham
 
     def member_visible? m
       m.visibility=='open'
+    end
+
+    def contributor_role_to_datacite r
+      r=Sufia.config.contributor_roles_reverse[r]
+      return nil if r.nil? || r=='Creator' # creators go in their own field
+
+      val=r.gsub(/\s+/,'_').camelize
+
+      allowed_values=['ContactPerson','DataCollector','DataCurator',
+        'DataManager','Distributor','Editor','Funder','HostingInstitution',
+        'Producer','ProjectLeader','ProjectManager','ProjectMember',
+        'RegistrationAgency','RegistrationAuthority','RelatedPerson',
+        'Researcher','ResearchGroup','RightsHolder','Sponsor','Supervisor',
+        'WorkPackageLeader','Other']
+
+      return val if allowed_values.include? val
+      return 'Other'
     end
 
     # Guesses the type of the identifier based on its contents. Returns
@@ -263,7 +284,6 @@ module HydraDurham
           end
         end
       end
-
     end
 
     # Gets the resource Datacite metadata as a hash.
@@ -287,10 +307,10 @@ module HydraDurham
           { scheme: nil, schemeURI: nil, label: e}
         end)
 
-      # TODO: When we have roles in contributors, use actual creators here
-      #       and put others in contributors with the right contributorType.
-      #       Also make sure validation makes sure that contributors has a creator.
-      data[:creator] = (contributors.to_a.select do |c|
+      creator_role=Sufia.config.contributor_roles['Creator']
+      data[:creator] = ((contributors_sorted.select do |c|
+        c.role.include? creator_role
+      end).select do |c|
         !c.marked_for_destruction?
       end).map do |c|
         { name: c.contributor_name.first,
@@ -302,7 +322,21 @@ module HydraDurham
       data[:research_methods] = research_methods.to_a
       data[:description] = description.to_a
       data[:funder] = funder.to_a
-      data[:contributor] = []
+      data[:contributor] = contributors_sorted.reduce([]) do |a,c|
+        # Creator role is converted to nil in contributor_role_to_datacite and then removed with compact
+        roles=c.role.map do |r| contributor_role_to_datacite r end
+        roles.compact!
+        next a if roles.empty?
+        roles.each do |r|
+          a << {
+            name: c.contributor_name.first,
+            affiliation: c.affiliation.first,
+            contributor_type: r
+          }
+        end
+        a
+      end
+
 
       data[:relatedIdentifier] = related_url.map do |url|
         # related field is now titled cited by, so use that as the relation type
