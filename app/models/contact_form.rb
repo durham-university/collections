@@ -12,7 +12,7 @@ class ContactForm < MailForm::Base
   attribute :contact_method, captcha: true
   attribute :category, validate: true
   attribute :name, validate: true
-  attribute :email, validate: /\A([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})\z/i
+  attribute :email, validate: /\A([\w\.%\+\-]+)@([\w\-]+\.')+([\w]{2,})\z/i
   attribute :subject, validate: true
   attribute :message, validate: true
   # - can't use this without ActiveRecord::Base validates_inclusion_of :issue_type, in: ISSUE_TYPES
