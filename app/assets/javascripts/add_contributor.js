@@ -86,6 +86,12 @@ ContributorsFieldManager.prototype = Object.create(HydraEditor.FieldManager.prot
       event.preventDefault();
       var field = $(event.target).parents(this.fieldWrapperClass);
       field.find('[data-destroy]').val('1')
+      // if this is a new contributor without an id, wipe the name and affiliation
+      // fields as well since _destroy parameter won't work on new entries
+      if(field.find("[name*='[id]']").length == 0){
+        field.find("[name*='[contributor_name]']").val('');
+        field.find("[name*='[affiliation]']").val('');
+      }
       field.hide();
       this.element.trigger("managed_field:remove", field);
     }}
