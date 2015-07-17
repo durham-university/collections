@@ -9,6 +9,26 @@ Bundler.require(*Rails.groups)
 module Sufia
   class Application < Rails::Application
 
+    config.to_prepare do
+      # == APPLY MONKEY PATCHES ==
+
+      # to_prepare gets executed when reloading classes so that development
+      # environment re-applies the patches when classes are reloaded. In
+      # production this should only get executed once.
+
+      # Prepend adds the definitions after already existing ones and overrides
+      # them. Include adds the definitions before those in the class.
+      SimpleForm::Inputs::Base.class_eval do
+        include SimpleFormsInputBasePatch # in app/inputs/simple_forms_input_base_patch.rb
+      end
+      MultiValueInput.class_eval do
+        prepend MultiValueInputPatch # in app/inputs/multi_value_input_patch.rb
+      end
+      BatchUpdateJob.class_eval do
+        prepend BatchUpdateJobPatch # in app/jobs/batch_update_job_patch.rb
+      end
+    end
+
     config.generators do |g|
       g.test_framework :rspec, :spec => true
     end

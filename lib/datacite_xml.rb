@@ -81,7 +81,7 @@ class DataciteXml
           if map.has_key?(:date_created) then xml.date map[:date_created], :dateType=>'Created' end
         }
 
-        xml.resourceType Sufia.config.resource_types_to_datacite[map[:resource_type]], :resourceTypeGeneral=>Sufia.config.resource_types_to_datacite[map[:resource_type]]
+        xml.resourceType map[:resource_type], :resourceTypeGeneral=>map[:resource_type]
 
         if map[:size].any?
           xml.sizes {

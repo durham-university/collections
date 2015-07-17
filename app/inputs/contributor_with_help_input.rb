@@ -11,11 +11,17 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
   protected
 
     def collection
-      @collection ||= (Array.wrap(object[attribute_name]).reject do
-        |value| value.to_s.strip.blank?
-      end).sort do |x,y|
-        x.order.first.to_i <=> y.order.first.to_i
-      end + [Contributor.new()]
+      @collection ||= begin
+        c=(Array.wrap(object[attribute_name]).reject do
+          |value| value.to_s.strip.blank?
+        end).sort do |x,y|
+          x.order.first.to_i <=> y.order.first.to_i
+        end
+        # Only include the last if not read only. The super class implementation
+        # won't work for nested attributes.
+        c+=[Contributor.new()] if !field_readonly?
+        c
+      end
     end
 
     def build_field(value, index)

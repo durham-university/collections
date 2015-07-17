@@ -84,7 +84,8 @@ Sufia.config do |config|
     "Physical Object" => "PhysicalObject",
     "Service" => "Service",
     "Workflow" => "Workflow",
-    "Other" => "Other",
+    "Map or Cartographic Material" => "Other",
+    "Other" => "Other"
   }
 
   config.contributor_roles = {

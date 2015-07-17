@@ -1,5 +1,6 @@
 class CollectionsController < ApplicationController
   include Sufia::CollectionsControllerBehavior
+  include HydraDurham::DoiResourceBehaviour
 
   def collection_params
     form_class.model_attributes(
@@ -52,4 +53,5 @@ class CollectionsController < ApplicationController
     end
     super
   end
+
 end

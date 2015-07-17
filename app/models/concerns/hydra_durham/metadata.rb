@@ -17,11 +17,6 @@ module HydraDurham
         index.as :stored_searchable
       end
 
-      property :doi_published, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#doi_published'), multiple: false do |index|
-        index.type :date
-        index.as :stored_searchable
-      end
-
       has_many :contributors, inverse_of: :contributorable, as: 'contributorable'
 
       accepts_nested_attributes_for :contributors, allow_destroy: true, reject_if: proc { |attributes| attributes['contributor_name'].first.blank? }
