@@ -135,7 +135,7 @@ module HydraDurham
         end)
 
       creator_role=Sufia.config.contributor_roles['Creator']
-      data[:creator] = (contributors.to_a.select do |c| c.role.include? creator_role end).map do |c|
+      data[:creator] = (contributors_sorted.select do |c| c.role.include? creator_role end).map do |c|
         { name: c.contributor_name.first,
           affiliation: c.affiliation.first
         }
