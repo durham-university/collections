@@ -229,21 +229,6 @@ module HydraDurham
     # Guesses the type of the identifier based on its contents. Returns
     # The a hash containing the type and the identifier possibly reformatted.
     def guess_identifier_type ident
-      def remove_prefix(ident,prefix,case_insensitive=true)
-        original=ident
-        ident=ident.downcase if case_insensitive
-        if ident.start_with? prefix
-          return original[prefix.length .. -1]
-        else
-          return original
-        end
-      end
-
-      prefix=nil
-      ind=ident.index ':'
-      prefix=ident[0 .. (ind-1)].downcase if ind
-
-      (/doi:/i =~ ident || /info:doi/i =~ ident || /dx.doi.org/i =~ ident)
 
       rules=[{regex: /^doi:(.*)/i, type: 'DOI', value: '\1' },
              {regex: /^info:doi\/(.*)/i, type: 'DOI', value: '\1' },
@@ -276,7 +261,6 @@ module HydraDurham
           end
         end
       end
-
 
     end
 
