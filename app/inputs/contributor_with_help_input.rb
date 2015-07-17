@@ -10,12 +10,6 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
 
   protected
 
-    def buffer_each(collection)
-      collection.each_with_object('').with_index do |(value, buffer), index|
-        buffer << yield(value, index)
-      end
-    end
-
     def collection
       @collection ||= (Array.wrap(object[attribute_name]).reject do
         |value| value.to_s.strip.blank?
@@ -73,7 +67,7 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       @html << "  </div>"
 
       @html << "  <div class='col-md-8'>"
-      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name))
+      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name, id: field_name))
       @html << "  </div>"
       @html << "</div>"
 
@@ -95,7 +89,7 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       @html << @builder.collection_select(
           attribute_name,
           Sufia.config.contributor_roles, :last, :first,
-          input_options.merge(selected: field_value), merged_input_options.merge(name: field_name)
+          input_options.merge(selected: field_value), merged_input_options.merge(name: field_name, id: field_name)
         )
 
       @html << "  </div>"
@@ -109,7 +103,8 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
 
       @html << @builder.hidden_field(attribute_name,
                             name: field_name,
-                            value: field_value)
+                            value: field_value,
+                            id: field_name)
 
       # delete checkbox
       @html << destroy_widget(attribute_name, index)
