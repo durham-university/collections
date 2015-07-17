@@ -12,18 +12,20 @@ class ContactForm < MailForm::Base
   attribute :contact_method, captcha: true
   attribute :category, validate: true
   attribute :name, validate: true
-  attribute :email, validate: /\A([\w\.%\+\-]+)@([\w\-]+\.')+([\w]{2,})\z/i
+  attribute :email, validate: /\A([\w\.%\+\-']+)@([\w\-]+\.)+([\w]{2,})\z/i
   attribute :subject, validate: true
   attribute :message, validate: true
+
+  attr_accessor :message_from
   # - can't use this without ActiveRecord::Base validates_inclusion_of :issue_type, in: ISSUE_TYPES
 
   # Declare the e-mail headers. It accepts anything the mail method
   # in ActionMailer accepts.
   def headers
     {
-      subject: "#{subject}",
+      subject: "[Collections] #{subject}",
       to: Sufia.config.contact_email,
-      from: Sufia.config.from_email
+      from: message_from
     }
   end
 end
