@@ -1,10 +1,30 @@
+def disable_route(prefix, redirect="homepage#index")
+  get "#{prefix}/*rest", to: redirect
+  post "#{prefix}/*rest", to: redirect
+  delete "#{prefix}/*rest", to: redirect
+  put "#{prefix}/*rest", to: redirect
+  patch "#{prefix}/*rest", to: redirect
+  get "#{prefix}", to: redirect
+  post "#{prefix}", to: redirect
+  delete "#{prefix}", to: redirect
+  put "#{prefix}", to: redirect
+  patch "#{prefix}", to: redirect
+end
+
 Rails.application.routes.draw do
 #  mount Qa::Engine => '/qa'
-
 
   resources :people
   blacklight_for :catalog
   devise_for :users
+
+  # These have to be defined before what they are disabling.
+  # Note that devise defines users/sign_in which will still work because
+  # it's defined before these.
+  disable_route 'users'
+  disable_route 'roles'
+  disable_route 'bookmarks'
+
   mount Hydra::RoleManagement::Engine => '/'
 
   Hydra::BatchEdit.add_routes(self)
