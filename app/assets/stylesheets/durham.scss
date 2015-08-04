@@ -319,3 +319,13 @@ div.heading-tile {
   padding: 0;
   background-color: inherit;
 }
+
+.facet-values .remove {
+  text-indent: 1px;
+  margin-left: 5px;
+  color: white;
+}
+
+a:link.remove, a:visited.remove {
+  color: white;
+}
