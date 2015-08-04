@@ -1,4 +1,5 @@
-<div>
+<div id="recent_docs_outer">
+  <h2 class="heading1"><%= t('sufia.homepage.recently_uploaded') %></h2>
   <% if recent_documents.blank? %>
     <% msg = 'Login to see your recently added documents' if msg.blank? and current_user.blank? %>
     <% msg = 'You have no documents to display. Contribute some of your documents!' if msg.blank? %>
