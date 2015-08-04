@@ -16,11 +16,17 @@ Rails.application.routes.draw do
 
   resources :people
   blacklight_for :catalog
+
+  # this enables users/sign_in and users/sign_out
   devise_for :users
 
+  # enable users index only, needed by user auto complete
+  get "users" => "users#index"
+  # enable user proxy management
+  post 'users/:user_id/depositors' => 'depositors#create'
+  delete 'users/:user_id/depositors/:id' => 'depositors#destroy'
+
   # These have to be defined before what they are disabling.
-  # Note that devise defines users/sign_in which will still work because
-  # it's defined before these.
   disable_route 'users'
   disable_route 'roles'
   disable_route 'bookmarks'
