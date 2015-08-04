@@ -43,6 +43,10 @@ gem 'mysql2'
 gem 'clamav'
 gem 'redis-session-store'
 
+# Get hydra-editor from github until some fixes are pushed to gem repositories.
+# Remove this line when a new version is released.
+gem 'hydra-editor', github: 'projecthydra/hydra-editor', ref: '7c8983c825'
+
 # Fix mini_magick at the latest 3.x version
 # After that there are incompatibilities with Ruby 2.0.0p598, used on CentOS 7
 # See https://github.com/minimagick/minimagick/issues/278
