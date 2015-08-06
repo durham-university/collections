@@ -10,7 +10,7 @@
 
 <% @page_title = "#{current_tab.capitalize} listing" %>
 
-<h1 class="sr-only">My Files, Collections, Highlights, and Files Shared with Me</h1>
+<h1 class="sr-only">My Files, Collections and Files Shared with Me</h1>
 <ul class="nav nav-tabs" id="my_nav" role="navigation">
   <span class="sr-only">You are currently listing your <%= current_tab.pluralize %> .  You have <%= @response.docs.count %> <%= current_tab.pluralize(@response.docs.count)%> </span>
   <li class="<%= "active" if @selected_tab == :files %>">
@@ -18,9 +18,6 @@
   </li>
   <li class="<%= "active" if @selected_tab == :collections %>">
     <%= link_to t('sufia.dashboard.my.collections'), sufia.dashboard_collections_path %>
-  </li>
-  <li class="<%= "active" if @selected_tab == :highlighted %>">
-    <%= link_to t('sufia.dashboard.my.highlights'), sufia.dashboard_highlights_path %>
   </li>
   <li class="<%= "active" if @selected_tab == :shared %>">
     <%= link_to t('sufia.dashboard.my.shares'), sufia.dashboard_shares_path %>

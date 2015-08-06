@@ -26,11 +26,6 @@
         confirm: "Deleting a file from #{t('sufia.product_name')} is permanent. Click OK to delete this file from #{t('sufia.product_name')}, or Cancel to cancel this operation" } %>
       </li>
     <% end %>
-    <li role="menuitem" tabindex="-1">
-      <%= display_trophy_link(@user, id) do |text| %>
-        <i aria-hidden="true" class='glyphicon glyphicon-star'></i> <%= text %>
-      <% end %>
-    </li>
     <li>
       <%= link_to raw('<i class="glyphicon glyphicon-transfer" aria-hidden="true"></i> Transfer Ownership of File'), sufia.new_generic_file_transfer_path(id), class: 'itemicon itemtransfer', title: 'Transfer Ownership of File' if gf.depositor == @user.user_key %>
     </li>
