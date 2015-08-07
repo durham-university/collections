@@ -63,5 +63,10 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'jettywrapper'
 
+#  gem 'simplecov', require: false
+#  gem 'coveralls', require: false
+  gem 'database_cleaner', require: false
+  gem 'capybara'
+
   gem 'factory_girl_rails'
 end

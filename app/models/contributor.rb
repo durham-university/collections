@@ -20,9 +20,13 @@ class Contributor < ActiveFedora::Base
   end
 
   def to_s
-  	string = ""
-  	string += contributor_name.any? { |string| string.strip.length > 0 } ? contributor_name.first + " " : ""
-  	string += affiliation.any? { |string| string.strip.length > 0 } ? "(" + affiliation.first + ")" : ""
-  	string.strip
+    string = ""
+    string += contributor_name.any? { |string| string.strip.length > 0 } ? contributor_name.first + " " : ""
+    string += affiliation.any? { |string| string.strip.length > 0 } ? "(" + affiliation.first + ")" : ""
+    string.strip
+  end
+
+  def to_hash
+    { contributor_name: contributor_name.to_a, affiliation: affiliation.to_a, role: role.to_a }
   end
 end

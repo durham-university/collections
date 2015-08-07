@@ -4,8 +4,12 @@
 module MultiValueInputPatch
 
   def field_readonly?(value=nil)
-    (object.respond_to? :model) && (object.model.respond_to? :field_readonly?) \
-        && (object.model.field_readonly? attribute_name, value )
+    o=if object.respond_to? :model
+        object.model
+      else
+        object
+      end
+    (o.respond_to? :field_readonly?) && (o.field_readonly? attribute_name, value )
   end
 
   def input(wrapper_options)
