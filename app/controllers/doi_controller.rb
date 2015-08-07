@@ -1,10 +1,19 @@
 class DoiController < ApplicationController
+
+  rescue_from CanCan::AccessDenied do |exception|
+    redirect_to(root_path, alert: "You do not have sufficient privileges to edit this document")
+  end
+
+
   # Show information related to DOI generation.
    def show
     @id = params[:id]
     @resource = ActiveFedora::Base.find(@id)
 
     raise ActiveFedora::ObjectNotFoundError if not @resource
+
+    authorize! :edit, @resource
+
     raise "Resource doesn't support DOI functionality" if not @resource.respond_to? :doi
 
     @metadata_errors = @resource.validate_doi_metadata
