@@ -16,6 +16,7 @@
 //= require turbolinks//
 // Required by Blacklight
 //= require blacklight/blacklight
+//= require form_behaviour
 
 //= require sufia
 //= require_tree
