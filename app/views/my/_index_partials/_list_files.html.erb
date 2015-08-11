@@ -46,18 +46,8 @@
       <dd class="col-xs-9 col-lg-4"><%= link_to document.label, sufia.generic_file_path(id) %></dd>
       <dt class="col-xs-3 col-lg-2">File Format:</dt>
       <dd class="col-xs-9 col-lg-4"><%= document.file_format %>JPG</dd>
-      <dt class="col-xs-3 col-lg-2">Creator:</dt>
-      <dd class="col-xs-9 col-lg-4"><%= document.creator %></dd>
       <dt class="col-xs-3 col-lg-2">Depositor:</dt>
       <dd class="col-xs-9 col-lg-4"><%= link_to_profile document.depositor %></dd>
-      <dt class="col-xs-3 col-lg-2">Edit Access:</dt>
-      <dd class="col-xs-9 col-lg-10">
-        <% if document.edit_groups.present? %>
-            Groups: <%= document.edit_groups.join(', ') %>
-            <br/>
-        <% end %>
-        Users: <%= document.edit_people.join(', ') %>
-      </dd>
     </dl>
   </td>
 </tr>
