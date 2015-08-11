@@ -51,4 +51,19 @@ module SufiaHelper
       content_tag :span, t('sufia.visibility.private'), class: "label label-danger", title: t('sufia.visibility.private_title_attr')
     end
   end
+
+  def link_to_profile(login)
+    user = ::User.find_by_user_key(login)
+    return login if user.nil?
+
+    text =
+      if user.respond_to? :name
+        user.name
+      else
+        login
+      end
+
+    text
+  end
+
 end
