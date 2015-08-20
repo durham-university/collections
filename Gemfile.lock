@@ -7,6 +7,17 @@ GIT
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
 
+GIT
+  remote: git://github.com/projecthydra/hydra-editor.git
+  revision: 7c8983c825a1f21e86b4667fa4f579ee7af6ca40
+  ref: 7c8983c825
+  specs:
+    hydra-editor (1.0.4)
+      active-fedora (>= 9.0.0)
+      cancancan (~> 1.8)
+      rails (~> 4.1)
+      simple_form (~> 3.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -234,11 +245,6 @@ GEM
       hydra-file_characterization (~> 0.3)
       mime-types (~> 2.3)
       mini_magick (>= 3.2, < 5)
-    hydra-editor (1.0.4)
-      active-fedora (>= 9.0.0)
-      cancancan (~> 1.8)
-      rails (~> 4.1)
-      simple_form (~> 3.1.0)
     hydra-file_characterization (0.3.1)
       activesupport (>= 3.0.0)
     hydra-head (9.1.4)
@@ -627,6 +633,7 @@ DEPENDENCIES
   devise-guests (~> 0.3)
   devise_ldap_authenticatable
   factory_girl_rails
+  hydra-editor!
   hydra-role-management
   jbuilder (~> 2.0)
   jettywrapper
