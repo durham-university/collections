@@ -19,3 +19,7 @@
 .vagrant/
 jetty/
 config/secrets.yml
+
+
+coverage.data
+coverage/*

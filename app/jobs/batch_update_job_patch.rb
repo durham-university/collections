@@ -23,7 +23,12 @@ module BatchUpdateJobPatch
 
     # Check if the user isn't allowed to change the visibility of this file
     if visibility && (gf.respond_to? :can_change_visibility?) && (!gf.can_change_visibility? visibility, user)
-      params[:visibility] = gf.visibility # Not allowed to change visibility. Just keep old value.
+      # Not allowed to change visibility. Just keep old value.
+      params[:visibility] = if gf.open_access_pending?
+        'open-pending'
+      else
+        gf.visibility
+      end
     end
     handle_pending_visibility_params params, gf, :generic_file
 

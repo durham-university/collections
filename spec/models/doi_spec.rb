@@ -1,0 +1,363 @@
+require 'rails_helper'
+
+RSpec.describe "doi concern" do
+  context "basic methods" do
+    let(:file) { FactoryGirl.create(:generic_file, :test_data, :public_doi) }
+    describe "mock_doi" do
+      subject { file.mock_doi }
+      it { is_expected.to match(/\A[0-9]+\.[0-9]+\/[[:alnum:]]{,20}\Z/) }
+    end
+    describe "full_mock_doi" do
+      subject { file.full_mock_doi }
+      it { is_expected.to match(/\Adoi:[0-9]+\.[0-9]+\/[[:alnum:]]{,20}\Z/) }
+    end
+
+    describe "doi_landing_page" do
+      subject { file.doi_landing_page }
+      it { is_expected.to match("files/#{file.id}")}
+    end
+
+    describe "restricted_mandatory_datacite_fields" do
+      subject { file.restricted_mandatory_datacite_fields }
+      it "should return fields in the right format" do
+        expect(subject).to be_a(Array)
+        expect(subject).not_to be_empty
+        expect(subject).to all( be_a(Hash) )
+        expect(subject).to all( include( :source ) )
+        expect(subject).to all( include( :dest ) )
+      end
+    end
+
+    describe "guess_identifier_type" do
+      # An empty file is good enough for these tests and is much faster.
+      subject { (GenericFile.new).guess_identifier_type test_identifier }
+      context "with doi prefix" do
+        let(:test_identifier) { 'doi:12.3456/abc123456' }
+        it { is_expected.to eql( { id_type: 'DOI', id: '12.3456/abc123456' } ) }
+      end
+      context "with info:doi uri" do
+        let(:test_identifier) { 'info:doi/12.3456/abc123456' }
+        it { is_expected.to eql( { id_type: 'DOI', id: '12.3456/abc123456' } ) }
+      end
+      context "with dx.doi.org url" do
+        let(:test_identifier) { 'http://dx.doi.org/12.3456/abc123456' }
+        it { is_expected.to eql( { id_type: 'DOI', id: '12.3456/abc123456' } ) }
+      end
+      context "with arxiv prefix" do
+        let(:test_identifier) { 'arxiv:1234.123456' }
+        it { is_expected.to eql( { id_type: 'arXiv', id: 'arXiv:1234.123456' } ) }
+      end
+      context "with arxiv url" do
+        let(:test_identifier) { 'http://www.arxiv.org/abs/1234.123456' }
+        it { is_expected.to eql( { id_type: 'arXiv', id: 'arXiv:1234.123456' } ) }
+      end
+      context "with urn:lsid prefix" do
+        let(:test_identifier) { 'urn:lsid:1234.123456' }
+        it { is_expected.to eql( { id_type: 'LSID', id: 'urn:lsid:1234.123456' } ) }
+      end
+      context "with urn: prefix" do
+        let(:test_identifier) { 'urn:1234.123456' }
+        it { is_expected.to eql( { id_type: 'URN', id: 'urn:1234.123456' } ) }
+      end
+      context "with isbn: prefix" do
+        let(:test_identifier) { 'isbn:1234-1234-123456' }
+        it { is_expected.to eql( { id_type: 'ISBN', id: '1234-1234-123456' } ) }
+      end
+    end
+
+    describe "datacite_metadata_changed?" do
+      before {
+        file.datacite_document = file.doi_metadata.to_json
+      }
+      subject { file.datacite_metadata_changed? }
+      context "when not changed" do
+        it { is_expected.to eql(false) }
+        context "if something else has changed" do
+          before { file.depositor = "testtest" }
+          it { is_expected.to eql(false) }
+        end
+      end
+      context "when subject changed" do
+        before { file.subject << 'new subject' }
+        it { is_expected.to eql(true) }
+      end
+      context "when contributors changed" do
+        before {
+          contributor_3_id = (file.contributors.to_a.select do |x|
+                                x.contributor_name.first=='Contributor 3'
+                              end).first.id
+          file.contributors_attributes = [ {id: contributor_3_id, _destroy: 1} ]
+        }
+        it { is_expected.to eql(true) }
+      end
+    end
+  end
+
+
+  context "queue management" do
+    let(:file) { FactoryGirl.create(:generic_file) }
+    context "when not managed in DataCite" do
+      it "assert not managed in DataCite" do
+        expect(file.manage_datacite?).to eql( false )
+      end
+      context "when updating only" do
+        it "should not start a DataCite job" do
+          expect(Sufia.queue).not_to receive(:push).with(UpdateDataciteJob)
+          file.queue_doi_metadata_update 'testuser'
+        end
+      end
+      context "when minting" do
+        it "should start a DataCite job" do
+          expect(Sufia.queue).to receive(:push).with(UpdateDataciteJob).once
+          file.queue_doi_metadata_update 'testuser', mint: true
+        end
+      end
+      context "when destroying" do
+        it "should not start a DataCite job" do
+          expect(Sufia.queue).not_to receive(:push).with(UpdateDataciteJob)
+          file.queue_doi_metadata_update 'testuser', destroyed: true
+        end
+      end
+    end
+    context "when managed in DataCite" do
+      before { file.add_doi }
+      it "assert is managed in DataCite" do
+        expect(file.manage_datacite?).to eql( true )
+      end
+      context "when updating only" do
+        it "should start a DataCite job" do
+          expect(Sufia.queue).to receive(:push).with(UpdateDataciteJob).once
+          file.queue_doi_metadata_update 'testuser'
+        end
+      end
+      # DataCite destroy not yet implemented
+      xcontext "when destroying" do
+        it "should start a DataCite job" do
+          expect(Sufia.queue).to receive(:push).with(UpdateDataciteJob).once
+          file.queue_doi_metadata_update 'testuser', destroyed: true
+        end
+      end
+    end
+  end
+
+  context "with a generic file" do
+    let(:file) { FactoryGirl.create(:generic_file) }
+
+    subject { file }
+
+    context "when it doesn't have a local DOI" do
+      it "shouldn't have the DOI in identifiers" do
+        expect(subject.identifier).not_to include(file.full_mock_doi)
+      end
+
+      it "should not have local doi" do
+        expect(subject.has_local_doi?).to eql(false)
+      end
+      it "should not be managed in datacite" do
+        expect(subject.manage_datacite?).to eql(false)
+      end
+      context "but has outside DOI" do
+        before { file.identifier << (file.full_mock_doi+'xx') }
+        it "should not have local doi" do
+          expect(subject.has_local_doi?).to eql(false)
+        end
+        it "should not be managed in datacite" do
+          expect(subject.manage_datacite?).to eql(false)
+        end
+        it "should have some doi" do
+          expect(subject.has_doi?).to eql(true)
+        end
+      end
+    end
+
+    context "when it does have a local DOI" do
+      before { file.add_doi }
+      it "adding doi should work" do
+        expect(subject.identifier).to include(file.full_mock_doi)
+      end
+
+      it "should have local doi" do
+        expect(subject.has_local_doi?).to eql(true)
+      end
+      it "should be managed in datacite" do
+        expect(subject.manage_datacite?).to eql(true)
+      end
+      it "should be managed in datacite" do
+        expect(subject.manage_datacite?).to eql(true)
+      end
+    end
+
+    describe "validation" do
+      let(:file) { FactoryGirl.create(:generic_file, :test_data) }
+      subject { file }
+
+      context "when not having a published doi" do
+        it { is_expected.to be_valid }
+
+        context "with a doi_published set" do
+          before { file.doi_published = DateTime.now }
+          it { is_expected.not_to be_valid }
+        end
+
+        context "with a datacite_document set" do
+          before { file.datacite_document = file.doi_metadata.to_json }
+          it { is_expected.not_to be_valid }
+        end
+      end
+
+      context "with published doi but not mandatory fields" do
+        before {
+          file.identifier += [file.full_mock_doi]
+        }
+        it { is_expected.not_to be_valid }
+      end
+
+      context "when having a published doi" do
+        before {
+          file.identifier += [file.full_mock_doi]
+          file.doi_published = DateTime.parse('Thu, 16 Jul 2015 12:44:38 +0100')
+          file.datacite_document = file.doi_metadata.to_json
+
+          file.skip_update_datacite = true
+          begin
+            file.save
+          ensure
+            file.skip_update_datacite = false
+          end
+        }
+
+        it { is_expected.to be_valid }
+
+        context "with modified doi_published" do
+          before { file.doi_published = DateTime.now }
+          it { is_expected.not_to be_valid }
+        end
+
+        context "with removed doi" do
+          before { file.identifier -= [file.full_mock_doi] }
+          it { is_expected.not_to be_valid }
+        end
+
+        context "with changed title" do
+          before { file.title = ['Changed title'] }
+          it { is_expected.not_to be_valid }
+        end
+
+        context "with changed creators" do
+          before {
+            contributor_2_id = (file.contributors.to_a.select do |x|
+                                  x.contributor_name.first=='Contributor 2'
+                                end).first.id
+            file.contributors_attributes = [ {id: contributor_2_id, _destroy: 1} ]
+          }
+          it { is_expected.not_to be_valid }
+        end
+
+      end
+
+    end
+
+    describe "metadata" do
+      # TODO: Use an actual file
+
+      let(:file) { FactoryGirl.create(:public_file, :test_data, :public_doi) }
+
+      context "with passing values" do
+        it "should not have any metadata errors" do
+          expect(file.validate_doi_metadata).to be_empty
+        end
+        it "should give correct metadata hash" do
+          expect(multi_value_sort(file.doi_metadata)).to eql(multi_value_sort(
+            {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>"Affiliation 1"}, {:name=>"Contributor 2", :affiliation=>"Affiliation 2"}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>"Affiliation 3", :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}
+          ))
+        end
+      end
+
+      context "with deleted contributor" do
+        before {
+          contributor_2_id = (file.contributors.to_a.select do |x|
+                                x.contributor_name.first=='Contributor 2'
+                              end).first.id
+          contributor_3_id = (file.contributors.to_a.select do |x|
+                                x.contributor_name.first=='Contributor 3'
+                              end).first.id
+          file.contributors_attributes = [ {id: contributor_2_id, _destroy: 1}, {id: contributor_3_id, _destroy: 1} ]
+        }
+        it "should give correct metadata hash" do
+          expect(multi_value_sort(file.doi_metadata)).to eql(multi_value_sort(
+            {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>"Affiliation 1"}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}
+          ))
+        end
+      end
+
+      context "with missing required values" do
+        context "with wrong visibility" do
+          before {
+            file.visibility=Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+          }
+          it "assert visibility not public" do
+            expect(file.visibility).not_to eql( Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC )
+          end
+          it "should give a validation error" do
+            expect(file.validate_doi_metadata.size).to eql(1)
+          end
+        end
+        context "with no creators" do
+          before {
+            file.contributors = (file.contributors.to_a.select do |x|
+                                  x.role.first!='http://id.loc.gov/vocabulary/relators/cre'
+                                end)
+          }
+          it "should give a validation error" do
+            expect(file.validate_doi_metadata.size).to eql(1)
+          end
+        end
+        context "with no title" do
+          before {
+            file.title=[]
+          }
+          it "should give a validation error" do
+            expect(file.validate_doi_metadata.size).to eql(1)
+          end
+        end
+        context "with no resource type" do
+          before {
+            file.resource_type=[]
+          }
+          it "should give a validation error" do
+            expect(file.validate_doi_metadata.size).to eql(1)
+          end
+        end
+        context "with multiple errors" do
+          before {
+            file.contributors=[]
+            file.title=[]
+            file.resource_type=[]
+            file.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+          }
+          it "should give a validation error" do
+            expect(file.validate_doi_metadata.size).to eql(4)
+          end
+        end
+      end
+    end
+  end
+
+  context "with a collection" do
+    # TODO: Add files to collection and test those too
+    let(:collection) { FactoryGirl.create(:collection, :test_data) }
+
+    describe "metadata" do
+      context "with passing values" do
+        it "should not have any metadata errors" do
+          expect(collection.validate_doi_metadata).to be_empty
+        end
+        it "should give correct metadata hash" do
+          expect(multi_value_sort(collection.doi_metadata)).to eql(multi_value_sort(
+            {:identifier=>collection.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>"Affiliation 1"},{:name=>"Contributor 2", :affiliation=>"Affiliation 2"}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>"Affiliation 3", :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Collection", :rights=>[], :format=>[], :size=>[]}
+          ))
+        end
+      end
+    end
+  end
+end
