@@ -638,6 +638,7 @@ DEPENDENCIES
   redis-session-store
   rsolr (~> 1.0.6)
   rspec-rails
+  rubyzip
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   spring

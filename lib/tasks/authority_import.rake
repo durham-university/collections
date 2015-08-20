@@ -1,4 +1,5 @@
 require 'open-uri'
+require 'zip'
 
 namespace :authority_import do
   def download_file(url,dest)

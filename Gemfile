@@ -42,6 +42,7 @@ gem 'hydra-role-management'
 gem 'mysql2'
 gem 'clamav'
 gem 'redis-session-store'
+gem 'rubyzip'
 
 # Fix mini_magick at the latest 3.x version
 # After that there are incompatibilities with Ruby 2.0.0p598, used on CentOS 7
