@@ -42,6 +42,7 @@ gem 'hydra-role-management'
 gem 'mysql2'
 gem 'clamav'
 gem 'redis-session-store'
+gem 'rubyzip'
 
 # Get hydra-editor from github until some fixes are pushed to gem repositories.
 # Remove this line when a new version is released.
