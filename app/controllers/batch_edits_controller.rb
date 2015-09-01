@@ -113,7 +113,7 @@ class BatchEditsController < ApplicationController
       not_deleted=[]
       batch.each do |doc_id|
         gf = ::GenericFile.find(doc_id)
-        if gf.can_destroy? @current_user
+        if gf.can_destroy?(@current_user) && (!gf.respond_to?(:doi) || !gf.has_local_doi?)
           if gf.respond_to? :doi
             # Queue method checks that the object has a local doi.
             # It will also push metadata updates on any dependent documents.
@@ -127,9 +127,9 @@ class BatchEditsController < ApplicationController
 
       if not_deleted.any?
         if batch.length==1
-          flash[:alert]="#{not_deleted[0]} is Open Access and could not be deleted."
+          flash[:alert]="#{not_deleted[0]} could not be deleted."
         else
-          flash[:alert]="Some of the selected files are Open Access and could not be deleted: #{(not_deleted.each &:to_s).join ', '}"
+          flash[:alert]="Some of the selected files could not be deleted: #{(not_deleted.each &:to_s).join ', '}"
         end
       end
 

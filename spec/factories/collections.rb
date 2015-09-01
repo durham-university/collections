@@ -16,7 +16,11 @@ FactoryGirl.define do
 
     trait :public_doi do
       after(:create) do |c, evaluator|
-        c.identifier << c.full_mock_doi
+        c.identifier += [c.full_mock_doi]
+        c.doi_published = DateTime.now
+        c.datacite_document = c.doi_metadata.to_json
+        c.skip_update_datacite = true
+        c.save
       end
     end
 

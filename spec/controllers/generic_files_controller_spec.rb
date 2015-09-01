@@ -1,9 +1,14 @@
 require 'rails_helper'
+require 'shared/doi_resource_behaviour'
 
 RSpec.describe GenericFilesController do
   routes { Sufia::Engine.routes }
   let(:user) { FactoryGirl.find_or_create(:user) }
   before { sign_in user }
+
+  it_behaves_like "doi_resource_behaviour" do
+    let(:resource_factory) { :generic_file }
+  end
 
   describe "update" do
     let(:file) { FactoryGirl.create(:generic_file,:test_data,depositor: user) }
