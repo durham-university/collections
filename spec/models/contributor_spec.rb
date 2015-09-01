@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Contributor do
   let(:file) { FactoryGirl.create(:generic_file) }
   before {
-    file.contributors.new( contributor_name: ['Test Contributor'], affiliation: ['Test Affiliation'], role: ['http://id.loc.gov/vocabulary/relators/cre'])
+    file.contributors.new( contributor_name: ['Test Contributor'], affiliation: ['Test Affiliation','Second Affiliation'], role: ['http://id.loc.gov/vocabulary/relators/cre'])
   }
   let(:contributor) { file.contributors.first }
   subject { contributor }
@@ -12,7 +12,8 @@ RSpec.describe Contributor do
     expect(subject.contributor_name).to eql(['Test Contributor'])
   end
   it "should have an affiliation" do
-    expect(subject.affiliation).to eql(['Test Affiliation'])
+    # match_array ignores ordering
+    expect(subject.affiliation).to match_array(['Test Affiliation','Second Affiliation'])
   end
   it "should have a role" do
     expect(subject.role).to eql(['http://id.loc.gov/vocabulary/relators/cre'])
@@ -23,8 +24,9 @@ RSpec.describe Contributor do
     it "should include the name" do
       expect(subject.index(contributor.contributor_name.first)).to be_truthy
     end
-    it "should include the affiliation" do
-      expect(subject.index(contributor.affiliation.first)).to be_truthy
+    it "should include all the affiliations" do
+      expect(subject.index('Test Affiliation')).to be_truthy
+      expect(subject.index('Second Affiliation')).to be_truthy
     end
     it "should not include the role" do
       expect(subject.index('http://id.loc.gov/vocabulary/relators/cre')).to be_falsy

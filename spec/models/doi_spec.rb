@@ -1,8 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe "doi concern" do
+  def singularise_affiliation(file)
+    # Remove all but one affiliation until we have proper support for multiple
+    # affiliations in DataCite.
+    file.contributors.each do |c| c.affiliation = [ c.affiliation.sort.first ] end
+  end
+
   context "basic methods" do
-    let(:file) { FactoryGirl.create(:generic_file, :test_data, :public_doi) }
+    let(:file) { FactoryGirl.create(:generic_file, :test_data, :public_doi) do |f| singularise_affiliation(f) end }
     describe "mock_doi" do
       subject { file.mock_doi }
       it { is_expected.to match(/\A[0-9]+\.[0-9]+\/[[:alnum:]]{,20}\Z/) }
@@ -95,7 +101,7 @@ RSpec.describe "doi concern" do
 
 
   context "queue management" do
-    let(:file) { FactoryGirl.create(:generic_file) }
+    let(:file) { FactoryGirl.create(:generic_file) do |f| singularise_affiliation(f) end }
     context "when not managed in DataCite" do
       it "assert not managed in DataCite" do
         expect(file.manage_datacite?).to eql( false )
@@ -141,7 +147,7 @@ RSpec.describe "doi concern" do
   end
 
   context "with a generic file" do
-    let(:file) { FactoryGirl.create(:generic_file) }
+    let(:file) { FactoryGirl.create(:generic_file) do |f| singularise_affiliation(f) end }
 
     subject { file }
 
@@ -188,7 +194,7 @@ RSpec.describe "doi concern" do
     end
 
     describe "validation" do
-      let(:file) { FactoryGirl.create(:generic_file, :test_data) }
+      let(:file) { FactoryGirl.create(:generic_file, :test_data) do |f| singularise_affiliation(f) end }
       subject { file }
 
       context "when not having a published doi" do
@@ -260,7 +266,7 @@ RSpec.describe "doi concern" do
     describe "metadata" do
       # TODO: Use an actual file
 
-      let(:file) { FactoryGirl.create(:public_file, :test_data, :public_doi) }
+      let(:file) { FactoryGirl.create(:public_file, :test_data, :public_doi) do |f| singularise_affiliation(f) end }
 
       context "with passing values" do
         it "should not have any metadata errors" do
@@ -368,9 +374,8 @@ RSpec.describe "doi concern" do
 #        end
 #      end
 #    end
-
   end
-  
+
 #
 #  context "with a collection" do
 #    let(:file1) { FactoryGirl.create(:public_file, :test_data) }

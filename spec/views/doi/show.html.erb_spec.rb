@@ -1,7 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe "doi/show.html.erb", type: :view do
-  let(:file) { FactoryGirl.create(:public_file, :test_data) }
+  def singularise_affiliation(file)
+    # Remove all but one affiliation until we have proper support for multiple
+    # affiliations in DataCite.
+    file.contributors.each do |c| c.affiliation = [ c.affiliation.sort.first ] end
+  end
+
+  let(:file) { FactoryGirl.create(:public_file, :test_data) do |file|
+      singularise_affiliation(file)
+    end
+  }
 
   before {
     view.class.send :define_method, :blacklight_config, lambda { Blacklight::Configuration.new }
@@ -53,7 +62,10 @@ RSpec.describe "doi/show.html.erb", type: :view do
   end
 
   context "file not public" do
-    let(:file) { FactoryGirl.create(:registered_file, :test_data) }
+    let(:file) { FactoryGirl.create(:registered_file, :test_data) do |file|
+        singularise_affiliation(file)
+      end
+    }
     before { render }
 
     it "should not have publish button" do
@@ -82,8 +94,9 @@ RSpec.describe "doi/show.html.erb", type: :view do
         f.contributors=(f.contributors.to_a.select do |c|
           c.role.first != 'http://id.loc.gov/vocabulary/relators/cre'
         end)
-      end
 
+        singularise_affiliation(f)
+      end
     }
     before { render }
     it "should not have publish button" do
@@ -99,6 +112,8 @@ RSpec.describe "doi/show.html.erb", type: :view do
     let(:file) {
       FactoryGirl.create(:public_file, :test_data) do |f|
         f.resource_type = []
+
+        singularise_affiliation(f)
       end
     }
     before { render }
@@ -114,6 +129,8 @@ RSpec.describe "doi/show.html.erb", type: :view do
     let(:file) {
       FactoryGirl.create(:public_file, :test_data) do |f|
         f.title=[]
+
+        singularise_affiliation(f)
       end
     }
     before { render }
@@ -126,7 +143,10 @@ RSpec.describe "doi/show.html.erb", type: :view do
   end
 
   context "file already has a local doi" do
-    let(:file) { f=FactoryGirl.create(:public_file, :test_data, :public_doi) }
+    let(:file) { FactoryGirl.create(:public_file, :test_data, :public_doi) do |f|
+        singularise_affiliation(f)
+      end
+    }
     before { render }
     it "should not have publish button" do
       expect(page).not_to have_selector('input#publish-doi-submit')
@@ -135,10 +155,12 @@ RSpec.describe "doi/show.html.erb", type: :view do
       expect(rendered).to include('This resource already has a local DOI')
     end
   end
+
   context "file already has an outside doi" do
     let(:file) {
       FactoryGirl.create(:public_file, :test_data) do |f|
         f.identifier << 'doi:1234/1234'
+        singularise_affiliation(f)
       end
     }
     before { render }

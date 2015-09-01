@@ -3,6 +3,7 @@ class BatchEditsController < ApplicationController
   include GenericFileHelper
   include Sufia::BatchEditsControllerBehavior
   include HydraDurham::VisibilityParams
+  include HydraDurham::NestedContributorsBehaviour
 
   def edit
      @generic_file = ::GenericFile.new

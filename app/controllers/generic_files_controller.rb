@@ -4,6 +4,7 @@ class GenericFilesController < ApplicationController
   include Sufia::FilesControllerBehavior
   include HydraDurham::DoiResourceBehaviour
   include HydraDurham::AccessControlsController
+  include HydraDurham::NestedContributorsBehaviour
 
   def update
     super

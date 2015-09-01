@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'shared/doi_resource_behaviour'
+require 'shared/nested_contributors_behaviour'
 
 RSpec.describe GenericFilesController do
   routes { Sufia::Engine.routes }
@@ -8,6 +9,10 @@ RSpec.describe GenericFilesController do
 
   it_behaves_like "doi_resource_behaviour" do
     let(:resource_factory) { :generic_file }
+  end
+
+  it_behaves_like "nested_contributors_behaviour" do
+    let(:resource) { FactoryGirl.create(:generic_file,:test_data,depositor: user) }
   end
 
   describe "update" do
@@ -81,7 +86,7 @@ RSpec.describe GenericFilesController do
       let(:attributes) {
         {
           contributors_attributes: file.contributors.map do |c|
-            { id: c.id, contributor_name: [c.contributor_name.first], affiliation: [c.affiliation.first], role: [c.role.first], order: ["#{(c.order.first.to_i+1) % (file.contributors.count)}"]}
+            { id: c.id, contributor_name: [c.contributor_name.first], affiliation: c.affiliation.to_a, role: [c.role.first], order: ["#{(c.order.first.to_i+1) % (file.contributors.count)}"]}
           end
         }
       }

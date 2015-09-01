@@ -1,5 +1,6 @@
 require 'rails_helper'
-require 'shared/doi_resource_behaviour'
+#require 'shared/doi_resource_behaviour'
+require 'shared/nested_contributors_behaviour'
 
 RSpec.describe CollectionsController do
   routes { Hydra::Collections::Engine.routes }
@@ -9,6 +10,10 @@ RSpec.describe CollectionsController do
   #it_behaves_like "doi_resource_behaviour" do
   #  let(:resource_factory) { :collection }
   #end
+
+  it_behaves_like "nested_contributors_behaviour" do
+    let(:resource) { FactoryGirl.create(:collection,:test_data,depositor: user) }
+  end
 
   describe "update" do
     let(:collection) { FactoryGirl.create(:collection,:test_data,depositor: user) }
@@ -81,7 +86,5 @@ RSpec.describe CollectionsController do
         end
       end
     end
-
   end
-
 end

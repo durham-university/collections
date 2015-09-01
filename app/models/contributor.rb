@@ -22,7 +22,7 @@ class Contributor < ActiveFedora::Base
   def to_s
     string = ""
     string += contributor_name.any? { |string| string.strip.length > 0 } ? contributor_name.first + " " : ""
-    string += affiliation.any? { |string| string.strip.length > 0 } ? "(" + affiliation.first + ")" : ""
+    string += affiliation.any? { |string| string.strip.length > 0 } ? "(" + affiliation.join('; ') + ")" : ""
     string.strip
   end
 

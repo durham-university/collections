@@ -44,7 +44,7 @@ FactoryGirl.define do
 
       contributors { [
         FactoryGirl.build(:contributor, contributor_name: ['Contributor 1'],
-                                        affiliation: ['Affiliation 1'],
+                                        affiliation: ['Affiliation 1','Affiliation 1/2'],
                                         role: ['http://id.loc.gov/vocabulary/relators/cre'],
                                         order: ['1']),
         FactoryGirl.build(:contributor, contributor_name: ['Contributor 2'],
