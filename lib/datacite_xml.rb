@@ -22,7 +22,9 @@ class DataciteXml
             xml.creator {
               xml.creatorName c[:name]
                if c.key?(:affiliation) and c[:affiliation].present?
-                 xml.affiliation c[:affiliation]
+                 c[:affiliation].each do |affiliation|
+                   xml.affiliation affiliation
+                 end
                end
             }
           end
@@ -59,7 +61,9 @@ class DataciteXml
               xml.contributor(:contributorType=>f[:contributor_type]) {
                 xml.contributorName f[:name]
                 if f.key?(:affiliation) and f[:affiliation].present?
-                  xml.affiliation f[:affiliation]
+                  f[:affiliation].each do |affiliation|
+                    xml.affiliation affiliation
+                  end
                 end
                 # xml.nameIdentifier :nameIdentifierScheme=>'URI mailto', schemeURI=>'<mailto:upload.name@durham.ac.uk>'
               }

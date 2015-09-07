@@ -1,14 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "doi concern" do
-  def singularise_affiliation(file)
-    # Remove all but one affiliation until we have proper support for multiple
-    # affiliations in DataCite.
-    file.contributors.each do |c| c.affiliation = [ c.affiliation.sort.first ] end
-  end
-
   context "basic methods" do
-    let(:file) { FactoryGirl.create(:generic_file, :test_data, :public_doi) do |f| singularise_affiliation(f) end }
+    let(:file) { FactoryGirl.create(:generic_file, :test_data, :public_doi) }
     describe "mock_doi" do
       subject { file.mock_doi }
       it { is_expected.to match(/\A[0-9]+\.[0-9]+\/[[:alnum:]]{,20}\Z/) }
@@ -101,7 +95,7 @@ RSpec.describe "doi concern" do
 
 
   context "queue management" do
-    let(:file) { FactoryGirl.create(:generic_file) do |f| singularise_affiliation(f) end }
+    let(:file) { FactoryGirl.create(:generic_file) }
     context "when not managed in DataCite" do
       it "assert not managed in DataCite" do
         expect(file.manage_datacite?).to eql( false )
@@ -147,7 +141,7 @@ RSpec.describe "doi concern" do
   end
 
   context "with a generic file" do
-    let(:file) { FactoryGirl.create(:generic_file) do |f| singularise_affiliation(f) end }
+    let(:file) { FactoryGirl.create(:generic_file) }
 
     subject { file }
 
@@ -194,7 +188,7 @@ RSpec.describe "doi concern" do
     end
 
     describe "validation" do
-      let(:file) { FactoryGirl.create(:generic_file, :test_data) do |f| singularise_affiliation(f) end }
+      let(:file) { FactoryGirl.create(:generic_file, :test_data) }
       subject { file }
 
       context "when not having a published doi" do
@@ -266,7 +260,7 @@ RSpec.describe "doi concern" do
     describe "metadata" do
       # TODO: Use an actual file
 
-      let(:file) { FactoryGirl.create(:public_file, :test_data, :public_doi) do |f| singularise_affiliation(f) end }
+      let(:file) { FactoryGirl.create(:public_file, :test_data, :public_doi) }
 
       context "with passing values" do
         it "should not have any metadata errors" do
@@ -274,7 +268,7 @@ RSpec.describe "doi concern" do
         end
         it "should give correct metadata hash" do
           expect(multi_value_sort(file.doi_metadata)).to eql(multi_value_sort(
-            {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>"Affiliation 1"}, {:name=>"Contributor 2", :affiliation=>"Affiliation 2"}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>"Affiliation 3", :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}
+            {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>["Affiliation 1","Affiliation 1/2"]}, {:name=>"Contributor 2", :affiliation=>["Affiliation 2"]}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>["Affiliation 3"], :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}
           ))
         end
       end
@@ -291,7 +285,7 @@ RSpec.describe "doi concern" do
         }
         it "should give correct metadata hash" do
           expect(multi_value_sort(file.doi_metadata)).to eql(multi_value_sort(
-            {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>"Affiliation 1"}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}
+            {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>["Affiliation 1","Affiliation 1/2"]}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}
           ))
         end
       end
@@ -388,6 +382,7 @@ RSpec.describe "doi concern" do
 #        end
 #        it "should give correct metadata hash" do
 #          expect(multi_value_sort(collection.doi_metadata)).to eql(multi_value_sort(
+#            {:identifier=>collection.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>["Affiliation 1","Affiliation 1/2"]},{:name=>"Contributor 2", :affiliation=>["Affiliation 2"]}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>["Affiliation 3"], :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Collection", :rights=>[], :format=>[], :size=>[]}
 #            {:identifier=>collection.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>"Affiliation 1"},{:name=>"Contributor 2", :affiliation=>"Affiliation 2"}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>"Affiliation 3", :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>file1.doi_landing_page, :id_type=>"URL", :relation_type=>"HasPart"},{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Collection", :rights=>[{:rights=>"#{file1.id} - Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}], :format=>["#{file1.id} - text/plain"], :size=>["#{file1.id} - "]}
 #          ))
 #        end
