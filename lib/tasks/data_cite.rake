@@ -148,7 +148,7 @@ namespace :data_cite do
 		c.save!
 	end
 
-	desc "DataCite batch ingest of all existing DOIs metadata. It will use default /opt/sufia/confing.yml file. Different file location can be set rake data:cite[/new/file/location/dois.yml]"
+	desc "DataCite batch ingest of all existing DOIs metadata. It will use default /opt/sufia/confing.yml file. Different file location can be set rake data:cite[/new/file/location/existing_dois.yml]"
 	task :all, [:dois_file] => :environment do |t, args|
 		args.with_defaults(dois_file: '/opt/sufia/config/existing_dois.yml')
 
@@ -158,6 +158,47 @@ namespace :data_cite do
 				puts "Processing DOI:10.15128/#{id} created at #{date_created}"
 				Rake::Task["data_cite:ingest_doi"].invoke(id, date_created)
 				Rake::Task["data_cite:ingest_doi"].reenable
+			end
+		else
+			puts "Non existing file #{args.dois_file}"
+		end
+	end
+
+	desc "Allocate IDs for requested DOIs"
+	task :allocate, [:dois_file] => :environment do |t, args|
+		args.with_defaults(dois_file: '/opt/sufia/config/allocated_dois.yml')
+
+		if File.exists?(args.dois_file)
+			DOIS = YAML.load_file(args.dois_file)
+			DOIS.each do |id, creator|
+				puts "Allocate ID for DOI:10.15128/#{id}"
+
+				begin 
+					c = Collection.new(id:id.to_s.downcase)
+				rescue ActiveFedora::IllegalOperation => e
+					puts "Object #{args.id} #{args.date_created} already exists"
+					next
+				end
+
+				c.resource_type = ['Collection']
+				c.title = "This is holding tile for requested DOI:10.15128/#{id}"
+				c.funder = ['Engineering and Physical Sciences Research Council']
+				c.tag = [' ']
+
+				c.contributors.new(contributor_name: [creator], 
+								  affiliation: ['Durham University, UK'], 
+								  role: ['http://id.loc.gov/vocabulary/relators/cre'],
+								  order: [0])
+				
+				c.contributors.new(contributor_name: [creator], 
+								  affiliation: ['Durham Uiversity'], 
+								  role: ['http://id.loc.gov/vocabulary/relators/mdc'],
+								  order: [0])
+				
+				c.depositor="dch1sp"
+				c.edit_users=["dch1sp"]
+				c.save!
+				puts c.to_s
 			end
 		else
 			puts "Non existing file #{args.dois_file}"
