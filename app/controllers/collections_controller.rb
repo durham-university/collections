@@ -23,14 +23,8 @@ class CollectionsController < ApplicationController
     )
   end
 
-  after_filter :memorise_collection_id
-
 #  after_filter :update_datacite, only: [ :update ]
 #  after_filter :destroy_datacite, only: [ :destroy ]
-
-  def memorise_collection_id
-    session[:last_collection_id]=@collection.id
-  end
 
 #  def update_datacite
 #    if @collection.manage_datacite?
