@@ -28,7 +28,6 @@ Rails.application.routes.draw do
 
   # These have to be defined before what they are disabling.
   disable_route 'users'
-  disable_route 'roles'
   disable_route 'bookmarks'
 
   mount Hydra::RoleManagement::Engine => '/'
