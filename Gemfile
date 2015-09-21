@@ -32,7 +32,9 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-gem 'sufia', '6.0.0'
+#gem 'sufia', '6.3.0'
+# Sorting and collection memorisation fix isn't in 6.3.0 so pin to a more recent commit
+gem 'sufia', github: 'projecthydra/sufia', ref: 'f838704'
 gem 'kaminari', github: 'jcoyne/kaminari', branch: 'sufia'
 gem 'rsolr', '~> 1.0.6'
 gem 'devise'
@@ -47,10 +49,6 @@ gem 'rubyzip'
 # Get hydra-editor from github until some fixes are pushed to gem repositories.
 # Remove this line when a new version is released.
 gem 'hydra-editor', github: 'projecthydra/hydra-editor', ref: '7c8983c825'
-
-# Get active-fedora from github until it's updated in rubygems. Specifically
-# need the hash uri support in nested attributes.
-gem 'active-fedora', github: 'projecthydra/active_fedora', ref: '790f57867f'
 
 # Fix mini_magick at the latest 3.x version
 # After that there are incompatibilities with Ruby 2.0.0p598, used on CentOS 7
