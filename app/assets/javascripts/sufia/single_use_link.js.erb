@@ -1,0 +1,24 @@
+function getSingleUse(id,callback) {
+    var rurl = window.location.protocol+"//"+window.location.host;
+    var resp = $.ajax({
+        headers: { Accept: "application/javascript" },
+        type: 'get',
+        url: rurl + "/single_use_link/generate_show/" + id.slice(10),
+        dataType: "text",
+        success: function(resp){
+          callback(rurl+resp);
+        },
+        error: function(request, textStatus, errorThrown){
+          callback(null,textStatus);
+        }
+    });
+}
+
+Blacklight.onLoad(function() {
+  $(".copypaste").click(function(){
+    getSingleUse(this.id,function(link,error){
+      if(link) prompt("Your single-use link (please copy)", link);
+      else alert("Unable to get single-use link "+error);
+    });
+  });
+});
