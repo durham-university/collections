@@ -41,7 +41,7 @@ namespace :data_cite do
 		if contributors.count != 0
 			for i in 0..contributors.count-1
 				if creators[i].xpath('affiliation').count != 0
-					affiliation = creators[i].xpath('affiliation').inner_html
+					affiliation = contributors[i].xpath('affiliation').inner_html
 				else
 					affiliation = "Durham University, UK"
 				end
@@ -141,11 +141,12 @@ namespace :data_cite do
 						  role: ['http://id.loc.gov/vocabulary/relators/mdc'],
 						  order: [i])
 		end
-		# puts c
 
 		c.depositor="dch1sp"
 		c.edit_users=["dch1sp"]
 		c.save!
+
+		puts c.to_solr
 	end
 
 	desc "DataCite batch ingest of all existing DOIs metadata. It will use default /opt/sufia/confing.yml file. Different file location can be set rake data:cite[/new/file/location/existing_dois.yml]"
@@ -184,6 +185,8 @@ namespace :data_cite do
 				c.title = "This is holding tile for requested DOI:10.15128/#{id}"
 				c.funder = ['Engineering and Physical Sciences Research Council']
 				c.tag = [' ']
+				puts c
+				puts "Creator: #{creator}"
 
 				c.contributors.new(contributor_name: [creator], 
 								  affiliation: ['Durham University, UK'], 
@@ -191,14 +194,15 @@ namespace :data_cite do
 								  order: [0])
 				
 				c.contributors.new(contributor_name: [creator], 
-								  affiliation: ['Durham Uiversity'], 
+								  affiliation: ['Durham University, UK'], 
 								  role: ['http://id.loc.gov/vocabulary/relators/mdc'],
 								  order: [0])
-				
+
 				c.depositor="dch1sp"
 				c.edit_users=["dch1sp"]
 				c.save!
-				puts c.to_s
+
+				puts c.to_solr				
 			end
 		else
 			puts "Non existing file #{args.dois_file}"
