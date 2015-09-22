@@ -9,6 +9,7 @@ class Ability
     if current_user.admin?
       can [:create, :show, :add_user, :remove_user, :index], Role
       can [:edit, :create, :destroy], :people_controller
+      can [:update], ContentBlock
     end
 
     if current_user.id
