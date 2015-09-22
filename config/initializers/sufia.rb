@@ -130,6 +130,10 @@ Sufia.config do |config|
   # Where to store tempfiles, leave blank for the system temp directory (e.g. /tmp)
   # config.temp_file_base = '/home/developer1'
 
+  # Enables a link to the citations page for a generic_file.
+  # Default is false
+  config.citations = true
+
   # Specify the form of hostpath to be used in Endnote exports
   # config.persistent_hostpath = 'http://localhost/files/'
 

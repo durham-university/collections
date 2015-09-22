@@ -307,13 +307,17 @@ module Sufia
         text
       end
 
+      def get_creator_contributors
+        self.contributors.select do |c| c.role.include? 'http://id.loc.gov/vocabulary/relators/cre' end
+      end
+
       def get_author_list
-        self.contributor.map { |author| clean_end_punctuation(CGI::escapeHTML(author)) }.uniq
+        get_creator_contributors.map { |contributor| clean_end_punctuation(CGI::escapeHTML(contributor.contributor_name.first)) }.uniq
       end
 
       def get_all_authors
-        authors = self.contributor
-        return authors.empty? ? nil : authors.map { |author| CGI::escapeHTML(author) }
+        authors = get_creator_contributors
+        return authors.empty? ? nil : authors.map { |author| CGI::escapeHTML(author.contributor_name.first) }
       end
 
       def abbreviate_name(name)
