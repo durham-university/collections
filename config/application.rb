@@ -27,6 +27,9 @@ module Sufia
       BatchUpdateJob.class_eval do
         prepend BatchUpdateJobPatch # in app/jobs/batch_update_job_patch.rb
       end
+      Sufia::GenericFile::Actor.class_eval do
+        prepend GenericFileActorPatch # in app/actors/generic_file_actor_patch.rb
+      end
     end
 
     config.generators do |g|
