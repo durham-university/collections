@@ -45,6 +45,8 @@ gem 'mysql2'
 gem 'clamav'
 gem 'redis-session-store'
 gem 'rubyzip'
+# A recent commit to rdf-vocab removed something that sufia needs. Pin to earlier commit until either rdf-vocab or sufia is fixed.
+gem 'rdf-vocab', github: 'ruby-rdf/rdf-vocab', ref: 'aaca990'
 
 # Get hydra-editor from github until some fixes are pushed to gem repositories.
 # Remove this line when a new version is released.

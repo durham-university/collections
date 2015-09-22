@@ -65,6 +65,14 @@ GIT
       resque (~> 1.23)
       resque-pool (~> 0.3)
 
+GIT
+  remote: git://github.com/ruby-rdf/rdf-vocab.git
+  revision: aaca990f4c330c7a67d550957ec5cc2a7b8e44e1
+  ref: aaca990
+  specs:
+    rdf-vocab (0.8.4)
+      rdf (~> 1.1, >= 1.1.10)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -501,8 +509,6 @@ GEM
     rdf-turtle (1.1.7)
       ebnf (~> 0.3, >= 0.3.6)
       rdf (~> 1.1, >= 1.1.10)
-    rdf-vocab (0.8.5)
-      rdf (~> 1.1, >= 1.1.10)
     rdf-xsd (1.1.4)
       rdf (~> 1.1, >= 1.1.9)
     rdoc (4.2.0)
@@ -668,6 +674,7 @@ DEPENDENCIES
   mini_magick (= 3.8.1)
   mysql2
   rails (= 4.2.1)
+  rdf-vocab!
   redis-session-store
   rsolr (~> 1.0.6)
   rspec-rails
