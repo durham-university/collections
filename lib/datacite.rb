@@ -57,4 +57,76 @@ class Datacite
       raise DataciteUpdateException.new(response.message,response.body,response.code,response)
     end
   end
+
+  # Fetch DOI metadata from DataCite XML file 
+  def self.get_data(doi)
+    url = 'http://data.datacite.org/application/x-datacite+xml/10.15128/'+doi
+    response = HTTParty.get(url)
+
+    xml = Nokogiri::XML( response.body )
+    xml.remove_namespaces!
+    resource = xml % "resource"
+
+    titles = resource.xpath("//resource/titles/title").map do |title|
+      title.inner_html
+    end
+
+    order = -1
+    creators = resource.xpath("//resource/creators/creator").map do |creator|
+      order += 1
+      {contributor_name: [creator.xpath('creatorName').inner_html],
+       affiliation: [creator.xpath('affiliation').inner_html],
+       role: ['http://id.loc.gov/vocabulary/relators/cre'],
+       order: [order]}
+    end
+    
+    contributors = resource.xpath("//resource/contributors/contributor[@contributorType='ContactPerson']").map do |contributor|
+      if contributor.xpath('affiliation').count != 0
+        affiliation = contributor.xpath('affiliation').inner_html
+      else
+        affiliation = "Durham University, UK"
+      end
+      order += 1
+      {contributor_name: [contributor.xpath('contributorName').inner_html],
+       affiliation: [affiliation],
+       role: ['http://id.loc.gov/vocabulary/relators/mdc'],
+       order: [order]}
+    end
+
+    funders = resource.xpath("//resource/contributors/contributor[@contributorType='Funder']").map do |funder|
+      funder.xpath('contributorName').inner_html
+    end
+
+    subjects = resource.xpath("//resource/subjects/subject").map do|subject|
+      subject.inner_html 
+    end
+
+    relatedIdentifiers = resource.xpath("./relatedIdentifiers/relatedIdentifier").map do |relatedIdentifier|
+      relatedIdentifier.inner_html
+    end
+
+    abstracts = resource.xpath("//resource/descriptions/description[@descriptionType='Abstract']").map do |abstract|
+      abstract.inner_html
+    end
+
+    descriptions = resource.xpath("//resource/descriptions/description[@descriptionType='Other']").map do |description|
+      description.inner_html
+    end
+
+    methods = resource.xpath("//resource/descriptions/description[@descriptionType='Methods']").map do |method|
+      methods.inner_html
+    end
+
+    return {
+          title: titles.first,
+          tag: subjects,
+          contributors_attributes: creators+contributors,
+          related_url: relatedIdentifiers,
+          abstract: abstracts,
+          description: descriptions,
+          research_methods: methods,
+          funder: funders,
+        }
+  end
+
 end
