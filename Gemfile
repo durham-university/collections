@@ -45,12 +45,10 @@ gem 'mysql2'
 gem 'clamav'
 gem 'redis-session-store'
 gem 'rubyzip'
-# A recent commit to rdf-vocab removed something that sufia needs. Pin to earlier commit until either rdf-vocab or sufia is fixed.
-gem 'rdf-vocab', github: 'ruby-rdf/rdf-vocab', ref: 'aaca990'
 
 # Get hydra-editor from github until some fixes are pushed to gem repositories.
 # Remove this line when a new version is released.
-gem 'hydra-editor', github: 'projecthydra/hydra-editor', ref: '7c8983c825'
+gem 'hydra-editor', github: 'projecthydra/hydra-editor', ref: '04f24d5'
 
 # Fix mini_magick at the latest 3.x version
 # After that there are incompatibilities with Ruby 2.0.0p598, used on CentOS 7

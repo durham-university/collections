@@ -9,8 +9,8 @@ GIT
 
 GIT
   remote: git://github.com/projecthydra/hydra-editor.git
-  revision: 7c8983c825a1f21e86b4667fa4f579ee7af6ca40
-  ref: 7c8983c825
+  revision: 04f24d5070c34093ba319dde908f2993439da4a7
+  ref: 04f24d5
   specs:
     hydra-editor (1.0.4)
       active-fedora (>= 9.0.0)
@@ -65,14 +65,6 @@ GIT
       resque (~> 1.23)
       resque-pool (~> 0.3)
 
-GIT
-  remote: git://github.com/ruby-rdf/rdf-vocab.git
-  revision: aaca990f4c330c7a67d550957ec5cc2a7b8e44e1
-  ref: aaca990
-  specs:
-    rdf-vocab (0.8.4)
-      rdf (~> 1.1, >= 1.1.10)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -95,7 +87,7 @@ GEM
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.1)
-    active-fedora (9.4.1)
+    active-fedora (9.4.2)
       active-triples (~> 0.7.1)
       activesupport (>= 4.1.0)
       deprecation
@@ -336,14 +328,15 @@ GEM
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     json (1.8.3)
-    json-ld (1.1.9)
+    json-ld (1.1.10)
+      multi_json (~> 1.11)
       rdf (~> 1.1, >= 1.1.7)
     json-schema (2.5.1)
       addressable (~> 2.3.7)
     jwt (1.5.1)
     launchy (2.4.3)
       addressable (~> 2.3)
-    ldp (0.4.0)
+    ldp (0.4.1)
       faraday
       http_logger
       linkeddata (>= 1.1)
@@ -395,7 +388,7 @@ GEM
     mini_magick (3.8.1)
       subexec (~> 0.2.1)
     mini_portile (0.6.2)
-    minitest (5.8.0)
+    minitest (5.8.1)
     mono_logger (1.1.0)
     multi_json (1.11.2)
     multi_xml (0.5.5)
@@ -463,12 +456,12 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
-    rdf (1.1.16)
+    rdf (1.1.16.1)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (1.1.0)
       rdf (>= 1.1)
-    rdf-isomorphic (1.1.0)
-      rdf (>= 1.1)
+    rdf-isomorphic (1.1.0.1)
+      rdf (~> 1.1, >= 1.1.16.1)
     rdf-json (1.1.2)
       rdf (~> 1.1)
     rdf-microdata (2.0.1)
@@ -494,20 +487,22 @@ GEM
       rdf-turtle (~> 1.1)
       rdf-vocab (~> 0.8)
       rdf-xsd (~> 1.1)
-    rdf-tabular (0.2.0)
+    rdf-tabular (0.2.1)
       addressable (~> 2.3)
       bcp47 (~> 0.3, >= 0.3.3)
       json-ld (~> 1.1)
       rdf (~> 1.1, >= 1.1.7)
       rdf-xsd (~> 1.1)
-    rdf-trig (1.1.4)
+    rdf-trig (1.1.5)
       ebnf (~> 0.3, >= 0.3.7)
       rdf (~> 1.1, >= 1.1.11)
-      rdf-turtle (~> 1.1, >= 1.1.6)
+      rdf-turtle (~> 1.1, >= 1.1.7)
     rdf-trix (1.1.0)
       rdf (>= 1.1)
-    rdf-turtle (1.1.7)
+    rdf-turtle (1.1.8)
       ebnf (~> 0.3, >= 0.3.6)
+      rdf (~> 1.1, >= 1.1.10)
+    rdf-vocab (0.8.5)
       rdf (~> 1.1, >= 1.1.10)
     rdf-xsd (1.1.4)
       rdf (~> 1.1, >= 1.1.9)
@@ -674,7 +669,6 @@ DEPENDENCIES
   mini_magick (= 3.8.1)
   mysql2
   rails (= 4.2.1)
-  rdf-vocab!
   redis-session-store
   rsolr (~> 1.0.6)
   rspec-rails
