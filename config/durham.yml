@@ -8,6 +8,8 @@ development:
 
 test:
   <<: *defaults
+  visibility_notification_users: []
 
 production:
   <<: *defaults
+  visibility_notification_users: ['dch1sp']
