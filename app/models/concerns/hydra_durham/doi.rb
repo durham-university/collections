@@ -413,5 +413,28 @@ module HydraDurham
       end
       return data
     end
+
+    module ClassMethods
+      def ingest_doi(id, map, depositor)
+        begin
+          c = self.new(id:id.to_s.downcase)
+        rescue ActiveFedora::IllegalOperation => e
+          puts "Object #{id} #{map[:date_created]} already exists"
+          return
+        end
+
+        map = map.merge({title: map[:title].first}) if !self.multiple?(:title)
+
+        c.attributes = map
+        c.resource_type = ( self==Collection ? ['Collection'] : ['Other'] )
+        c.apply_depositor_metadata(depositor)
+        c.rights = [Sufia.config.cc_licenses['All rights reserved']]
+        c.date_uploaded = DateTime.now
+        c.date_modified = DateTime.now
+        c.save!
+
+        # puts c.to_solr
+      end
+    end
   end
 end

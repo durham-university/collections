@@ -3,7 +3,8 @@ defaults: &defaults
   datacite_publisher: 'Durham University'
   datacite_rights_holder: 'Durham University'
   datacite_hosting_institution: 'Durham University'
-
+  fetch_doi_prefix: '10.15128'
+  fetch_affiliation: 'Durham University, UK'
 
 development:
   <<: *defaults

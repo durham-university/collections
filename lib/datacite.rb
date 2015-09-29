@@ -58,9 +58,10 @@ class Datacite
     end
   end
 
-  # Fetch DOI metadata from DataCite XML file 
-  def self.get_data(doi)
-    url = 'http://data.datacite.org/application/x-datacite+xml/10.15128/'+doi
+  # Fetch DOI metadata from DataCite XML file
+  def self.get_data(doi,prefix=nil)
+    prefix ||= DOI_CONFIG['fetch_doi_prefix']
+    url = "http://data.datacite.org/application/x-datacite+xml/#{prefix}/#{doi}"
     response = HTTParty.get(url)
 
     xml = Nokogiri::XML( response.body )
@@ -77,20 +78,20 @@ class Datacite
       {contributor_name: [creator.xpath('creatorName').inner_html],
        affiliation: [creator.xpath('affiliation').inner_html],
        role: ['http://id.loc.gov/vocabulary/relators/cre'],
-       order: [order]}
+       order: ["#{order}"]}
     end
-    
+
     contributors = resource.xpath("//resource/contributors/contributor[@contributorType='ContactPerson']").map do |contributor|
       if contributor.xpath('affiliation').count != 0
         affiliation = contributor.xpath('affiliation').inner_html
       else
-        affiliation = "Durham University, UK"
+        affiliation = DOI_CONFIG['fetch_affiliation']
       end
       order += 1
       {contributor_name: [contributor.xpath('contributorName').inner_html],
        affiliation: [affiliation],
        role: ['http://id.loc.gov/vocabulary/relators/mdc'],
-       order: [order]}
+       order: ["#{order}"]}
     end
 
     funders = resource.xpath("//resource/contributors/contributor[@contributorType='Funder']").map do |funder|
@@ -98,7 +99,7 @@ class Datacite
     end
 
     subjects = resource.xpath("//resource/subjects/subject").map do|subject|
-      subject.inner_html 
+      subject.inner_html
     end
 
     relatedIdentifiers = resource.xpath("./relatedIdentifiers/relatedIdentifier").map do |relatedIdentifier|
@@ -118,14 +119,14 @@ class Datacite
     end
 
     return {
-          title: titles.first,
+          title: titles,
           tag: subjects,
           contributors_attributes: creators+contributors,
           related_url: relatedIdentifiers,
           abstract: abstracts,
           description: descriptions,
           research_methods: methods,
-          funder: funders,
+          funder: funders
         }
   end
 
