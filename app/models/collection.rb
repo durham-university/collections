@@ -1,6 +1,6 @@
 class Collection < Sufia::Collection
   include HydraDurham::Metadata
-  include HydraDurham::Doi
+  #include HydraDurham::Doi
 
   # title validation already in hydra-collection
   validates :contributors, presence: true

@@ -1,7 +1,7 @@
 <% record.identifier.each do |id| %>
   <%= id %><br />
 <% end %>
-<% if not record.model.has_local_doi? and can? :show, :unpublished_doi %>
+<% if record.model.respond_to?(:doi) && !record.model.has_local_doi? && can?(:show, :unpublished_doi) %>
   doi:<%= record.model.mock_doi %>
   <% if (can? :edit, record.model) && ( (!record.model.respond_to? :can_mint_doi?) || (record.model.can_mint_doi?) ) %>
     <strong><%= link_to "[#{t('durham.doi.not_yet_published')}]", '/doi/' + record.model.id %></strong>

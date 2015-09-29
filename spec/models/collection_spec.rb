@@ -16,9 +16,9 @@ RSpec.describe Collection do
     expect(collection).not_to respond_to(:rights)
   end
 
-  it "should have doi functionality" do
-    expect(subject).to respond_to :doi
-  end
+#  it "should have doi functionality" do
+#    expect(subject).to respond_to :doi
+#  end
   it "should have contributors" do
     expect(subject).to respond_to :contributors
   end
@@ -89,7 +89,7 @@ RSpec.describe Collection do
   describe "deletion" do
     it "should be possible to delete the collection" do
       collection.reload
-      expect(collection).to receive(:queue_doi_metadata_update).with(collection.depositor,hash_including(destroyed: true))
+      #expect(collection).to receive(:queue_doi_metadata_update).with(collection.depositor,hash_including(destroyed: true))
       expect { collection.destroy }.not_to raise_error
       expect(Collection.where(id: collection.id).to_a).to be_empty
     end

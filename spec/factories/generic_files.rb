@@ -38,6 +38,7 @@ FactoryGirl.define do
       related_url ['http://related.url.com/test']
       description ['Description']
       resource_type ['Image']
+      date_modified DateTime.parse('Thu, 16 Jul 2015 13:44:38 +0100')
       date_uploaded DateTime.parse('Thu, 16 Jul 2015 12:44:38 +0100')
       rights ['http://creativecommons.org/licenses/by-nc-sa/4.0/']
 
