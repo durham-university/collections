@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150618091317) do
+ActiveRecord::Schema.define(version: 20150930114916) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       null: false
@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(version: 20150618091317) do
 
   add_index "domain_terms", ["model", "term"], name: "terms_by_model_and_term"
 
-  create_table "domain_terms_local_authorities", id: false, force: :cascade do |t|
+  create_table "domain_terms_local_authorities", force: :cascade do |t|
     t.integer "domain_term_id"
     t.integer "local_authority_id"
   end
@@ -204,7 +204,7 @@ ActiveRecord::Schema.define(version: 20150618091317) do
     t.string "name"
   end
 
-  create_table "roles_users", id: false, force: :cascade do |t|
+  create_table "roles_users", force: :cascade do |t|
     t.integer "role_id"
     t.integer "user_id"
   end
