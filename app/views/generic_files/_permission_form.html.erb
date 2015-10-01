@@ -54,7 +54,7 @@
           label: t('sufia.institution_name'),
           label_info: "Visible to all #{t('sufia.institution_name')} users"
         },
-        { id: 'visibility_open',
+        { id: 'visibility_restricted',
           value: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE,
           checked: registered_perm.blank? && public_perm.blank? && !open_pending && (!params[:controller].start_with? 'batch') ,
           label_class: 'label-danger',
@@ -67,15 +67,16 @@
       # f.object.model have combined visibility attributes which isn't suitable
       # for access testing.
       visibility_tester=GenericFile.new
+      visibility_tester.visibility=f.object.visibility
 
       visibility_options.each do |opts|
-        disabled = !(visibility_tester.can_change_visibility? opts[:value], @current_user)
+        disabled = !(visibility_tester.can_change_visibility?(opts[:value], @current_user))
         %>
-          <label <%= 'class="disabled"' if disabled %> >
+          <label class="<%= 'disabled' if disabled %>" >
             <input type="radio" id="<%= opts[:id] %>" name="visibility"
               value="<%= opts[:value] %>"
-              <%= 'checked="true"' if opts[:checked] %>
-              <%= 'disabled="true"' if disabled %> />
+              <% if opts[:checked] %> checked="true" <% end %>
+              <% if disabled %> disabled="true" <% end %> />
             <span class="label <%= opts[:label_class] %>"><%= opts[:label] %></span> <%= opts[:label_info] %>
           </label>
         <%
