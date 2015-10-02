@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   mount Hydra::RoleManagement::Engine => '/'
 
   Hydra::BatchEdit.add_routes(self)
+
+  resources :doi, only: [:show, :update]
+
   # This must be the very last route in the file because it has a catch-all route for 404 errors.
     # This behavior seems to show up only in production mode.
     mount Sufia::Engine => '/'
@@ -68,7 +71,6 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 
-  resources :doi, only: [:show, :update]
   resources :files, as: 'generic_file', except: [ :index ]
   resources :collections
 
