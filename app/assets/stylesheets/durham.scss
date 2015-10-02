@@ -334,3 +334,14 @@ div.heading-tile {
 a:link.remove, a:visited.remove {
   color: white;
 }
+
+#collection-list-container .collection-list li {
+  position: relative;
+  padding-left: 18px;
+
+  input {
+    position: absolute;
+    left: 0;
+    top: -1px;
+  }
+}

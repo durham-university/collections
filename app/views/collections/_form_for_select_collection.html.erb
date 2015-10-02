@@ -14,10 +14,10 @@
               <ul>
                 <% user_collections.sort! { |c1,c2| (c1['date_modified_dtsi'] || '') <=> (c2['date_modified_dtsi'] || '') }  %>
                 <% user_collections.each do |collection| %>
-                  <li> <label for="<%= collection.id %>" class="sr-only">Add to <%=collection.title%></label>
+                  <li> <label for="id_<%= collection.id %>" class="sr-only">Add to <%=collection.title%></label>
                     <% checked = (collection.id == session[:last_collection_id]) %>
                     <%= radio_button_tag(:id, collection.id, checked, class: "collection-selector") %>
-                    <%= label_tag(:collection, collection.title, "aria-hidden" =>true) %>
+                    <%= label_tag(:collection, collection.title, "aria-hidden" =>true, "for" => "id_#{collection.id}") %>
                   </li>
                 <% end %>
               </ul>
