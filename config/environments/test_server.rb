@@ -1,6 +1,9 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Allow web-console for those IPs
+  config.web_console.whitelisted_ips = '129.234.88.223'
+
   # Code is not reloaded between requests.
   config.cache_classes = true
 

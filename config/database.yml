@@ -20,8 +20,7 @@ test:
   <<: *default
   database: db/test.sqlite3
 
-#testing servers
-testing:
+test_server:
   adapter: mysql2
   encoding: utf8
   database: <%= Rails.application.secrets.db_database %>

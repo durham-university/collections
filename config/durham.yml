@@ -10,6 +10,10 @@ test:
   <<: *defaults
   visibility_notification_users: []
 
+test_server:
+  <<: *defaults
+  visibility_notification_users: ['dch1sp']
+
 production:
   <<: *defaults
   visibility_notification_users: ['dch1sp']

@@ -4,8 +4,7 @@ development:
 test: &test
   adapter: solr
   url: <%= "http://127.0.0.1:#{ENV['TEST_JETTY_PORT'] || 8983}/solr/test" %>
-#testing servers
-testing:
+test_server:
   adapter: solr
   url: <%= Rails.application.secrets.solr_url %>
 production:

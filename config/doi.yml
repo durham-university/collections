@@ -14,8 +14,7 @@ test:
   <<: *defaults
   doi_prefix: '10.4124'
 
-#testing servers
-testing:
+test_server:
   <<: *defaults
   doi_prefix: '10.4124'
 
