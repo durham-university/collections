@@ -335,6 +335,13 @@ a:link.remove, a:visited.remove {
   color: white;
 }
 
+.popover .ui-icon-closethick {
+  float: right;
+  cursor: pointer;
+  margin-right: 8px;
+  margin-top: 8px;
+}
+
 #collection-list-container .collection-list li {
   position: relative;
   padding-left: 18px;
