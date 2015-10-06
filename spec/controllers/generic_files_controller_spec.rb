@@ -8,6 +8,25 @@ RSpec.describe GenericFilesController do
   describe "update" do
     let(:file) { FactoryGirl.create(:generic_file,:test_data,depositor: user) }
 
+    describe "redirection" do
+      context "when successful update" do
+        it "redirects to show page" do
+          post :update, id: file.id, generic_file: { title: ['My Favorite Things'] }
+          expect(response).to redirect_to(generic_file_path(file))
+        end
+
+      end
+
+      context "when invalid update" do
+        # Controller doesn't yet actually enforce presence validation so
+        # it's difficult to send any invalid parameters.
+        xit "redirects to show page" do
+          post :update, id: file.id, generic_file: { title: [] }
+          expect(response).to redirect_to(edit_generic_file_path(file))
+        end
+      end
+    end
+
     context "when adding a title" do
       let(:attributes) { { title: ['My Favorite Things'] } }
       before { post :update, id: file.id, generic_file: attributes }
