@@ -67,7 +67,7 @@
       # f.object.model have combined visibility attributes which isn't suitable
       # for access testing.
       visibility_tester=GenericFile.new
-      visibility_tester.visibility=f.object.visibility
+      visibility_tester.visibility=f.object.visibility unless params[:controller] == 'batch'
 
       visibility_options.each do |opts|
         disabled = !(visibility_tester.can_change_visibility?(opts[:value], @current_user))
