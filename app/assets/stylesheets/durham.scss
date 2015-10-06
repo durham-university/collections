@@ -341,3 +341,14 @@ a:link.remove, a:visited.remove {
   margin-right: 8px;
   margin-top: 8px;
 }
+
+#collection-list-container .collection-list li {
+  position: relative;
+  padding-left: 18px;
+
+  input {
+    position: absolute;
+    left: 0;
+    top: -1px;
+  }
+}
