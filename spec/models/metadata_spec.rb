@@ -84,6 +84,11 @@ RSpec.describe "metadata concern" do
         end
         describe "in Solr" do
           subject { file_solr.contributors }
+
+          it "should load contributors from solr" do
+            expect(file_solr.association(:contributors).loaded?).to be_truthy
+          end
+
           it "should have two contributors" do
             expect(subject.size).to eql( 2 )
           end
