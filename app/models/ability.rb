@@ -28,6 +28,16 @@ class Ability
     # end
   end
 
+  # This is just to pull a fix from a more recent hydra-access controls. Can
+  # be removed when gem updated.
+  def download_permissions
+    can :download, ActiveFedora::File do |file|
+      parent_uri = file.uri.to_s.sub(/\/[^\/]*$/, '')
+      parent_id = ActiveFedora::Base.uri_to_id(parent_uri)
+      can? :read, parent_id # i.e, can download if can read parent resource
+    end
+  end
+
   def test_edit(id)
     (current_user.admin?) || super
   end
