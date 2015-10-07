@@ -67,7 +67,7 @@ RSpec.describe CollectionsController do
       let(:attributes) {
         {
           contributors_attributes: collection.contributors.map do |c|
-            { id: c.id, contributor_name: [c.contributor_name.first], affiliation: [c.affiliation.first], role: [c.role.first], order: ["#{(c.order.first.to_i+1) % (collection.contributors.count)}"]}
+            { id: c.id, contributor_name: [c.contributor_name.first], affiliation: [c.affiliation.join('; ')], role: [c.role.first], order: ["#{(c.order.first.to_i+1) % (collection.contributors.count)}"]}
           end
         }
       }

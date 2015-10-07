@@ -62,7 +62,7 @@ RSpec.describe Collection do
       end
       it "should have the contributors" do
         expect( subject.contributors.map &:to_hash ).to eql([
-          {contributor_name: ['Contributor 1'], affiliation: ['Affiliation 1'], role: ['http://id.loc.gov/vocabulary/relators/cre']},
+          {contributor_name: ['Contributor 1'], affiliation: ['Affiliation 1','Affiliation 1/2'], role: ['http://id.loc.gov/vocabulary/relators/cre']},
           {contributor_name: ['Contributor 2'], affiliation: ['Affiliation 2'], role: ['http://id.loc.gov/vocabulary/relators/cre']},
           {contributor_name: ['Contributor 3'], affiliation: ['Affiliation 3'], role: ['http://id.loc.gov/vocabulary/relators/edt']}
         ])
@@ -78,7 +78,7 @@ RSpec.describe Collection do
       end
       it "should have the contributors" do
         expect( subject.contributors.map &:to_hash ).to eql([
-          {contributor_name: ['Contributor 1'], affiliation: ['Affiliation 1'], role: ['http://id.loc.gov/vocabulary/relators/cre']},
+          {contributor_name: ['Contributor 1'], affiliation: ['Affiliation 1','Affiliation 1/2'], role: ['http://id.loc.gov/vocabulary/relators/cre']},
           {contributor_name: ['Contributor 2'], affiliation: ['Affiliation 2'], role: ['http://id.loc.gov/vocabulary/relators/cre']},
           {contributor_name: ['Contributor 3'], affiliation: ['Affiliation 3'], role: ['http://id.loc.gov/vocabulary/relators/edt']}
         ])
