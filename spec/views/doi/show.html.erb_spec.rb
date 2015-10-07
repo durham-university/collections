@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "doi/show.html.erb", type: :view do
+
   let(:file) { FactoryGirl.create(:public_file, :test_data) }
 
   before {
@@ -83,7 +84,6 @@ RSpec.describe "doi/show.html.erb", type: :view do
           c.role.first != 'http://id.loc.gov/vocabulary/relators/cre'
         end)
       end
-
     }
     before { render }
     it "should not have publish button" do
@@ -126,7 +126,7 @@ RSpec.describe "doi/show.html.erb", type: :view do
   end
 
   context "file already has a local doi" do
-    let(:file) { f=FactoryGirl.create(:public_file, :test_data, :public_doi) }
+    let(:file) { FactoryGirl.create(:public_file, :test_data, :public_doi) }
     before { render }
     it "should not have publish button" do
       expect(page).not_to have_selector('input#publish-doi-submit')
@@ -135,6 +135,7 @@ RSpec.describe "doi/show.html.erb", type: :view do
       expect(rendered).to include('This resource already has a local DOI')
     end
   end
+
   context "file already has an outside doi" do
     let(:file) {
       FactoryGirl.create(:public_file, :test_data) do |f|

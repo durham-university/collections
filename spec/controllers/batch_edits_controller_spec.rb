@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'shared/batch_visibility_editor'
+require 'shared/nested_contributors_behaviour'
 
 RSpec.describe BatchEditsController, type: :controller do
 
@@ -30,6 +31,13 @@ RSpec.describe BatchEditsController, type: :controller do
       [private_file, registered_file, pending_file, public_file, other_file] \
         .each &:reload
     }
+  end
+
+  it_behaves_like "nested_contributors_behaviour" do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:resource) { FactoryGirl.create(:generic_file,:test_data,depositor: user) }
+    let(:params) { { update_type: 'update', batch_document_ids: [resource.id]} }
+    before { sign_in user }
   end
 
 end

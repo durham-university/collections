@@ -48,6 +48,10 @@ gem 'rubyzip'
 # Remove this line when a new version is released.
 gem 'hydra-editor', github: 'projecthydra/hydra-editor', ref: '7c8983c825'
 
+# Get active-fedora from github until it's updated in rubygems. Specifically
+# need the hash uri support in nested attributes.
+gem 'active-fedora', github: 'projecthydra/active_fedora', ref: '790f57867f'
+
 # Fix mini_magick at the latest 3.x version
 # After that there are incompatibilities with Ruby 2.0.0p598, used on CentOS 7
 # See https://github.com/minimagick/minimagick/issues/278

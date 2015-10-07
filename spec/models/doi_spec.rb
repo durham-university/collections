@@ -268,7 +268,7 @@ RSpec.describe "doi concern" do
         end
         it "should give correct metadata hash" do
           expect(multi_value_sort(file.doi_metadata)).to eql(multi_value_sort(
-            {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>"Affiliation 1"}, {:name=>"Contributor 2", :affiliation=>"Affiliation 2"}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>"Affiliation 3", :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}
+            {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>["Affiliation 1","Affiliation 1/2"]}, {:name=>"Contributor 2", :affiliation=>["Affiliation 2"]}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>["Affiliation 3"], :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}
           ))
         end
       end
@@ -285,7 +285,7 @@ RSpec.describe "doi concern" do
         }
         it "should give correct metadata hash" do
           expect(multi_value_sort(file.doi_metadata)).to eql(multi_value_sort(
-            {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>"Affiliation 1"}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}
+            {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>["Affiliation 1","Affiliation 1/2"]}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}
           ))
         end
       end
@@ -342,6 +342,19 @@ RSpec.describe "doi concern" do
       end
     end
 
+    describe "metadata_xml" do
+      let(:file) { FactoryGirl.create(:public_file, :test_data, :public_doi) }
+      subject { file.doi_metadata_xml }
+      it "gives out correct xml" do
+        expect(subject).to include('<?xml version="1.0" encoding="UTF-8"?>')
+        expect(subject).to include('<resource xmlns="http://datacite.org/schema/kernel-3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://datacite.org/schema/kernel-3 http://schema.datacite.org/meta/kernel-3/metadata.xsd">')
+        expect(subject).to match(/<creator>\s*<creatorName>Contributor 1<\/creatorName>\s*<affiliation>Affiliation 1<\/affiliation>\s*<affiliation>Affiliation 1\/2<\/affiliation>\s*<\/creator>/)
+        expect(subject).to match(/<creator>\s*<creatorName>Contributor 2<\/creatorName>\s*<affiliation>Affiliation 2<\/affiliation>\s*<\/creator>/)
+        expect(subject).to include('<resourceType resourceTypeGeneral="Image">Image</resourceType>')
+        expect(subject).to include('</resource>')
+      end
+    end
+
 #    context "when part of a collection" do
 #      let!(:collection1) { FactoryGirl.create(:collection, :test_data, :public_doi, members: [ file ]) }
 #      let!(:collection2) { FactoryGirl.create(:collection, :test_data, members: [ file ]) }
@@ -368,9 +381,8 @@ RSpec.describe "doi concern" do
 #        end
 #      end
 #    end
-
   end
-  
+
 #
 #  context "with a collection" do
 #    let(:file1) { FactoryGirl.create(:public_file, :test_data) }
@@ -383,6 +395,7 @@ RSpec.describe "doi concern" do
 #        end
 #        it "should give correct metadata hash" do
 #          expect(multi_value_sort(collection.doi_metadata)).to eql(multi_value_sort(
+#            {:identifier=>collection.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>["Affiliation 1","Affiliation 1/2"]},{:name=>"Contributor 2", :affiliation=>["Affiliation 2"]}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>["Affiliation 3"], :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Collection", :rights=>[], :format=>[], :size=>[]}
 #            {:identifier=>collection.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>"Affiliation 1"},{:name=>"Contributor 2", :affiliation=>"Affiliation 2"}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>"Affiliation 3", :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>file1.doi_landing_page, :id_type=>"URL", :relation_type=>"HasPart"},{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Collection", :rights=>[{:rights=>"#{file1.id} - Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}], :format=>["#{file1.id} - text/plain"], :size=>["#{file1.id} - "]}
 #          ))
 #        end

@@ -242,9 +242,9 @@ module HydraDurham
       ret << "The resource must have a title" if title.empty?
       ret << "The resource can only have a single title" if (title.is_a? Array) && title.length>1
 
-      ret << "Contributors can only have a single name, affiliation and role" if \
+      ret << "Contributors can only have a single name and role" if \
         (contributors.to_a.select do |c|
-          c.contributor_name.length>1 || c.affiliation.length>1 || c.role.length>1
+          c.contributor_name.length>1 || c.role.length>1
         end).any?
 
       ret << "The resource must be Open Access" if (respond_to? :can_mint_doi?) && !can_mint_doi?
@@ -338,7 +338,7 @@ module HydraDurham
         !c.marked_for_destruction?
       end).map do |c|
         { name: c.contributor_name.first,
-          affiliation: c.affiliation.first
+          affiliation: c.affiliation
         }
       end
 
@@ -355,7 +355,7 @@ module HydraDurham
         roles.each do |r|
           a << {
             name: c.contributor_name.first,
-            affiliation: c.affiliation.first,
+            affiliation: c.affiliation,
             contributor_type: r
           }
         end

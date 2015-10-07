@@ -64,7 +64,7 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       # --- Affiliation
       field = :affiliation
 
-      field_value = value.send(field).first
+      field_value = value.send(field).join('; ')
       field_name = name_for(attribute_name, index, field)
 
       @html << "<div class='row'>"

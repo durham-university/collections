@@ -1,6 +1,7 @@
 class CollectionsController < ApplicationController
   include Sufia::CollectionsControllerBehavior
 #  include HydraDurham::DoiResourceBehaviour
+  include HydraDurham::NestedContributorsBehaviour
 
   def collection_params
     form_class.model_attributes(
