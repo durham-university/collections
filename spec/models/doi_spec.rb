@@ -342,6 +342,19 @@ RSpec.describe "doi concern" do
       end
     end
 
+    describe "metadata_xml" do
+      let(:file) { FactoryGirl.create(:public_file, :test_data, :public_doi) }
+      subject { file.doi_metadata_xml }
+      it "gives out correct xml" do
+        expect(subject).to include('<?xml version="1.0" encoding="UTF-8"?>')
+        expect(subject).to include('<resource xmlns="http://datacite.org/schema/kernel-3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://datacite.org/schema/kernel-3 http://schema.datacite.org/meta/kernel-3/metadata.xsd">')
+        expect(subject).to match(/<creator>\s*<creatorName>Contributor 1<\/creatorName>\s*<affiliation>Affiliation 1<\/affiliation>\s*<affiliation>Affiliation 1\/2<\/affiliation>\s*<\/creator>/)
+        expect(subject).to match(/<creator>\s*<creatorName>Contributor 2<\/creatorName>\s*<affiliation>Affiliation 2<\/affiliation>\s*<\/creator>/)
+        expect(subject).to include('<resourceType resourceTypeGeneral="Image">Image</resourceType>')
+        expect(subject).to include('</resource>')
+      end
+    end
+
 #    context "when part of a collection" do
 #      let!(:collection1) { FactoryGirl.create(:collection, :test_data, :public_doi, members: [ file ]) }
 #      let!(:collection2) { FactoryGirl.create(:collection, :test_data, members: [ file ]) }

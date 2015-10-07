@@ -5,7 +5,7 @@ module HydraDurham
     class ValueWithOrder < ActiveTriples::Resource
       configure type: ::RDF::URI.new('http://collections.durham.ac.uk/ns#value_with_order_wrapper')
       property :value, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#value_with_order_wrapped_value')
-      property :order, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#value_with_order_wrapped_relevance')
+      property :order, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#value_with_order_wrapped_order')
 
       def initialize(uri,parent)
         if uri.try(:node?)
