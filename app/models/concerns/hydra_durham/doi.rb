@@ -15,16 +15,34 @@ module HydraDurham
 
       validate :validate_doi_and_datacite_fields
 
-      after_save { update_datacite_metadata unless @skip_update_datacite }
-      after_destroy { update_datacite_destroyed unless @skip_update_datacite }
+      after_save :update_datacite_metadata
+      around_destroy :update_datacite_destroyed
     end
 
     def update_datacite_metadata
+      return if @skip_update_datacite
       queue_doi_metadata_update depositor
     end
 
     def update_datacite_destroyed
-      queue_doi_metadata_update depositor, destroyed: true
+      if @skip_update_datacite
+        yield
+      else
+        # Store the dependent items as they won't be available after this
+        # has been destroyed.
+        dependent = dependent_doi_items
+
+        yield
+
+        if destroyed?
+          queue_doi_metadata_update depositor, destroyed: true
+
+          # Update dependent doi metadata using the stored list
+          dependent.each do |collection|
+            collection.queue_doi_metadata_update collection.depositor
+          end
+        end
+      end
     end
 
     # perform model level validation before saving
@@ -101,16 +119,22 @@ module HydraDurham
         Sufia.queue.push(UpdateDataciteJob.new(self.id, user, do_mint: mint))
       end
 
-      # Update all dependent items.
+      # Update all dependent items. Note that if this resource is destroyed?
+      # then dependent_doi_items returns an empty list and this doesn't work.
+      # See update_datacite_destroyed around filter.
       dependent_doi_items.each do |collection|
         collection.queue_doi_metadata_update collection.depositor
       end
     end
 
-    # Gets all items that are managed in DataCite and that depend on this item.
+    # Gets all items that are managed in DataCite and that potentially depend on
+    # this item. This item might not actually be included in the metadata of the
+    # returned items, for example due to being private.
     def dependent_doi_items
-      # if this resource isn't open access or isn't collectible then just return an empty list
-      return [] if (!respond_to? :collections) || visibility!=Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+      # If this resource isn't collectible then just return an empty list.
+      # If this resource is destroyed?, then trying to access collections will
+      # raise an error, so just return an empty list instead.
+      return [] if (!respond_to? :collections) || destroyed?
       # return all collections this is part of that are managed in DataCite
       collections.to_a.select do |collection|
         (collection.respond_to? :doi) && collection.manage_datacite?

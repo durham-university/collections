@@ -341,23 +341,52 @@ RSpec.describe "doi concern" do
         end
       end
     end
-  end
 
-  context "with a collection" do
-    # TODO: Add files to collection and test those too
-    let(:collection) { FactoryGirl.create(:collection, :test_data) }
+#    context "when part of a collection" do
+#      let!(:collection1) { FactoryGirl.create(:collection, :test_data, :public_doi, members: [ file ]) }
+#      let!(:collection2) { FactoryGirl.create(:collection, :test_data, members: [ file ]) }
+#      before{ file.reload }
+#
+#      describe "dependent_doi_items" do
+#        subject { file.dependent_doi_items }
+#        it "returns the dependent collection" do
+#          expect(subject.length).to eql(1)
+#          expect(subject[0].id).to eql(collection1.id)
+#        end
+#      end
+#
+#      describe "updating dependent resources" do
+#        it "updating notifies dependent resources" do
+#          expect(file.dependent_doi_items[0]).to receive(:queue_doi_metadata_update)
+#          file.tag=['Changed tag']
+#          file.save
+#        end
+#
+#        it "destroying notifies dependent resources" do
+#          expect(file.dependent_doi_items[0]).to receive(:queue_doi_metadata_update)
+#          file.destroy
+#        end
+#      end
+#    end
 
-    describe "metadata" do
-      context "with passing values" do
-        it "should not have any metadata errors" do
-          expect(collection.validate_doi_metadata).to be_empty
-        end
-        it "should give correct metadata hash" do
-          expect(multi_value_sort(collection.doi_metadata)).to eql(multi_value_sort(
-            {:identifier=>collection.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>"Affiliation 1"},{:name=>"Contributor 2", :affiliation=>"Affiliation 2"}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>"Affiliation 3", :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Collection", :rights=>[], :format=>[], :size=>[]}
-          ))
-        end
-      end
-    end
   end
+  
+#
+#  context "with a collection" do
+#    let(:file1) { FactoryGirl.create(:public_file, :test_data) }
+#    let(:collection) { FactoryGirl.create(:collection, :test_data, members: [ file1 ]) }
+#
+#    describe "metadata" do
+#      context "with passing values" do
+#        it "should not have any metadata errors" do
+#          expect(collection.validate_doi_metadata).to be_empty
+#        end
+#        it "should give correct metadata hash" do
+#          expect(multi_value_sort(collection.doi_metadata)).to eql(multi_value_sort(
+#            {:identifier=>collection.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>"Affiliation 1"},{:name=>"Contributor 2", :affiliation=>"Affiliation 2"}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>"Affiliation 3", :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>file1.doi_landing_page, :id_type=>"URL", :relation_type=>"HasPart"},{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Collection", :rights=>[{:rights=>"#{file1.id} - Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}], :format=>["#{file1.id} - text/plain"], :size=>["#{file1.id} - "]}
+#          ))
+#        end
+#      end
+#    end
+#  end
 end

@@ -4,7 +4,7 @@ module HydraDurham
 
     included do
       before_filter :restrict_local_doi_changes, only: [ :update ]
-
+      before_filter :restrict_published_doi_deletion, only: [ :destroy ]
     end
 
     def identifier_params
@@ -44,6 +44,10 @@ module HydraDurham
       end
     end
 
+    def restrict_published_doi_deletion
+      resource=@resource || instance_variable_get("@#{controller_name.singularize}")
+      raise "Cannot delete resource with a published local DOI" if resource.has_local_doi?
+    end
 
   end
 end

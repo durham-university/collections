@@ -2,7 +2,7 @@
 <p>
   <span class="label label-default"><%= link_to "Browse", collections.collection_path %></span> &nbsp;&nbsp;
   <span class="label label-default"><%= link_to "Add files",  sufia.dashboard_files_path %></span> &nbsp;&nbsp;
-  <% if (not @collection.has_local_doi?)  %>
+  <% if @collection.respond_to?(:doi) && (!@collection.has_local_doi?)  %>
     <span class="label label-default"><%= link_to t('durham.doi.generate_doi'), '/doi/' + @collection.id %></span>
   <% end %>
 </p>

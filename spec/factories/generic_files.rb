@@ -19,7 +19,11 @@ FactoryGirl.define do
 
     trait :public_doi do
       after(:create) do |gf, evaluator|
-        gf.identifier << gf.full_mock_doi
+        gf.identifier += [gf.full_mock_doi]
+        gf.doi_published = DateTime.now
+        gf.datacite_document = gf.doi_metadata.to_json
+        gf.skip_update_datacite = true
+        gf.save
       end
     end
 
@@ -34,6 +38,7 @@ FactoryGirl.define do
       related_url ['http://related.url.com/test']
       description ['Description']
       resource_type ['Image']
+      date_modified DateTime.parse('Thu, 16 Jul 2015 13:44:38 +0100')
       date_uploaded DateTime.parse('Thu, 16 Jul 2015 12:44:38 +0100')
       rights ['http://creativecommons.org/licenses/by-nc-sa/4.0/']
 

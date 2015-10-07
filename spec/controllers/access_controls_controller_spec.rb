@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "doi_resource_behaviour" do
+RSpec.describe "access_controls_controller" do
   let(:user) { FactoryGirl.find_or_create(:registered_user_1) }
   let(:other_user) { FactoryGirl.find_or_create(:registered_user_2) }
   before { sign_in user }

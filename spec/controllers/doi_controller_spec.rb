@@ -6,7 +6,7 @@ RSpec.describe DoiController, type: :controller do
   let(:other_user) { FactoryGirl.find_or_create(:registered_user_2) }
   let(:file) { FactoryGirl.create(:generic_file, depositor: user) }
   let(:public_file) { FactoryGirl.create(:public_file, depositor: user) }
-  let(:collection) { FactoryGirl.create(:collection, depositor: user) }
+#  let(:collection) { FactoryGirl.create(:collection, depositor: user) }
 
   describe "GET #show" do
     context "when not logged in" do
@@ -32,20 +32,20 @@ RSpec.describe DoiController, type: :controller do
         expect(response).to have_http_status(:success)
       end
 
-      it "returns http success for a collection" do
-        get :show, id: collection.id
-        expect(response).to have_http_status(:success)
-      end
+#      it "returns http success for a collection" do
+#        get :show, id: collection.id
+#        expect(response).to have_http_status(:success)
+#      end
 
       it "sets model_class for a file" do
         get :show, id: file.id
         expect(assigns(:model_class)).to eql('generic_file')
       end
 
-      it "sets model_class for a collection" do
-        get :show, id: collection.id
-        expect(assigns(:model_class)).to eql('collection')
-      end
+#      it "sets model_class for a collection" do
+#        get :show, id: collection.id
+#        expect(assigns(:model_class)).to eql('collection')
+#      end
 
       context "with invalid file" do
         # the file is already missing some mandatory fields

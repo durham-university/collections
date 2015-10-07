@@ -1,13 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Collection do
-  let(:collection) { FactoryGirl.create(:collection) }
-  let(:collection_saved) {
-    collection.save if collection.changed_for_autosave?
-    collection
-  }
-  let(:collection_fedora) { Collection.find(collection_saved.id) }
-  let(:collection_solr) { Collection.load_instance_from_solr(collection_saved.id) }
+  let(:collection) { FactoryGirl.create(:collection,:test_data) }
+  let(:collection_fedora) { Collection.find(collection.id) }
+  let(:collection_solr) { Collection.load_instance_from_solr(collection.id) }
 
   it "should have multi-value description" do
     collection.description = ['description1', 'description2']
@@ -20,9 +16,9 @@ RSpec.describe Collection do
     expect(collection).not_to respond_to(:rights)
   end
 
-  it "should have doi functionality" do
-    expect(subject).to respond_to :doi
-  end
+#  it "should have doi functionality" do
+#    expect(subject).to respond_to :doi
+#  end
   it "should have contributors" do
     expect(subject).to respond_to :contributors
   end
@@ -48,41 +44,21 @@ RSpec.describe Collection do
   end
 
   describe "persisting" do
-    let(:collection_attributes) {
-      {
-        'title' => 'Test title',
-        'description' => ['Test description'],
-        'resource_type' => ['Collection'],
-        'tag' => [ 'keyword1', 'keyword2' ],
-        'subject' => [ 'subject1', 'subject2' ],
-        'language' => [ 'English', 'Finnish' ],
-        'identifier' => [ 'http://www.example.com/identifier1', '1234/1231' ],
-        'based_near' => [ 'Durham' ],
-        'related_url' => [ 'http://www.example.com/related' ],
-      }
+
+    let(:attribute_keys) {
+      ['title','description','subject','resource_type','identifier','tag','related_url','funder','abstract','research_methods','date_uploaded']
     }
-    let(:collection_contributors) {
-      [
-        FactoryGirl.build(:contributor, contributor_name: ['Contributor 1'],
-                                        affiliation: ['Affiliation 1'],
-                                        role: ['http://id.loc.gov/vocabulary/relators/cre']),
-        FactoryGirl.build(:contributor, contributor_name: ['Contributor 2'],
-                                        affiliation: ['Affiliation 2'],
-                                        role: ['http://id.loc.gov/vocabulary/relators/cre']),
-        FactoryGirl.build(:contributor, contributor_name: ['Contributor 3'],
-                                        affiliation: ['Affiliation 3'],
-                                        role: ['http://id.loc.gov/vocabulary/relators/edt'])
-      ]
+    let(:expected_values) {
+      multi_value_sort({"title"=>"Test title", "description"=>["Description"], "subject"=>["subject1", "subject2"], "resource_type"=>["Collection"], "identifier"=>["http://something.else.com", "arXiv:0123.0000", "isbn:123456"], "tag"=>["keyword1", "keyword2"], "related_url"=>["http://related.url.com/test"], "funder"=>["Funder 1"], "abstract"=>["Test abstract"], "research_methods"=>["Test research method 1", "Test research method 2"], "date_uploaded"=>DateTime.parse("2015-07-16T12:44:38.000+00:00").to_s})
     }
 
-    before {
-      collection.attributes = collection_attributes
-      collection.contributors = collection_contributors
-    }
     describe "loading from Fedora" do
       subject { collection_fedora }
       it "should have all the right values" do
-        expect( subject.attributes.slice(*(collection_attributes.keys.map &:to_s)) ).to eql(collection_attributes)
+        attrs = multi_value_sort subject.attributes.slice(*attribute_keys)
+        # Fedora returns dates as Date objects, convert to string for easier comparison
+        attrs['date_uploaded'] = attrs['date_uploaded'].to_s
+        expect( attrs ).to eql( expected_values )
       end
       it "should have the contributors" do
         expect( subject.contributors.map &:to_hash ).to eql([
@@ -95,7 +71,10 @@ RSpec.describe Collection do
     describe "loading from Solr" do
       subject { collection_solr }
       it "should have all the right values" do
-        expect( subject.attributes.slice(*(collection_attributes.keys.map &:to_s)) ).to eql(collection_attributes)
+        attrs = multi_value_sort subject.attributes.slice(*attribute_keys)
+        # Solr returns dates as Strings. Parse and convert back to string to make sure it's in the same format
+        attrs['date_uploaded'] = DateTime.parse(attrs['date_uploaded']).to_s
+        expect( attrs ).to eql( expected_values )
       end
       it "should have the contributors" do
         expect( subject.contributors.map &:to_hash ).to eql([
@@ -104,6 +83,15 @@ RSpec.describe Collection do
           {contributor_name: ['Contributor 3'], affiliation: ['Affiliation 3'], role: ['http://id.loc.gov/vocabulary/relators/edt']}
         ])
       end
+    end
+  end
+
+  describe "deletion" do
+    it "should be possible to delete the collection" do
+      collection.reload
+      #expect(collection).to receive(:queue_doi_metadata_update).with(collection.depositor,hash_including(destroyed: true))
+      expect { collection.destroy }.not_to raise_error
+      expect(Collection.where(id: collection.id).to_a).to be_empty
     end
   end
 end
