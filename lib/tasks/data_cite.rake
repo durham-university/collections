@@ -5,6 +5,8 @@ require 'httparty'
 namespace :data_cite do
   def ingest_doi(id,depositor,funder,date_created=nil)
     map = Datacite.get_data(id)
+    return if map.empty?
+
     map[:funder] = [funder] if map[:funder].empty?
     map[:date_created] = [date_created || DateTime.now]
     puts map
