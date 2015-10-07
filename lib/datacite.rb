@@ -63,6 +63,7 @@ class Datacite
     prefix ||= DOI_CONFIG['fetch_doi_prefix']
     url = "http://data.datacite.org/application/x-datacite+xml/#{prefix}/#{doi}"
     response = HTTParty.get(url)
+    return {} if response.code == 404
 
     xml = Nokogiri::XML( response.body )
     xml.remove_namespaces!
