@@ -1,0 +1,5 @@
+<% if  can?(:update, ContentBlock) || !@marketing_text.value.blank? %>
+  <div class="col-sm-offset-2 col-sm-9 col-md-offset-1 home_marketing_text">
+    <%= editable_content_block @marketing_text %>
+  </div>
+<% end %>
