@@ -14,6 +14,10 @@ test:
   <<: *defaults
   doi_prefix: '10.4124'
 
+test_server:
+  <<: *defaults
+  doi_prefix: '10.4124'
+
 production:
   <<: *defaults
   doi_prefix: '10.15128'
