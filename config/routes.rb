@@ -1,10 +1,35 @@
+def disable_route(prefix, redirect="homepage#index")
+  get "#{prefix}/*rest", to: redirect
+  post "#{prefix}/*rest", to: redirect
+  delete "#{prefix}/*rest", to: redirect
+  put "#{prefix}/*rest", to: redirect
+  patch "#{prefix}/*rest", to: redirect
+  get "#{prefix}", to: redirect
+  post "#{prefix}", to: redirect
+  delete "#{prefix}", to: redirect
+  put "#{prefix}", to: redirect
+  patch "#{prefix}", to: redirect
+end
+
 Rails.application.routes.draw do
 #  mount Qa::Engine => '/qa'
 
-
   resources :people
   blacklight_for :catalog
+
+  # this enables users/sign_in and users/sign_out
   devise_for :users
+
+  # enable users index only, needed by user auto complete
+  get "users" => "users#index"
+  # enable user proxy management
+  post 'users/:user_id/depositors' => 'depositors#create'
+  delete 'users/:user_id/depositors/:id' => 'depositors#destroy'
+
+  # These have to be defined before what they are disabling.
+  disable_route 'users'
+  disable_route 'bookmarks'
+
   mount Hydra::RoleManagement::Engine => '/'
 
   Hydra::BatchEdit.add_routes(self)

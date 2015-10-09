@@ -35,14 +35,6 @@
     <dl class="expanded-details row">
       <dt class="col-xs-3 col-lg-2">Description:</dt>
       <dd class="col-xs-9 col-lg-10"> <%= document.description%></dd>
-      <dt class="col-xs-3 col-lg-2">Edit Access:</dt>
-      <dd class="col-xs-9 col-lg-10">
-      <% if document.edit_groups.present? %>
-            Groups: <%= document.edit_groups.join(', ') %>
-            <br/>
-        <% end %>
-        Users: <%= document.edit_people.join(', ') %>
-      </dd>
     </dl>
   </td>
 </tr>
