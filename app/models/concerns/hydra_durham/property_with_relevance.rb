@@ -3,20 +3,48 @@ module HydraDurham
     extend ActiveSupport::Concern
 
     class ValueWithRelevance < ActiveTriples::Resource
+      include NestedResource
       configure type: ::RDF::URI.new('http://collections.durham.ac.uk/ns#value_with_relevance_wrapper')
       property :value, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#value_with_relevance_wrapped_value')
       property :relevance, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#value_with_relevance_wrapped_relevance')
+    end
 
-      def initialize(uri,parent)
-        if uri.try(:node?)
-          uri = RDF::URI("#nested_#{uri.to_s.gsub('_:','')}")
-        elsif uri.start_with?("#")
-          uri = RDF::URI(uri)
-        end
-        super
+    included do
+      class << self
+        attr_accessor :properties_with_relevance
       end
-      def final_parent
-        parent
+      self.properties_with_relevance = []
+
+      def initialize(*args)
+        super(*args)
+        @json_properties_with_relevance=nil
+      end
+
+      def init_with_json(*args)
+        @json_properties_with_relevance={}
+        super(*args)
+      end
+
+      def as_json(*args)
+        super(*args).tap do |json|
+          self.class.properties_with_relevance.each do |prop|
+            json[prop.to_s] = json[prop.to_s].map(&:as_json)
+          end
+        end
+      end
+
+      def adapt_attributes(attrs,*rest)
+        self.class.properties_with_relevance.each do |prop|
+          @json_properties_with_relevance[prop] = attrs[prop.to_s].map do |hash|
+            ValueWithRelevance.new(hash['id'],nil).tap do |v| v.init_with_json(hash) end
+          end
+        end
+        return super(attrs.except(*self.class.properties_with_relevance),*rest)
+      end
+
+      def get_values(*args)
+        return super(*args) unless @json_properties_with_relevance && self.class.properties_with_relevance.include?(args.first)
+        return @json_properties_with_relevance[args.first]
       end
     end
 
@@ -27,6 +55,8 @@ module HydraDurham
 
         wrapper_predicate = options.fetch(:wrapper_predicate, "#{options[:predicate]}_with_relevance")
         wrapper_name = options.fetch(:wrapper_name, "#{name}_with_relevance").to_sym
+
+        self.properties_with_relevance << wrapper_name
 
         property wrapper_name, options.except( :wrapper_predicate, :wrapper_name ).merge({
           predicate: wrapper_predicate,
