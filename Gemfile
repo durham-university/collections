@@ -59,7 +59,7 @@ gem 'mini_magick', '3.8.1'
 
 #gem 'qa', '~> 0.5.0'
 
-group :development, :test, :test_server do
+group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
@@ -78,4 +78,8 @@ group :development, :test, :test_server do
   gem 'capybara'
 
   gem 'factory_girl_rails'
+end
+
+group :test_server do
+  gem 'web-console', '~> 2.0'
 end
