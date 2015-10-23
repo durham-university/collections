@@ -8,6 +8,7 @@ require 'rspec/rails'
 require 'capybara/rails'
 require 'support/input_support'
 require 'support/value_sort_support'
+require 'support/features/session_helpers'
 require 'active_fedora/cleaner'
 require 'database_cleaner'
 
@@ -91,6 +92,7 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
   config.include ValueSortSupport
+  config.include Features::SessionHelpers, type: :feature
 
   config.infer_spec_type_from_file_location!
 
