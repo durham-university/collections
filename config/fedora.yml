@@ -8,8 +8,7 @@ test:
   password: fedoraAdmin
   url: http://localhost:8983/fedora/rest
   base_path: /test
-#testing servers
-testing:
+test_server:
   url: <%= Rails.application.secrets.fedora_url %>
   base_path: <%= Rails.application.secrets.fedora_base_path %>
 production:
