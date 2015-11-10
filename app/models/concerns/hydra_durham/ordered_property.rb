@@ -27,11 +27,11 @@ module HydraDurham
 
       def as_json(*args)
         super(*args).tap do |json|
-          self.class.properties_with_relevance.each do |prop|
+          self.class.properties_with_order.each do |prop|
             json[prop.to_s] = json[prop.to_s].map(&:as_json)
           end
         end
-      end      
+      end
 
       def adapt_attributes(attrs,*rest)
         self.class.properties_with_order.each do |prop|
