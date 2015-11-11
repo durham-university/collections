@@ -4,7 +4,7 @@ yum -y install \
   clamav \
   clamav-devel \
   clamav-update \
-  java-1.7.0-openjdk \
+  java-1.8.0-openjdk \
   libreoffice-calc \
   libreoffice-draw \
   libreoffice-headless \

@@ -1,8 +1,8 @@
-<h2 class="non lower">Actions</h2>
-<p>
+<h2 class="sr-only">Actions</h2>
+<div class="actions-controls-collections">
   <span class="label label-default"><%= link_to "Browse", collections.collection_path %></span> &nbsp;&nbsp;
   <span class="label label-default"><%= link_to "Add files",  sufia.dashboard_files_path %></span> &nbsp;&nbsp;
   <% if @collection.respond_to?(:doi) && (!@collection.has_local_doi?)  %>
     <span class="label label-default"><%= link_to t('durham.doi.generate_doi'), '/doi/' + @collection.id %></span>
   <% end %>
-</p>
+</div>
