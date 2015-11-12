@@ -65,6 +65,13 @@ RSpec.shared_examples "ordered property" do
       subject.reload
       expect(subject.text).to eql ['aaa','bbb','ccc']
     end
+
+    let( :subject_solr ) { Foo.load_instance_from_solr(subject.id) }
+    it "saves and loads from solr" do
+      subject.text=['aaa','bbb']
+      subject.save
+      expect(subject_solr.text).to eql ['aaa','bbb']
+    end
   end
 
   describe "indexing" do
