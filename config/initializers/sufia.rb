@@ -1,6 +1,13 @@
 # Returns an array containing the vhost 'CoSign service' value and URL
 Sufia.config do |config|
 
+  # Default lock config settings. These can be removed when updating Sufia
+  # to a version which does this automatically. See comments in
+  # app/services/sufia/lock_manager.rb
+  config.lock_retry_count = 600
+  config.lock_time_to_live = 60_000
+  config.lock_retry_delay = 200
+
   config.fits_to_desc_mapping= {
     file_title: :title,
     file_author: :creator

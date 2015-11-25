@@ -1,3 +1,7 @@
+# This file is copied from Sufia with the addition of proper locking in
+# safe_create. This should be made a pull request to Sufia later.
+# See comments in app/services/sufia/lock_manager.rb
+
 class Batch < ActiveFedora::Base
   include Hydra::AccessControls::Permissions
   include Sufia::ModelMethods
@@ -15,16 +19,32 @@ class Batch < ActiveFedora::Base
     safe_create(id)
   end
 
-  # This method handles most race conditions gracefully.
+  # This method handles race conditions gracefully.
   # If a batch with the same ID is created by another thread
   # we fetch the batch that was created (rather than throwing
   # an error) and continute.
   def self.safe_create(id)
-    Batch.create(id: id)
-  rescue ActiveFedora::IllegalOperation
-    # This is the exception thrown by LDP when we attempt to
-    # create a duplicate object. If we can find the object
-    # then we are good to go.
-    Batch.find(id)
+    batch = nil
+    acquire_lock_for(id) do
+      begin
+        batch = Batch.create(id: id)
+      rescue ActiveFedora::IllegalOperation
+        batch = Batch.find(id)
+      end
+    end
+    batch
   end
+
+  private
+
+    def self.acquire_lock_for(lock_key, &block)
+      lock_manager.lock(lock_key, &block)
+    end
+
+    def self.lock_manager
+      @lock_manager ||= Sufia::LockManager.new(
+        Sufia.config.lock_time_to_live,
+        Sufia.config.lock_retry_count,
+        Sufia.config.lock_retry_delay)
+    end
 end
