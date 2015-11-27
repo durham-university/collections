@@ -9,8 +9,8 @@
 
 
 //200 MB  max file size 
-var max_file_size = 200000000;
-var max_file_size_str = "200 MB";
+var max_file_size = 400000000;
+var max_file_size_str = "400 MB";
 //500 MB max total upload size
 var max_total_file_size = 500000000;
 var max_file_count = 100;
