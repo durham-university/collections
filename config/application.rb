@@ -39,6 +39,10 @@ module Sufia
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
     config.autoload_paths += Dir["#{config.root}/app/jobs"]
 
+    # This is only needed for the temporary batch locking patch.
+    # See comments in app/services/sufia/lock_manager.rb
+    config.autoload_paths += Dir["#{config.root}/app/services"]
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

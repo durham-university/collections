@@ -514,6 +514,8 @@ GEM
     redis-session-store (0.8.0)
       actionpack (>= 3, < 5)
       redis
+    redlock (0.1.2)
+      redis (~> 3, >= 3.0.5)
     ref (1.0.5)
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
@@ -670,6 +672,7 @@ DEPENDENCIES
   mysql2
   rails (= 4.2.1)
   redis-session-store
+  redlock (~> 0.1.2)
   rsolr (~> 1.0.6)
   rspec-rails
   rubyzip
