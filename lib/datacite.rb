@@ -27,9 +27,9 @@ class Datacite
       @api_doi_path = '/doi'
       @api_metadata_path = '/metadata'
     else #development/test
-      self.class.base_uri 'https://test.datacite.org'
-      @api_doi_path = '/mds/doi'
-      @api_metadata_path = '/mds/metadata'
+      self.class.base_uri 'https://mds.test.datacite.org'
+      @api_doi_path = '/doi'
+      @api_metadata_path = '/metadata'
     end
   end
 
