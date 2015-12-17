@@ -188,3 +188,7 @@ end
 
 Date::DATE_FORMATS[:standard] = "%-d %B %Y"
 Time::DATE_FORMATS[:standard] = "%-d %B %Y, %H:%m:%S"
+
+unless MIME::Types['application/x-zip-compressed'].present?
+  MIME::Types.add( MIME::Type.from_hash(content_type: 'application/x-zip-compressed', extensions: ['zip'], obsolete: true) ) 
+end
