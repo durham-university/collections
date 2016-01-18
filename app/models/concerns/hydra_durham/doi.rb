@@ -157,7 +157,7 @@ module HydraDurham
     # Does not save the resource or mint the doi.
     def add_doi
       if not has_local_doi?
-        identifier << full_mock_doi
+        self.identifier += [full_mock_doi]
       end
     end
 

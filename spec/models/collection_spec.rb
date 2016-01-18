@@ -49,7 +49,7 @@ RSpec.describe Collection do
       ['title','description','subject','resource_type','identifier','tag','related_url','funder','abstract','research_methods','date_uploaded']
     }
     let(:expected_values) {
-      multi_value_sort({"title"=>"Test title", "description"=>["Description"], "subject"=>["subject1", "subject2"], "resource_type"=>["Collection"], "identifier"=>["http://something.else.com", "arXiv:0123.0000", "isbn:123456"], "tag"=>["keyword1", "keyword2"], "related_url"=>["http://related.url.com/test"], "funder"=>["Funder 1"], "abstract"=>["Test abstract"], "research_methods"=>["Test research method 1", "Test research method 2"], "date_uploaded"=>DateTime.parse("2015-07-16T12:44:38.000+00:00").to_s})
+      multi_value_sort({"title"=>"Test title", "description"=>["Description"], "subject"=>["subject1", "subject2"], "resource_type"=>["Collection"], "identifier"=>["http://something.else.com", "arXiv:0123.0000", "isbn:123456"], "tag"=>["keyword1", "keyword2"], "related_url"=>["http://related.url.com/test"], "funder"=>["Funder 1"], "abstract"=>["Test abstract"], "research_methods"=>["Test research method 1", "Test research method 2"], "date_uploaded"=>DateTime.parse("2015-07-16T12:44:38.000+01:00").to_s})
     }
 
     describe "loading from Fedora" do
@@ -72,8 +72,7 @@ RSpec.describe Collection do
       subject { collection_solr }
       it "should have all the right values" do
         attrs = multi_value_sort subject.attributes.slice(*attribute_keys)
-        # Solr returns dates as Strings. Parse and convert back to string to make sure it's in the same format
-        attrs['date_uploaded'] = DateTime.parse(attrs['date_uploaded']).to_s
+        attrs['date_uploaded'] = attrs['date_uploaded'].to_s
         expect( attrs ).to eql( expected_values )
       end
       it "should have the contributors" do

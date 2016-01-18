@@ -68,21 +68,15 @@ class UpdateDataciteJob < ActiveFedoraIdBasedJob
   end
 
   def save_doi
-    attrs = {
-      identifier: object.identifier,
-      doi_published: object.doi_published,
-      datacite_document: object.datacite_document
-    }
     if object.respond_to? :date_modified
       object.date_modified = DateTime.now
-      attrs[:date_modified]= object.date_modified
     end
 
     # It is important to set this before saving. Otherwise the save would trigger
     # another datacite update and go in an infinite loop.
     object.skip_update_datacite = true
     begin
-      object.update( attrs )
+      object.save
     ensure
       object.skip_update_datacite = false
     end
