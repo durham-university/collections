@@ -40,7 +40,6 @@ gem 'redlock', '~> 0.1.2'
 # Sorting and collection memorisation fix isn't in 6.3.0 so pin to a more recent commit
 gem 'sufia', github: 'projecthydra/sufia', ref: 'f838704'
 gem 'kaminari', github: 'jcoyne/kaminari', branch: 'sufia'
-gem 'rsolr', '~> 1.0.6'
 gem 'devise'
 gem 'devise-guests', '~> 0.3'
 gem 'devise_ldap_authenticatable'
@@ -49,6 +48,11 @@ gem 'mysql2'
 gem 'clamav'
 gem 'redis-session-store'
 gem 'rubyzip'
+
+# Use our branch of Active-Fedora and RSolr until upstream PRs are merged.
+# See https://github.com/rsolr/rsolr/pull/116 and https://github.com/projecthydra/active_fedora/pull/960
+gem 'active-fedora', github: 'durham-university/active_fedora', branch: 'configurable_handlers'
+gem 'rsolr', github: 'durham-university/rsolr', branch: 'configurable_handlers'
 
 # Get hydra-editor from github until some fixes are pushed to gem repositories.
 # Remove this line when a new version is released.
