@@ -360,3 +360,12 @@ a:link.remove, a:visited.remove {
 .table-responsive {
   overflow: visible;
 }
+
+body>ul.ui-autocomplete {
+  z-index: 2 !important;
+}
+
+.ui-autocomplete .note {
+  font-size: 10px;
+  text-indent: 1em;
+}

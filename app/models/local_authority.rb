@@ -120,8 +120,9 @@ class LocalAuthority < ActiveRecord::Base
         LocalAuthorityEntry.find_by_sql(sql).each do |hit|
           hits << {
             uri: hit.uri,
-            label: ( (hit.use_label && hit.use_label!=hit.label) ? ("#{hit.label} USE #{hit.use_label}") : hit.label ),
-            value: (hit.use_label ? hit.use_label : hit.label)
+            label: hit.label,
+            value: (hit.use_label ? hit.use_label : hit.label),
+            note: (hit.use_label && hit.use_label!=hit.label) ? "USE #{hit.use_label}" : nil
           }
         end
       end

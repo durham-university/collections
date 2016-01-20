@@ -24,8 +24,9 @@ class FASTResource < ActiveResource::Base
       auth=item.auth
       entry=item.attributes[query_index][0]
       {
-        label: (auth==entry) ? auth : ("#{entry} USE #{auth}") ,
-        value: auth
+        label: entry,
+        value: auth,
+        note: (auth==entry) ? nil : "Use #{auth}"
       }
     }
   end

@@ -55,34 +55,47 @@ Blacklight.onLoad(function() {
     return autocomplete_opts;
   }
 
-  // Loop over the autocomplete fields and attach the
-  // events for autocomplete.
-  $(".autocomplete").each(function(){
-    var input=$(this);
-/*  // TODO: Not sure what this does. If it indeed does something useful
-    // then it should also be added to multiple value fields.
-    input.bind( "keydown", function( event ) {
-        if ( event.keyCode === $.ui.keyCode.TAB &&
-                $( this ).data( "autocomplete" ).menu.active ) {
-            event.preventDefault();
-        }
-    });
-*/
-    var nameSplit=input.attr('name').split(/[\[\]]/);
-    var field=nameSplit[1];
-    input.autocomplete( get_autocomplete_opts( field ));
-  });
+  function render_autocomplete(ul, item, field) {
+    var li = $("<li>").data("item.autocomplete", item)
+      .addClass("ui-menu-item").attr('role','presentation');
+    var a = $('<a>').addClass('ui-corner-all');
+    a.text( item.label ).appendTo(li);
+    if(item.note) {
+      $("<div class=\"note\">").text( item.note ).appendTo(a);
+    }
+    li.appendTo( ul );
+    return li;
+  }
+
+  function addAutocompleteIn(elem){
+    elem.find('.autocomplete').each(function(){
+      var input=$(this);
+  /*  // TODO: Not sure what this does. If it indeed does something useful
+      // then it should also be added to multiple value fields.
+      input.bind( "keydown", function( event ) {
+          if ( event.keyCode === $.ui.keyCode.TAB &&
+                  $( this ).data( "autocomplete" ).menu.active ) {
+              event.preventDefault();
+          }
+      });
+  */
+      var nameSplit=input.attr('name').split(/[\[\]]+/);
+      var field=nameSplit[nameSplit.length-2];
+      input.autocomplete( get_autocomplete_opts( field ))
+           .data( "autocomplete" )._renderItem = function( ul, item ){
+             return render_autocomplete(ul, item, field);
+           };
+     });
+  }
+
+  addAutocompleteIn($(document));
+
 
   // attach an auto complete based on the field
   function setup_autocomplete(e, cloneElem) {
     var $cloneElem = $(cloneElem);
-
-    var nameSplit=$cloneElem.attr('name').split(/[\[\]]/);
-    var autocomplete_field=nameSplit[1];
-
-    if(autocomplete_field){
-      $cloneElem.autocomplete(get_autocomplete_opts(autocomplete_field));
-    }
+    var group = $cloneElem.closest('.input-group');
+    addAutocompleteIn(group);
   }
 
   $('.multi_value.form-group').manage_fields({add: setup_autocomplete});
