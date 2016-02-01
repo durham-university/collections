@@ -66,4 +66,13 @@ module SufiaHelper
     text
   end
 
+  # Fixes a bug in Sufia. PR sent upstream. See https://github.com/projecthydra/sufia/issues/1546
+  def iconify_auto_link(text, show_link = true)
+    # this block is only executed when a link is inserted;
+    # if we pass text containing no links, it just returns text.
+   auto_link(html_escape(text)) do |value|
+      "<i class='glyphicon glyphicon-new-window'></i>#{('&nbsp;' + value) if show_link}<br />"
+    end
+  end
+
 end
