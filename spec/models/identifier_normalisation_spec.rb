@@ -5,18 +5,21 @@ RSpec.describe HydraDurham::IdentifierNormalisation do
     class Foo < ActiveFedora::Base
       include HydraDurham::IdentifierNormalisation
       property :identifier, predicate: ::RDF::URI.new('http://www.example.com/ns#identifier')
+      property :related_url, predicate: ::RDF::URI.new('http://www.example.com/ns#related_url')
     end
   }
   after {
     Object.send(:remove_const,:Foo)
   }
-  let(:obj) { Foo.new(identifier: ['http://dx.doi.org/12345/987654321','http://arxiv.org/abs/121212121212'] )}
+  let(:obj) { Foo.new(identifier: ['http://dx.doi.org/12345/987654321','http://arxiv.org/abs/121212121212'], related_url: ['http://dx.doi.org/12345/01010101010','Something else'] )}
 
   describe "before validation callback" do
     it "calls normalisation before saving" do
       expect(obj).to receive(:normalise_record_identifiers!).and_call_original
+      expect(obj).to receive(:normalise_record_related_url!).and_call_original
       obj.save
       expect(obj.reload.identifier).to match_array(['doi:12345/987654321','arxiv:121212121212'])
+      expect(obj.reload.related_url).to match_array(['doi:12345/01010101010','Something else'])
     end
   end
 
@@ -24,6 +27,13 @@ RSpec.describe HydraDurham::IdentifierNormalisation do
     it "normalises and sets identifiers" do
       obj.normalise_record_identifiers!
       expect(obj.identifier).to match_array(['doi:12345/987654321','arxiv:121212121212'])
+    end
+  end
+
+  describe "#normalise_record_related_url!" do
+    it "normalises and sets related_url" do
+      obj.normalise_record_related_url!
+      expect(obj.related_url).to match_array(['doi:12345/01010101010','Something else'])
     end
   end
 

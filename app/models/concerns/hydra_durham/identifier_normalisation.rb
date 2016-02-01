@@ -4,6 +4,7 @@ module HydraDurham
 
     included do
       before_save :normalise_record_identifiers!
+      before_save :normalise_record_related_url!
     end
 
     # Note that DOI has some identifier logic as well. The normalised identifiers
@@ -30,6 +31,13 @@ module HydraDurham
 
     def normalise_record_identifiers!
       self.identifier = self.identifier.to_a.map do |ident|
+        self.class.normalise_identifier(ident)
+      end
+    end
+
+    def normalise_record_related_url!
+      return unless self.respond_to?(:related_url)
+      self.related_url = self.related_url.to_a.map do |ident|
         self.class.normalise_identifier(ident)
       end
     end

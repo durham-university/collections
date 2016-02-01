@@ -1,0 +1,8 @@
+<% record.related_url.each do |id| %>
+  <% link = record.model.class.try(:identifier_link,id) %>
+  <% if link.present? %>
+    <a href="<%= link %>"><%= id %></a>
+  <% else %>
+    <%= id %>
+  <% end %><br />
+<% end %>
