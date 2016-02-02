@@ -57,7 +57,7 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       @html << "  </div>"
 
       @html << "  <div class='col-md-8'>"
-      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name))
+      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name, placeholder: 'Surname, Forenames'))
       @html << "  </div>"
       @html << "</div>"
 
