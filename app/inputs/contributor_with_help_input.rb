@@ -92,10 +92,15 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
 
       merged_input_options = merge_wrapper_options(input_html_options, options)
 
+      disabled_options = {}
+      if field_readonly?
+        disabled_options = {disabled: Sufia.config.contributor_roles.values.select do |v| v!=field_value end}
+      end
+
       @html << @builder.collection_select(
           attribute_name,
           Sufia.config.contributor_roles, :last, :first,
-          input_options.merge(selected: field_value), merged_input_options.merge(name: field_name, id: field_name)
+          input_options.merge(selected: field_value).merge(disabled_options), merged_input_options.merge(name: field_name, id: field_name)
         )
 
       @html << "  </div>"

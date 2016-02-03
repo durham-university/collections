@@ -369,3 +369,8 @@ body>ul.ui-autocomplete {
   font-size: 10px;
   text-indent: 1em;
 }
+
+.form-control[disabled], .form-control[readonly], .form-control.readonly,
+fieldset[disabled] .form-control {
+  background-color: #eeeeee;
+}
