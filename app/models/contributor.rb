@@ -1,10 +1,10 @@
 class Contributor < ActiveFedora::Base
   include HydraDurham::PropertyWithRelevance
-  type ::RDF::DC.Agent
+  type ::RDF::Vocab::DC.Agent
 
   belongs_to :contributorable, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#contributor_to'), class_name: 'ActiveFedora::Base'
 
-  property :contributor_name, predicate: ::RDF::FOAF.name do |index|
+  property :contributor_name, predicate: ::RDF::Vocab::FOAF.name do |index|
     index.as :stored_searchable
   end
 
