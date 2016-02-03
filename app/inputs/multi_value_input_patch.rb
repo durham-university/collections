@@ -3,13 +3,21 @@
 #
 module MultiValueInputPatch
 
+  def object_model
+    if object.respond_to? :model
+      object.model
+    else
+      object
+    end
+  end
+
   def field_readonly?(value=nil)
-    o=if object.respond_to? :model
-        object.model
-      else
-        object
-      end
-    (o.respond_to? :field_readonly?) && (o.field_readonly? attribute_name, value )
+    object_model.try(:field_readonly?, attribute_name, value)
+  end
+
+  def field_warning?(value=nil)
+    return false if field_readonly?(value)
+    object_model.try(:doi_field_readonly?, attribute_name, value)
   end
 
   def input(wrapper_options)
@@ -40,14 +48,16 @@ module MultiValueInputPatch
   protected
     def outer_wrapper
       readonly=''
-      readonly='readonly_field' if field_readonly?
+      readonly+='readonly_field ' if field_readonly?
+      readonly+='warning_field ' if field_warning?
       "    <ul class=\"listing #{readonly}\">\n        #{yield}\n      </ul>\n"
     end
 
 
     def inner_wrapper(value,index)
       readonly=''
-      readonly='readonly_field' if field_readonly? value
+      readonly+='readonly_field ' if field_readonly?(value)
+      readonly+='warning_field ' if field_warning?(value)
       <<-HTML
         <li class="field-wrapper #{readonly}">
           #{yield}

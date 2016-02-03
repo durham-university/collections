@@ -266,6 +266,10 @@ div.heading-tile {
 }
 
 .simple_form {
+  .warning_field .form-control {
+    background-color: lighten($dangerhighlight,50%);
+  }
+
   li.readonly_field, .form-group.readonly_field li.field-wrapper {
     display: block;
     width: 421px;
@@ -283,6 +287,10 @@ div.heading-tile {
       }
       content: '&nbsp;';
     }
+  }
+
+  .readonly_field span.glyphicon-sort {
+    display: none;
   }
 }
 

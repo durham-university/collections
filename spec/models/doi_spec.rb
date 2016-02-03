@@ -3,21 +3,50 @@ require 'rails_helper'
 RSpec.describe "doi concern" do
   context "basic methods" do
     let(:file) { FactoryGirl.create(:generic_file, :test_data, :public_doi) }
-    describe "mock_doi" do
+
+    describe "#doi_field_readonly?" do
+      it "protects doi fields" do
+        expect(file.doi_field_readonly?(:title,nil)).to eql(true)
+        expect(file.doi_field_readonly?(:contributors,nil)).to eql(true)
+        expect(file.doi_field_readonly?(:identifier,file.full_mock_doi)).to eql(true)
+        expect(file.doi_field_readonly?(:identifier,'test:12345')).to eql(false)
+      end
+      it "doesn't care about override" do
+        file.doi_protection_override!
+        expect(file.doi_field_readonly?(:title,nil)).to eql(true)
+        expect(file.doi_field_readonly?(:contributors,nil)).to eql(true)
+        expect(file.doi_field_readonly?(:identifier,file.full_mock_doi)).to eql(true)
+        expect(file.doi_field_readonly?(:identifier,'test:12345')).to eql(false)
+      end
+    end
+
+    describe "#field_readonly?" do
+      it "delegates to #doi_field_readonly?" do
+        expect(file).to receive(:doi_field_readonly?).with(:foo,:bar).and_return(true)
+        expect(file.field_readonly?(:foo,:bar)).to eql(true)
+      end
+      it "returns false if overridden" do
+        file.doi_protection_override!
+        expect(file).not_to receive(:doi_field_readonly?)
+        expect(file.field_readonly?(:title,nil)).to eql(false)
+      end
+    end
+
+    describe "#mock_doi" do
       subject { file.mock_doi }
       it { is_expected.to match(/\A[0-9]+\.[0-9]+\/[[:alnum:]]{,20}\Z/) }
     end
-    describe "full_mock_doi" do
+    describe "#full_mock_doi" do
       subject { file.full_mock_doi }
       it { is_expected.to match(/\Adoi:[0-9]+\.[0-9]+\/[[:alnum:]]{,20}\Z/) }
     end
 
-    describe "doi_landing_page" do
+    describe "#doi_landing_page" do
       subject { file.doi_landing_page }
       it { is_expected.to match("files/#{file.id}")}
     end
 
-    describe "restricted_mandatory_datacite_fields" do
+    describe "#restricted_mandatory_datacite_fields" do
       subject { file.restricted_mandatory_datacite_fields }
       it "should return fields in the right format" do
         expect(subject).to be_a(Array)
@@ -28,7 +57,7 @@ RSpec.describe "doi concern" do
       end
     end
 
-    describe "guess_identifier_type" do
+    describe "#guess_identifier_type" do
       # An empty file is good enough for these tests and is much faster.
       subject { (GenericFile.new).guess_identifier_type test_identifier }
       context "with doi prefix" do
@@ -65,7 +94,7 @@ RSpec.describe "doi concern" do
       end
     end
 
-    describe "datacite_metadata_changed?" do
+    describe "#datacite_metadata_changed?" do
       before {
         file.datacite_document = file.doi_metadata.to_json
       }
@@ -94,7 +123,7 @@ RSpec.describe "doi concern" do
   end
 
 
-  context "queue management" do
+  describe "queue management" do
     let(:file) { FactoryGirl.create(:generic_file) }
     context "when not managed in DataCite" do
       it "assert not managed in DataCite" do
@@ -228,31 +257,42 @@ RSpec.describe "doi concern" do
 
         it { is_expected.to be_valid }
 
-        context "with modified doi_published" do
-          before { file.doi_published = DateTime.now }
-          it { is_expected.not_to be_valid }
+        it "doesn't let you modify doi_published" do
+          file.doi_published = DateTime.now
+          expect(file).not_to be_valid
         end
 
-        context "with removed doi" do
-          before { file.identifier -= [file.full_mock_doi] }
-          it { is_expected.not_to be_valid }
+        it "doesn't let you remove doi" do
+          file.identifier -= [file.full_mock_doi]
+          expect(file).not_to be_valid
         end
 
-        context "with changed title" do
-          before { file.title = ['Changed title'] }
-          it { is_expected.not_to be_valid }
+        it "doesn't let you change title" do
+          file.title = ['Changed title']
+          expect(file).not_to be_valid
         end
 
-        context "with changed creators" do
-          before {
+        it "doesn't let you change creators" do
+          contributor_2_id = (file.contributors.to_a.select do |x|
+                                x.contributor_name.first=='Contributor 2'
+                              end).first.id
+          file.contributors_attributes = [ {id: contributor_2_id, _destroy: 1} ]
+          expect(file).not_to be_valid
+        end
+
+        context "when protection is overridden" do
+          before { file.doi_protection_override! }
+          it "lets you change anything" do
+            file.doi_published = DateTime.now
+            file.identifier -= [file.full_mock_doi]
+            file.title = ['Changed title']
             contributor_2_id = (file.contributors.to_a.select do |x|
                                   x.contributor_name.first=='Contributor 2'
                                 end).first.id
             file.contributors_attributes = [ {id: contributor_2_id, _destroy: 1} ]
-          }
-          it { is_expected.not_to be_valid }
+            expect(file).to be_valid
+          end
         end
-
       end
 
     end
@@ -342,7 +382,7 @@ RSpec.describe "doi concern" do
       end
     end
 
-    describe "metadata_xml" do
+    describe "#metadata_xml" do
       let(:file) { FactoryGirl.create(:public_file, :test_data, :public_doi) }
       subject { file.doi_metadata_xml }
       it "gives out correct xml" do
