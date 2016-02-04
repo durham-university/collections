@@ -12,12 +12,13 @@ module HydraDurham
     # all the prefixes used here things should work fine.
     IDENTIFIER_RULES = [
         'doi',
+        {regex: /^info:doi:\/?(.*)/i, value: 'doi:\1' },
         {regex: /^info:doi\/(.*)/i, value: 'doi:\1' },
         {regex: /^.*dx\.doi\.org\/(.*)/i, value: 'doi:\1' },
         'arxiv',
         {regex: /^.*arxiv\.org\/[^\/]+\/(.*)/i, value: 'arxiv:\1'},
         'issn', 'isbn', 'istc', 'lissn',
-        'urn:lsid:', 'pmid', 'purl',
+        'urn:lsid', 'pmid', 'purl',
         {regex: /(.*([\W]|^)purl\W.*)/i, value: 'purl:\1'},
         'upc', 'urn' # urn should be second to last because LSID also starts with urn
       ]

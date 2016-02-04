@@ -40,8 +40,11 @@ RSpec.describe HydraDurham::IdentifierNormalisation do
   describe "::normalise_identifier" do
     [
       { label: 'doi', test: 'http://dx.doi.org/12345/987654321', expected: 'doi:12345/987654321'},
+      { label: 'info:doi:', test: 'INfo:doi:12345/987654321', expected: 'doi:12345/987654321'},
+      { label: 'info:doi/', test: 'info:doi/12345/987654321', expected: 'doi:12345/987654321'},
       { label: 'arxiv', test: 'http://arxiv.org/abs/121212121212', expected: 'arxiv:121212121212'},
       { label: 'isbn', test: 'ISBN:1234567890', expected: 'isbn:1234567890'},
+      { label: 'urn:lsid', test: 'urn:lsid:1234567890', expected: 'urn:lsid:1234567890'},
       { label: 'unknown', test: 'http://www.example.com/ident/334433', expected: 'http://www.example.com/ident/334433'}
     ].each do |test|
       it "normalises #{test[:label]} identifiers" do
