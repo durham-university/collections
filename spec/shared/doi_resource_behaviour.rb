@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.shared_examples "doi_resource_behaviour" do
   let(:managed_resource) {
-    FactoryGirl.create(resource_factory, :test_data, :public_doi, depositor: user)
+    FactoryGirl.create(resource_factory, :test_data, :public_doi, title: ['Test title'], depositor: user)
   }
-  let(:unmanaged_resource) { FactoryGirl.create(resource_factory, :test_data, depositor: user) }
+  let(:unmanaged_resource) { FactoryGirl.create(resource_factory, :test_data, title: ['Test title'], depositor: user) }
   let(:resource_params) { nil }
 
   let(:params) {
@@ -35,6 +35,14 @@ RSpec.shared_examples "doi_resource_behaviour" do
         }.to raise_error("Local DOI cannot be removed")
         expect(resource.reload.identifier).to include resource.full_mock_doi
       end
+      context "with admin user" do
+        let(:user) { FactoryGirl.find_or_create(:admin_user) }
+        before { allow(Sufia.queue).to receive(:push) }
+        it "should allow local doi to be removed" do
+          post :update, params
+          expect(resource.reload.identifier).not_to include resource.full_mock_doi
+        end
+      end
     end
 
     context "unmanaged file" do
@@ -45,6 +53,32 @@ RSpec.shared_examples "doi_resource_behaviour" do
           post :update, params
         }.to raise_error("Local DOI cannot be added")
         expect(resource.reload.identifier).not_to include resource.full_mock_doi
+      end
+      context "with admin user" do
+        let(:user) { FactoryGirl.find_or_create(:admin_user) }
+        before { allow(Sufia.queue).to receive(:push) }
+        it "should allow local doi to be added" do
+          post :update, params
+          expect(resource.reload.identifier).to include resource.full_mock_doi
+        end
+      end
+    end
+  end
+
+  describe "metadata changes with a published doi" do
+    let(:resource_params) { { title: ['Changed title'] } }
+    let!(:resource) { managed_resource }
+    it "should not allow metadata changes" do
+      post :update, params
+      expect(resource.reload.title).to eql(['Test title'])
+    end
+
+    context "with admin user" do
+      let(:user) { FactoryGirl.find_or_create(:admin_user) }
+      before { allow(Sufia.queue).to receive(:push) }
+      it "should allow metadata changes" do
+        post :update, params
+        expect(resource.reload.title).to eql(['Changed title'])
       end
     end
   end

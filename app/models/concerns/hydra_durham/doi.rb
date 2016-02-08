@@ -45,8 +45,19 @@ module HydraDurham
       end
     end
 
+    # Allow editing of protected fields after a doi has been published.
+    # This should normally be allowed for admin users only.
+    def doi_protection_override!(val=true)
+      @doi_protection_override = val
+    end
+
+    def doi_protection_override?
+      @doi_protection_override
+    end
+
     # perform model level validation before saving
     def validate_doi_and_datacite_fields
+      return if @doi_protection_override
       errors.add(:doi_published, "can't be changed after set once") \
           if !changed_attributes["doi_published"].nil? &&
               changed_attributes["doi_published"]!=doi_published
@@ -76,19 +87,16 @@ module HydraDurham
             errors.add(field[:source], "cannot be changed when DOI has been published") \
                 if old_doc[field[:dest].to_s]!=new_doc[field[:dest].to_s]
           end
-
         end
       end
-
     end
 
     # Checks if an edit field should be disabled due to the resource having a
     # published DOI and the field is one of the restricted fields. Also checks
-    # For a local doi in the identifier field.
-    def field_readonly?(field,value=nil)
-      # Some other behaviours might want to use field_readonly as well.
-      # Try to play nice and call super if it's defined and there's no need
-      # to disable the field due to DOIs.
+    # For a local doi in the identifier field. Doesn't take @doi_protection_override
+    # into account so this method can still be used to check if the field would
+    # ordinarily be protected.
+    def doi_field_readonly?(field,value=nil)
       ret= if manage_datacite? && \
               ((restricted_mandatory_datacite_fields.map do |x| x[:source] end) \
                 .include? field)
@@ -96,6 +104,13 @@ module HydraDurham
       else
         (field==:identifier && value==full_mock_doi)
       end
+    end
+
+    def field_readonly?(field,value=nil)
+      # Some other behaviours might want to use field_readonly as well.
+      # Try to play nice and call super if it's defined and there's no need
+      # to disable the field due to DOIs.
+      ret = @doi_protection_override ? false : doi_field_readonly?(field,value)
       return ret if ret || !defined?(super)
       super
     end

@@ -3,6 +3,7 @@ module HydraDurham
     extend ActiveSupport::Concern
 
     included do
+      before_filter :set_resource_doi_override, only: [ :edit, :update ]
       before_filter :restrict_local_doi_changes, only: [ :update ]
       before_filter :restrict_published_doi_deletion, only: [ :destroy ]
     end
@@ -28,6 +29,11 @@ module HydraDurham
       return nil
     end
 
+    def set_resource_doi_override
+      resource=@resource || instance_variable_get("@#{controller_name.singularize}")
+      resource.doi_protection_override! if current_user.try(:admin?)
+    end
+
     def restrict_local_doi_changes
       # Don't let any doi identifier changes be made through this controller.
       # Model has validation for other restricted fields.
@@ -35,6 +41,8 @@ module HydraDurham
       update_identifiers=identifier_params
       if update_identifiers
         resource=@resource || instance_variable_get("@#{controller_name.singularize}")
+
+        return if resource.doi_protection_override?
 
         had_local=resource.has_local_doi?
         will_have_local=resource.has_local_doi? update_identifiers
