@@ -3,4 +3,5 @@ class GenericFile < ActiveFedora::Base
   include HydraDurham::AccessControls
   include HydraDurham::Metadata
   include HydraDurham::Doi
+  include HydraDurham::IdentifierNormalisation
 end

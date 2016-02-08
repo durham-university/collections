@@ -276,7 +276,10 @@ module HydraDurham
     # Guesses the type of the identifier based on its contents. Returns
     # The a hash containing the type and the identifier possibly reformatted.
     def guess_identifier_type ident
-
+      # Note identifier normalisation in HydraDurham::IdentifierNormalisation.
+      # These rules are a little excessive assuming normalisation has been done
+      # already since website form identifires shouldn't be present anymore.
+      # However it won't hurt to be prepared for those as well.
       rules=[{regex: /^doi:(.*)/i, type: 'DOI', value: '\1' },
              {regex: /^info:doi\/(.*)/i, type: 'DOI', value: '\1' },
              {regex: /^.*dx\.doi\.org\/(.*)/i, type: 'DOI', value: '\1' },

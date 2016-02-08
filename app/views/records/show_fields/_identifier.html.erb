@@ -1,5 +1,10 @@
 <% record.identifier.each do |id| %>
-  <%= id %><br />
+  <% link = record.model.class.try(:identifier_link,id) %>
+  <% if link.present? %>
+    <a href="<%= link %>"><%= id %></a>
+  <% else %>
+    <%= id %>
+  <% end %><br />
 <% end %>
 <% if record.model.respond_to?(:doi) && !record.model.has_local_doi? && can?(:show, :unpublished_doi) %>
   doi:<%= record.model.mock_doi %>
