@@ -1,9 +1,9 @@
 GIT
   remote: git://github.com/durham-university/active_fedora.git
-  revision: cc83b052b16e1d94fffaadbcbf32e9c93e157d69
+  revision: c5c3764631757278a6b8da5e9c06f006970fd450
   branch: configurable_handlers
   specs:
-    active-fedora (9.7.0)
+    active-fedora (9.8.2)
       active-triples (~> 0.7.1)
       activesupport (>= 4.1.0)
       deprecation
@@ -16,7 +16,7 @@ GIT
 
 GIT
   remote: git://github.com/durham-university/rsolr.git
-  revision: 93e32c9cb581b22934f0aeaed63d3072d3d1bcf1
+  revision: 0592530b4cbd57b3f5a4d744e38977b8b305ef03
   branch: configurable_handlers
   specs:
     rsolr (1.0.13)
@@ -111,7 +111,7 @@ GEM
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.1)
-    active-triples (0.7.3)
+    active-triples (0.7.5)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       deprecation (~> 0.1)
