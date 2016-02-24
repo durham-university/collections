@@ -8,6 +8,7 @@
       </h3>
     </div>
     <div id="collapse1" class="panel-collapse collapse">
+      <div class="panel-body">
         <p>Collections (DRO-Data) is a digital repository for small and medium data produced as a result of research by Durham academics. This service has been developed to support researchers producing data without obvious long-term archive e.g. national or subject based. The service supports <a href='https://www.epsrc.ac.uk/about/standards/researchdata/'>EPSRC data policy</a> compliance as for 1 May 2015, this include:
         </p>
         <ul>
@@ -16,6 +17,7 @@
           <li>Long-term access and curation of deposited data.</li>
           <li>Option to use open licences (subject to legal clearance).</li>
         </ul>
+      </div>
       <div class="panel-footer"><a data-toggle="collapse" href="#collapse1">&lt;&lt;</a></div>
     </div>
   </div>
@@ -29,14 +31,16 @@
       </h3>
     </div>
     <div id="collapse2" class="panel-collapse collapse">
-      <p>The service is format agnostic, however, we encourage to prepare dataset archives as compressed bundles (zip or tar.gz) for easier deposit. The bundle should include detailed README file describing information not easily accessible elsewhere e.g. descriptive metadata or paper methodologies. The README file contents can include:</p>
-      <ul>
-        <li>The list of various datasets files names and their content as well as relation with research paper (e.g. figures, tables etc.) or findings;</li>
-        <li>Used specialist software name and version number required to open or process or used to generate dataset files;</li>
-        <li>Detailed steps to track data creation process;</li>
-        <li>Information about meaning of used inside files variable names.</li>
-      </ul>
-      <p>Ideally, datasets file formats deposited should use commonly agreed in your discipline interoperable standards, for example *.csv, *.j2k , *.hdf5, *.cd3 etc.</p>
+      <div class="panel-body">
+        <p>The service is format agnostic, however, we encourage to prepare dataset archives as compressed bundles (zip or tar.gz) for easier deposit. The bundle should include detailed README file describing information not easily accessible elsewhere e.g. descriptive metadata or paper methodologies. The README file contents can include:</p>
+        <ul>
+          <li>The list of various datasets files names and their content as well as relation with research paper (e.g. figures, tables etc.) or findings;</li>
+          <li>Used specialist software name and version number required to open or process or used to generate dataset files;</li>
+          <li>Detailed steps to track data creation process;</li>
+          <li>Information about meaning of used inside files variable names.</li>
+        </ul>
+        <p>Ideally, datasets file formats deposited should use commonly agreed in your discipline interoperable standards, for example *.csv, *.j2k , *.hdf5, *.cd3 etc.</p>
+      </div>
       <div class="panel-footer"><a data-toggle="collapse" href="#collapse2">&lt;&lt;</a></div>
     </div>
   </div>
@@ -50,6 +54,7 @@
       </h3>
     </div>
     <div id="collapse3" class="panel-collapse collapse">
+      <div class="panel-body">
         <ul class="media-list">
           <li class="media">
             <div class="media-body">
@@ -100,7 +105,8 @@
             <li class="media">
             <div class="media-body">
               <h4 class="media-heading">Step 4</h4>
-              <p>Complete mandatory fields (*) including title of dataset, creators in order of importance.</p> 
+              <p>Complete mandatory fields (*) including type and title of dataset; list all creators in order of importance; add multiple creator entry to indicate different roles, for example <i>"Contact person"</i>; add affiliation including country.</p>
+              <p>Note that <strong>Rights</strong> field has preselected <i>"All rights reserved"</i> value. Inform University <a href='mailto:legal.support@durham.ac.uk.'>Leagl Support</a> when you select other open licence for your data.  
               <p>Note that all descriptive information could be revisited in the later stage before DOI publishing.</p>
             </div>
             <div class="media-right">
@@ -141,6 +147,7 @@
             </div>
           </li>
         </ul>
+      </div>
       <div class="panel-footer"><a data-toggle="collapse" href="#collapse3">&lt;&lt;</a></div>
     </div>
   </div>
@@ -154,67 +161,69 @@
       </h3>
     </div>
     <div id="collapse4" class="panel-collapse collapse">
-      <p> This is three-step process. You request Open Access data visibility status. Research Data manager approves OA status after reviewing metadata quality. You register allocated DOI.</p>
-      <ul class="media-list">
-        <li class="media">
-          <div class="media-body">
-            <h4 class="media-heading">Video summary</h4>
-            Watch 1min video guide or use follwoign steps:
-          </div>
-          <div class="media-right">
-            <a href="#">
-              <%= video_tag "publish_DOI.mp4", :size => "640x480", :controls => true %>
-            </a>
-          </div>
-        </li>
-        <li class="media">
-          <div class="media-body">
-            <h4 class="media-heading">Step 1</h4>
-            <p>Check <strong><i>Title, Creators</i></strong> fields and uploaded dataset. Once DOI is registered those information cannot be moddified.</p> 
-            <p>Select <strong>“Open Access Pending”</strong> permissions status at <i>Edit -> Permissions</i> tab.</p>
-          </div>
-          <div class="media-right">
-            <a href="#">
-              <%= image_tag 'open_access_pending.png', width:'640' %>
-            </a>
-          </div>
-        </li>
-        <li class="media">
-          <div class="media-body">
-            <h4 class="media-heading">Step 2</h4>
-            <p>Research Data Manager will be notified on new OA request.</p>
-            <p><strong>Important</strong>: For a prompt review contact us also on <i>research.data at durham.ac.uk</i></p>
-          <div class="media-right">
-            <a href="#">
-            </a>
-          </div>
-        </li>
-        <li class="media">
-          <div class="media-body">
-            <h4 class="media-heading">Step 3</h4>
-            <p>Once record has changed <strong>Open Access​</strong> status a DOI registration feature would appear. On the record summary page in the <strong>Identifier</strong> section use <strong>“[Not yet publish]”</strong> link.</p>
-          </div>
-          <div class="media-right">
-            <a href="#">
-              <%= image_tag 'not_yet_published.png', width:'640' %>
-            </a>
-          </div>
-        </li>  
-        </li>
+      <div class="panel-body">
+        <p> This is three-step process. You request Open Access data visibility status. Research Data manager approves OA status after reviewing metadata quality. You register allocated DOI.</p>
+        <ul class="media-list">
           <li class="media">
-          <div class="media-body">
-            <h4 class="media-heading">Continue</h4>
-            <p>A new web page presents final DOI information. Confirm that all information are correct by selecting tick box <strong>“I have read ...”</strong>.</p>
-            <p>Register DOI with <strong>“Publish DOI now”</strong> button.</p>
-            <p><strong>Note</strong>: You can confirm a DOI successful registration by typing it in the browser <i>http://dx.doi.org/10.15128/xxxxxxxxx</i> (replace <i>xxxxxxxxx</i> with your identifier). Press enter. You should be redirected to the Collections landing page <i>https://collections.durham.ac.uk/files/xxxxxxxxx</i>.</p>
-          </div>
-          <div class="media-right">
-            <a href="#">
-            <%= image_tag 'publish_doi.png', width:'640' %>
-            </a>
-          </div>
-        </li>
-      </ul>
+            <div class="media-body">
+              <h4 class="media-heading">Video summary</h4>
+              Watch 1min video guide or use follwoign steps:
+            </div>
+            <div class="media-right">
+              <a href="#">
+                <%= video_tag "publish_DOI.mp4", :size => "640x480", :controls => true %>
+              </a>
+            </div>
+          </li>
+          <li class="media">
+            <div class="media-body">
+              <h4 class="media-heading">Step 1</h4>
+              <p>Check <strong><i>Title, Creators</i></strong> fields and uploaded dataset. Once DOI is registered those information cannot be moddified.</p> 
+              <p>Select <strong>“Open Access Pending”</strong> permissions status at <i>Edit -> Permissions</i> tab.</p>
+            </div>
+            <div class="media-right">
+              <a href="#">
+                <%= image_tag 'open_access_pending.png', width:'640' %>
+              </a>
+            </div>
+          </li>
+          <li class="media">
+            <div class="media-body">
+              <h4 class="media-heading">Step 2</h4>
+              <p>Research Data Manager will be notified on new OA request.</p>
+              <p><strong>Important</strong>: For a prompt review contact us also on <i>research.data at durham.ac.uk</i></p>
+            <div class="media-right">
+              <a href="#">
+              </a>
+            </div>
+          </li>
+          <li class="media">
+            <div class="media-body">
+              <h4 class="media-heading">Step 3</h4>
+              <p>Once record has changed <strong>Open Access​</strong> status a DOI registration feature would appear. On the record summary page in the <strong>Identifier</strong> section use <strong>“[Not yet publish]”</strong> link.</p>
+            </div>
+            <div class="media-right">
+              <a href="#">
+                <%= image_tag 'not_yet_published.png', width:'640' %>
+              </a>
+            </div>
+          </li>  
+          </li>
+            <li class="media">
+            <div class="media-body">
+              <h4 class="media-heading">Continue</h4>
+              <p>A new web page presents final DOI information. Confirm that all information are correct by selecting tick box <strong>“I have read ...”</strong>.</p>
+              <p>Register DOI with <strong>“Publish DOI now”</strong> button.</p>
+              <p><strong>Note</strong>: You can confirm a DOI successful registration by typing it in the browser <i>http://dx.doi.org/10.15128/xxxxxxxxx</i> (replace <i>xxxxxxxxx</i> with your identifier). Press enter. You should be redirected to the Collections landing page <i>https://collections.durham.ac.uk/files/xxxxxxxxx</i>.</p>
+            </div>
+            <div class="media-right">
+              <a href="#">
+              <%= image_tag 'publish_doi.png', width:'640' %>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
       <div class="panel-footer"><a data-toggle="collapse" href="#collapse4">&lt;&lt;</a></div>
     </div>
   </div>
