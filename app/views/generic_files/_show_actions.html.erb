@@ -1,30 +1,28 @@
     <h2 class="non lower">Actions</h2>
     <p>
-      <%= render_download_link %>
+      <span class="label label-default"><%= render_download_link %></span>
       <% if Sufia.config.analytics %>
-        &nbsp;|&nbsp;
-        <%= link_to "Analytics", sufia.stats_generic_file_path(@generic_file), id: 'stats' %>
+        <span class="label label-default"><%= link_to "Analytics", sufia.stats_generic_file_path(@generic_file), id: 'stats' %></span>
       <% end %>
       <% if Sufia.config.citations %>
-        &nbsp;|&nbsp;
-        <%= link_to "Citations", sufia.citation_generic_file_path(@generic_file), id: 'citations' %>
+        <span class="label label-default"><%= link_to "Citations", sufia.citation_generic_file_path(@generic_file), id: 'citations' %></span>
       <% end %>
       <% if can? :edit, @generic_file %>
-          &nbsp;|&nbsp;
           <% if @generic_file.processing? %>
             <%= t('sufia.upload.processing') %>
           <% else %>
-            <%= link_to "Edit", sufia.edit_generic_file_path(@generic_file) %>
+            <span class="label label-default"><%= link_to "Edit", sufia.edit_generic_file_path(@generic_file) %></span>
           <% end %>
       <% end %>
       <% if can?(:create, FeaturedWork) && @generic_file.public? %>
         <% if FeaturedWork.can_create_another? && !@generic_file.featured?%>
-          &nbsp;|&nbsp;
-          <%= link_to "Feature", sufia.featured_work_path(@generic_file, format: :json), data: {behavior: 'feature'} %>
+          <span class="label label-default"><%= link_to "Feature", sufia.featured_work_path(@generic_file, format: :json), data: {behavior: 'feature'} %></span>
         <% elsif @generic_file.featured? %>
-          &nbsp;|&nbsp;
           Featured
         <% end %>
+      <% end %>
+      <% if (can? :edit, @generic_file) and (not @generic_file.has_local_doi?) and (@generic_file.can_mint_doi?) %>
+        <span class="label label-default"><%= link_to t('durham.doi.generate_doi'), '/doi/' + @generic_file.id %></span>
       <% end %>
     </p>
     <p>Export to:
@@ -34,11 +32,6 @@
       &nbsp;|&nbsp;
       <%= link_to 'Mendeley', sufia.static_path('mendeley'), {id: 'mendeleyLink', name: 'mendeley', class: 'lightboxLink'} %>
     </p>
-    <% if (can? :edit, @generic_file) and (not @generic_file.has_local_doi?) and (@generic_file.can_mint_doi?) %>
-      <p>
-        <%= link_to t('durham.doi.generate_doi'), '/doi/' + @generic_file.id %>
-      </p>
-    <% end %>
     <!-- AddThis Button BEGIN -->
     <div class="addthis_toolbox addthis_default_style">
       <a class="addthis_button_preferred_1"></a>

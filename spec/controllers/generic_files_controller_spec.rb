@@ -14,6 +14,27 @@ RSpec.describe GenericFilesController do
   it_behaves_like "nested_contributors_behaviour" do
     let(:resource) { FactoryGirl.create(:generic_file,:test_data,depositor: user) }
   end
+  
+  describe "permissions" do
+    let!(:file) { FactoryGirl.create(:generic_file) }
+    context "normal user" do
+      let(:user) { FactoryGirl.create(:user) }
+      it "cannot delete other user's files" do
+        expect {
+          delete :destroy, {id: file.to_param}
+        }.not_to change(GenericFile, :count)
+        expect(response).to redirect_to('/')
+      end
+    end
+    context "admin user" do
+      let(:user) { FactoryGirl.create(:admin_user) }
+      it "can delete other user's files" do
+        expect {
+          delete :destroy, {id: file.to_param}
+        }.to change(GenericFile, :count).by(-1)
+      end
+    end
+  end
 
   describe "update" do
     let(:file) { FactoryGirl.create(:generic_file,:test_data,depositor: user) }

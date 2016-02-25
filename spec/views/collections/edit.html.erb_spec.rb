@@ -28,4 +28,9 @@ RSpec.describe "collections/edit.html.erb", type: :view do
   it "renders the page" do
     render
   end
+  
+  it "has a delete link" do
+    render
+    expect(page).to have_selector("a[href='#{collection_path(collection)}'][data-method='delete']")
+  end
 end

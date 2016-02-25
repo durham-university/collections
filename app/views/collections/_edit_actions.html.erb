@@ -5,4 +5,8 @@
   <% if @collection.respond_to?(:doi) && (!@collection.has_local_doi?)  %>
     <span class="label label-default"><%= link_to t('durham.doi.generate_doi'), '/doi/' + @collection.id %></span>
   <% end %>
+  <% if can?(:destroy, @collection) %>
+    <span class="label label-default"><%= link_to 'Delete Collection', collections.collection_path(@collection), method: :delete, data: {
+      confirm: "Deleting a collection from #{t('sufia.product_name')} is permanent. Click OK to delete this collection from #{t('sufia.product_name')}, or Cancel to cancel this operation" } %></span>
+  <% end %>  
 </div>
