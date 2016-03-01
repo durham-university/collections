@@ -1,0 +1,6 @@
+development:
+  schmit_url: 'http://localhost:3001/schmit/'
+test:
+  schmit_url: 'http://localhost:3001/schmit/'
+test_server:
+production:
