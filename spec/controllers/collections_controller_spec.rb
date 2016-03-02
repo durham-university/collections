@@ -15,6 +15,27 @@ RSpec.describe CollectionsController do
     let(:resource) { FactoryGirl.create(:collection,:test_data,depositor: user) }
   end
 
+  describe "permissions" do
+    let!(:collection) { FactoryGirl.create(:collection) }
+    context "normal user" do
+      let(:user) { FactoryGirl.create(:user) }
+      it "cannot delete other user's collections" do
+        expect {
+          delete :destroy, {id: collection.to_param}
+        }.not_to change(Collection, :count)
+        expect(response).to redirect_to('/')
+      end
+    end
+    context "admin user" do
+      let(:user) { FactoryGirl.create(:admin_user) }
+      it "can delete other user's collections" do
+        expect {
+          delete :destroy, {id: collection.to_param}
+        }.to change(Collection, :count).by(-1)
+      end
+    end
+  end
+
   describe "update" do
     let(:collection) { FactoryGirl.create(:collection,:test_data,depositor: user) }
 

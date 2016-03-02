@@ -1,0 +1,9 @@
+<h2 class="non lower">Actions</h2>
+<p>
+  <span class="label label-default"><%= link_to "Browse", sufia.generic_file_path(@generic_file) %></span> &nbsp;&nbsp;
+  
+  <% if can?(:destroy, @generic_file) && @generic_file.can_destroy?(@current_user) && !@generic_file.has_local_doi? %>
+    <span class="label label-default"><%= link_to 'Delete File', sufia.generic_file_path(@generic_file), method: :delete, data: {
+      confirm: "Deleting a file from #{t('sufia.product_name')} is permanent. Click OK to delete this file from #{t('sufia.product_name')}, or Cancel to cancel this operation" } %></span>
+  <% end %>
+</p>

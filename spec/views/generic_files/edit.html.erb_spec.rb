@@ -23,6 +23,7 @@ RSpec.describe "generic_files/edit.html.erb", type: :view do
     controller.request.path_parameters[:id] = file.id
 
     sign_in user
+    assign(:current_user, user)
   }
 
   let(:page) { Capybara::Node::Simple.new(rendered) }
@@ -30,4 +31,9 @@ RSpec.describe "generic_files/edit.html.erb", type: :view do
   it "renders the page" do
     render
   end
+  
+  it "has a delete link" do
+    render
+    expect(page).to have_selector("a[href='#{generic_file_path(file)}'][data-method='delete']")
+  end  
 end
