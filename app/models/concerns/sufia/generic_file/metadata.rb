@@ -71,7 +71,7 @@ module Sufia
           index.as :stored_searchable, :facetable
         end
         property :identifier, predicate: ::RDF::Vocab::DC.identifier do |index|
-          index.as :stored_searchable
+          index.as :symbol
         end
         property :based_near, predicate: ::RDF::Vocab::FOAF.based_near do |index|
           index.as :stored_searchable, :facetable
