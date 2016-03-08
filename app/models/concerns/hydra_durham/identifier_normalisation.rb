@@ -11,10 +11,11 @@ module HydraDurham
     # must be compatible with DOI identifier rules. As long as DOI rules recognise
     # all the prefixes used here things should work fine.
     IDENTIFIER_RULES = [
-        'doi',
+        'doi', 
         {regex: /^info:doi:\/?(.*)/i, value: 'doi:\1' },
         {regex: /^info:doi\/(.*)/i, value: 'doi:\1' },
         {regex: /^.*dx\.doi\.org\/(.*)/i, value: 'doi:\1' },
+        'ark',
         'arxiv',
         {regex: /^.*arxiv\.org\/[^\/]+\/(.*)/i, value: 'arxiv:\1'},
         'issn', 'isbn', 'istc', 'lissn',

@@ -72,6 +72,10 @@ RSpec.describe "doi concern" do
         let(:test_identifier) { 'http://dx.doi.org/12.3456/abc123456' }
         it { is_expected.to eql( { id_type: 'DOI', id: '12.3456/abc123456' } ) }
       end
+      context "with ark prefix" do
+        let(:test_identifier) { 'ark:/12345/123456' }
+        it { is_expected.to eql( { id_type: 'ARK', id: 'ark:/12345/123456' } ) }
+      end
       context "with arxiv prefix" do
         let(:test_identifier) { 'arxiv:1234.123456' }
         it { is_expected.to eql( { id_type: 'arXiv', id: 'arXiv:1234.123456' } ) }
@@ -91,6 +95,18 @@ RSpec.describe "doi concern" do
       context "with isbn: prefix" do
         let(:test_identifier) { 'isbn:1234-1234-123456' }
         it { is_expected.to eql( { id_type: 'ISBN', id: '1234-1234-123456' } ) }
+      end
+      context "with http: prefix" do
+        let(:test_identifier) { 'http://example.com/test' }
+        it { is_expected.to eql( { id_type: 'URL', id: 'http://example.com/test' } ) }
+      end
+      context "with https: prefix" do
+        let(:test_identifier) { 'https://example.com/test' }
+        it { is_expected.to eql( { id_type: 'URL', id: 'https://example.com/test' } ) }
+      end
+      context "other identifires" do
+        let(:test_identifier) { 'test-id-123' }
+        it { is_expected.to eql( { id_type: 'Handle', id: 'test-id-123' } ) }
       end
     end
 
@@ -302,12 +318,19 @@ RSpec.describe "doi concern" do
 
       let(:file) { FactoryGirl.create(:public_file, :test_data, :public_doi) }
 
+      it "it sets alternate identifiers but doesn't include local doi in them" do
+        expect(file.identifier.to_a).to include(file.full_mock_doi)
+        file.identifier -= [file.local_ark]
+        file.identifier << "ark:/12345/123456789"
+        expect(file.doi_metadata[:alternate_identifier]).to match_array([{:id_type=>"ISBN", :id=>"123456"}, {:id_type=>"URL", :id=>"http://something.else.com"}, {:id_type=>"arXiv", :id=>"arXiv:0123.0000"}, {:id_type=>"ARK", :id=>"ark:/12345/123456789"}])
+      end
+
       context "with passing values" do
         it "should not have any metadata errors" do
           expect(file.validate_doi_metadata).to be_empty
         end
         it "should give correct metadata hash" do
-          expect(multi_value_sort(file.doi_metadata)).to eql(multi_value_sort(
+          expect(multi_value_sort(file.doi_metadata.except(:alternate_identifier))).to eql(multi_value_sort(
             {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>["Affiliation 1","Affiliation 1/2"]}, {:name=>"Contributor 2", :affiliation=>["Affiliation 2"]}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 3", :affiliation=>["Affiliation 3"], :contributor_type=>"Editor"}], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}
           ))
         end
@@ -324,7 +347,7 @@ RSpec.describe "doi concern" do
           file.contributors_attributes = [ {id: contributor_2_id, _destroy: 1}, {id: contributor_3_id, _destroy: 1} ]
         }
         it "should give correct metadata hash" do
-          expect(multi_value_sort(file.doi_metadata)).to eql(multi_value_sort(
+          expect(multi_value_sort(file.doi_metadata.except(:alternate_identifier))).to eql(multi_value_sort(
             {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>["Affiliation 1","Affiliation 1/2"]}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}
           ))
         end

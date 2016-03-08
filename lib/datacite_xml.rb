@@ -111,6 +111,15 @@ class DataciteXml
           }
         end
 
+        if map[:alternate_identifier].any?
+          xml.alternateIdentifiers {
+            map[:alternate_identifier].each do |ident|
+              xml.alternateIdentifier ident[:id],
+                  :alternateIdentifierType=>ident[:id_type]
+            end
+          }
+        end
+        
         if map[:relatedIdentifier].any?
           xml.relatedIdentifiers {
             map[:relatedIdentifier].each do |rel|
