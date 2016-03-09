@@ -65,6 +65,9 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name("based_near", :facetable), label: "Location", limit: 5
     config.add_facet_field solr_name("publisher", :facetable), label: "Publisher", limit: 5
     config.add_facet_field solr_name("file_format", :facetable), label: "File Format", limit: 5
+    config.add_facet_field "doi_published", label: "DOI published", if: false,  query: {
+      yes: { label: 'Yes', fq: 'doi_published_dtsi:*' }
+    }
 
     # Have BL send all facet field names to Solr, which has been the default
     # previously. Simply remove these lines if you'd rather use Solr request
@@ -167,7 +170,7 @@ class CatalogController < ApplicationController
 #    end
 
     config.add_search_field('contributors') do |field|
-      field.solr_parameters = { :"spellcheck.dictionary" => "contributors" }
+      #field.solr_parameters = { :"spellcheck.dictionary" => "contributors" }
       solr_name = solr_name("contributors", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
@@ -176,9 +179,7 @@ class CatalogController < ApplicationController
     end
 
     config.add_search_field('title') do |field|
-      field.solr_parameters = {
-        :"spellcheck.dictionary" => "title"
-      }
+      #field.solr_parameters = { :"spellcheck.dictionary" => "title" }
       solr_name = solr_name("title", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
@@ -188,9 +189,7 @@ class CatalogController < ApplicationController
 
     config.add_search_field('description') do |field|
       field.label = "Abstract or Summary"
-      field.solr_parameters = {
-        :"spellcheck.dictionary" => "description"
-      }
+      #field.solr_parameters = { :"spellcheck.dictionary" => "description" }
       solr_name = solr_name("description", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
@@ -199,9 +198,7 @@ class CatalogController < ApplicationController
     end
 
     config.add_search_field('publisher') do |field|
-      field.solr_parameters = {
-        :"spellcheck.dictionary" => "publisher"
-      }
+      #field.solr_parameters = { :"spellcheck.dictionary" => "publisher" }
       solr_name = solr_name("publisher", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
@@ -210,9 +207,7 @@ class CatalogController < ApplicationController
     end
 
     config.add_search_field('date_created') do |field|
-      field.solr_parameters = {
-        :"spellcheck.dictionary" => "date_created"
-      }
+      #field.solr_parameters = { :"spellcheck.dictionary" => "date_created" }
       solr_name = solr_name("created", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
@@ -221,9 +216,7 @@ class CatalogController < ApplicationController
     end
 
     config.add_search_field('subject') do |field|
-      field.solr_parameters = {
-        :"spellcheck.dictionary" => "subject"
-      }
+      #field.solr_parameters = { :"spellcheck.dictionary" => "subject" }
       solr_name = solr_name("subject", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
@@ -232,9 +225,7 @@ class CatalogController < ApplicationController
     end
 
     config.add_search_field('language') do |field|
-      field.solr_parameters = {
-        :"spellcheck.dictionary" => "language"
-      }
+      #field.solr_parameters = { :"spellcheck.dictionary" => "language" }
       solr_name = solr_name("language", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
@@ -243,9 +234,7 @@ class CatalogController < ApplicationController
     end
 
     config.add_search_field('resource_type') do |field|
-      field.solr_parameters = {
-        :"spellcheck.dictionary" => "resource_type"
-      }
+      #field.solr_parameters = { :"spellcheck.dictionary" => "resource_type" }
       solr_name = solr_name("resource_type", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
@@ -255,9 +244,7 @@ class CatalogController < ApplicationController
 
     config.add_search_field('format') do |field|
       field.include_in_advanced_search = false
-      field.solr_parameters = {
-        :"spellcheck.dictionary" => "format"
-      }
+      #field.solr_parameters = { :"spellcheck.dictionary" => "format" }
       solr_name = solr_name("format", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
@@ -267,9 +254,7 @@ class CatalogController < ApplicationController
 
     config.add_search_field('identifier') do |field|
       field.include_in_advanced_search = false
-      field.solr_parameters = {
-        :"spellcheck.dictionary" => "identifier"
-      }
+      #field.solr_parameters = { :"spellcheck.dictionary" => "identifier" }
       solr_name = solr_name("id", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
@@ -279,9 +264,7 @@ class CatalogController < ApplicationController
 
     config.add_search_field('based_near') do |field|
       field.label = "Location"
-      field.solr_parameters = {
-        :"spellcheck.dictionary" => "based_near"
-      }
+      #field.solr_parameters = { :"spellcheck.dictionary" => "based_near" }
       solr_name = solr_name("based_near", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
@@ -290,9 +273,7 @@ class CatalogController < ApplicationController
     end
 
     config.add_search_field('tag') do |field|
-      field.solr_parameters = {
-        :"spellcheck.dictionary" => "tag"
-      }
+      #field.solr_parameters = { :"spellcheck.dictionary" => "tag" }
       solr_name = solr_name("tag", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
@@ -326,6 +307,11 @@ class CatalogController < ApplicationController
     config.add_sort_field "#{uploaded_field} asc", label: "date uploaded \u25B2"
     config.add_sort_field "#{modified_field} desc", label: "date modified \u25BC"
     config.add_sort_field "#{modified_field} asc", label: "date modified \u25B2"
+    config.add_sort_field("doi published") do |field|      
+      field.sort = "doi_published_dtsi desc"
+      field.label = "DOI published"
+      field.if = false # hides this field from sort menu
+    end
 
     # If there are more than this many search results, no spelling ("did you
     # mean") suggestion is offered.
