@@ -382,3 +382,13 @@ body>ul.ui-autocomplete {
 fieldset[disabled] .form-control {
   background-color: #eeeeee;
 }
+
+.feed_links {
+  padding: 6px 12px;
+}
+
+.feed_link {
+  margin-left: 3px;
+  padding: 0 0 0 19px;
+  background: asset-data-url("feed-icon-14x14.png") no-repeat 0 50%;
+}
