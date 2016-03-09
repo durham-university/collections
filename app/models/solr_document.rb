@@ -22,5 +22,14 @@ class SolrDocument
   # and Blacklight::Document::SemanticFields#to_semantic_values
   # Recommendation: Use field names from Dublin Core
   use_extension( Blacklight::Document::DublinCore)    
+  
+  def to_model
+    if ['GenericFile', 'Collection'].include?(hydra_model)
+      # Faster to_model. No need to reload the document from solr, self has everything that's needed
+      @m ||= hydra_model.constantize.load_instance_from_solr(id,self)
+    else
+      super
+    end
+  end
 
 end
