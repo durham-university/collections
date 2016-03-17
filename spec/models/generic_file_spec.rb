@@ -68,13 +68,16 @@ RSpec.describe GenericFile do
       [
         FactoryGirl.build(:contributor, contributor_name: ['Contributor 1'],
                                         affiliation: ['Affiliation 1'],
-                                        role: ['http://id.loc.gov/vocabulary/relators/cre']),
+                                        role: ['http://id.loc.gov/vocabulary/relators/cre'],
+                                        order: ['1']),
         FactoryGirl.build(:contributor, contributor_name: ['Contributor 2'],
                                         affiliation: ['Affiliation 2'],
-                                        role: ['http://id.loc.gov/vocabulary/relators/cre']),
+                                        role: ['http://id.loc.gov/vocabulary/relators/cre'],
+                                        order: ['2']),
         FactoryGirl.build(:contributor, contributor_name: ['Contributor 3'],
                                         affiliation: ['Affiliation 3'],
-                                        role: ['http://id.loc.gov/vocabulary/relators/edt'])
+                                        role: ['http://id.loc.gov/vocabulary/relators/edt'],
+                                        order: ['3'])
       ]
     }
 

@@ -48,6 +48,24 @@ class BatchEditsController < ApplicationController
     obj_file_params = Sufia::Forms::BatchEditForm.model_attributes(obj_params[:generic_file])
     obj_file_params = obj_file_params.except(:identifier, :publisher)
 
+    if obj_file_params[:contributors_attributes].present? 
+      # Handle contributors. First, convert the hash to an array
+      if obj_file_params[:contributors_attributes].is_a?(Hash)
+        obj_file_params[:contributors_attributes] = obj_file_params[:contributors_attributes] \
+          .sort do |a,b| a.first.to_i <=> b.first.to_i end .map(&:last)
+      end
+      # Filter out all that are marked destroyed.
+      obj_file_params[:contributors_attributes].select! do |c_attrs|
+        c_attrs[:_destroy]!='1'
+      end
+      # Then treat all remaining ones as new contributors
+      obj_file_params[:contributors_attributes].each do |c_attrs|
+        c_attrs[:id]=nil
+      end 
+      # Remove all existing contributors in the model. They are then reset from attributes.
+      obj.contributors = []
+    end
+    
     obj.attributes = obj_file_params
     obj.date_modified = Time.now
 

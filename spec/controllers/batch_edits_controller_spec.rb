@@ -37,6 +37,7 @@ RSpec.describe BatchEditsController, type: :controller do
     let(:user) { FactoryGirl.create(:user) }
     let(:resource) { FactoryGirl.create(:generic_file,:test_data,depositor: user) }
     let(:params) { { update_type: 'update', batch_document_ids: [resource.id]} }
+    let(:expected_contributors_count) { 1 } # Batch edit replaces all contributors with the ones submitted
     before { sign_in user }
   end
 

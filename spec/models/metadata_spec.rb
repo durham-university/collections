@@ -142,14 +142,16 @@ RSpec.describe "metadata concern" do
           file.contributors_attributes = [ {id: contributor_1_id, _destroy: 1} ]
         }
         subject { file.to_solr }
-        it "should only have one contributor remaining" do
-          expect(subject['contributors_tesim']).to eql( [
+        it "should only have one contributor in solr document" do
+          expect(file.to_solr['contributors_tesim']).to eql( [
                 "#{contributor_2_attrs[:contributor_name].first} (#{contributor_2_attrs[:affiliation].first})"
               ])
-          expect(subject['contributors_sim']).to eql( [
+          expect(file.to_solr['contributors_sim']).to eql( [
                 "#{contributor_2_attrs[:contributor_name].first} (#{contributor_2_attrs[:affiliation].first})"
               ])
-
+        end
+        it "should only have one contributor in serializable_hash" do
+          expect(file.serializable_hash['contributors'].count).to eql(1)
         end
       end
     end
