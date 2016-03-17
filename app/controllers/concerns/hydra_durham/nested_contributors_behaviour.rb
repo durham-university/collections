@@ -21,6 +21,9 @@ module HydraDurham
                 affiliation.strip.split(/\s*;\s*/).select(&:present?)
               end).flatten!.compact!
             end
+            if c.key?('role')
+              c['role'].map!(&:strip).select!(&:present?)
+            end
           end
         end
       end
