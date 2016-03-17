@@ -30,7 +30,7 @@ RSpec.describe "doi/show.html.erb", type: :view do
       creators = (file.contributors.to_a.select do |c| c.role.first == 'http://id.loc.gov/vocabulary/relators/cre' end)
       creators.each do |c|
         expect(page).to have_xpath("//dd[contains(., '#{Sufia.config.contributor_roles_reverse[c.role.first]}')]")
-        expect(page).to have_xpath("//dd[contains(., '#{c.to_s}')]")
+        expect(page).to have_xpath("//dd[contains(., '#{c.contributor_name.first}')]")
       end
     end
 

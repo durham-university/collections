@@ -1,9 +1,23 @@
+<%
+  footnotes = {}
+  record.to_model.contributors_sorted.each do |contributor|
+    contributor.affiliation.each do |affiliation|
+      footnotes[affiliation] ||= (footnotes.count+1)
+    end
+  end
+%>
 <% record.to_model.contributors_sorted.each do |contributor| %>
   <% (contributor.role.any? ? contributor.role : [nil]).each do |role| %>
     <% if role %>
       <span class="contributor_role"><%= Sufia.config.contributor_roles_reverse[role] %>: </span>
     <% end %>
-    <%= link_to_facet(contributor.to_s, Solrizer.solr_name("contributors", :facetable)) %>
+    <%= link_to_facet(contributor.to_s, Solrizer.solr_name("contributors", :facetable), contributor.contributor_name.first) %>
+    <sup><%= contributor.affiliation.map do |a| footnotes[a].to_s end .join(',') %></sup>
     <br />
   <% end %>
 <% end %>
+<div class="contributor_footnotes">
+  <% footnotes.each do |affiliation,number| %>
+    <sup><%= number %></sup> <%= affiliation %><br/>
+  <% end %>
+</div>
