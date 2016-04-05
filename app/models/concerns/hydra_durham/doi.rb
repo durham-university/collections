@@ -5,7 +5,7 @@ module HydraDurham
     included do
       property :doi_published, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#doi_published'), multiple: false do |index|
         index.type :date
-        index.as :stored_searchable
+        index.as :stored_sortable
       end
 
       # This is a JSON serialised version of the document sent to DataCite.
