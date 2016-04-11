@@ -312,6 +312,22 @@ RSpec.describe "doi concern" do
           ))
         end
       end
+      
+      context "with contributor having multiple roles" do
+        it "should give correct metadata hash" do
+          contributor2 = (file.contributors.to_a.select do |x|
+                                x.contributor_name.first=='Contributor 2'
+                              end).first
+          contributor3 = (file.contributors.to_a.select do |x|
+                                x.contributor_name.first=='Contributor 3'
+                              end).first
+          contributor2.role << 'http://id.loc.gov/vocabulary/relators/mdc'
+          contributor3.role << 'http://id.loc.gov/vocabulary/relators/cur'
+          expect(multi_value_sort(file.doi_metadata)).to eql(multi_value_sort(
+            {:identifier=>file.mock_doi, :publication_year=>"#{Time.new.year}", :subject=>[{:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject1"}, {:scheme=>"FAST", :schemeURI=>"http://fast.oclc.org/", :label=>"subject2"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword1"}, {:scheme=>nil, :schemeURI=>nil, :label=>"keyword2"}], :creator=>[{:name=>"Contributor 1", :affiliation=>["Affiliation 1","Affiliation 1/2"]}, {:name=>"Contributor 2", :affiliation=>["Affiliation 2"]}], :abstract=>["Test abstract"], :research_methods=>["Test research method 1", "Test research method 2"], :funder=>["Funder 1"], :contributor=>[{:name=>"Contributor 2", :affiliation=>["Affiliation 2"], :contributor_type=>"ContactPerson"}, {:name=>"Contributor 3", :affiliation=>["Affiliation 3"], :contributor_type=>"Editor"}, {:name=>"Contributor 3", :affiliation=>["Affiliation 3"], :contributor_type=>"DataCurator"}], :relatedIdentifier=>[{:id=>"http://related.url.com/test", :id_type=>"URL", :relation_type=>"IsCitedBy"}], :title=>["Test title"], :description=>["Description"], :resource_type=>"Image", :size=>[nil], :format=>["text/plain"], :date_uploaded=>"2015-07-16", :rights=>[{:rights=>"Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA)", :rightsURI=>"http://creativecommons.org/licenses/by-nc-sa/4.0/"}]}          
+          ))
+        end
+      end
 
       context "with deleted contributor" do
         before {

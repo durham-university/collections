@@ -35,6 +35,17 @@ RSpec.describe CollectionsController do
       end
     end
   end
+  
+  describe "create" do
+    it "does contributor processing" do
+      post :create, collection: { title: 'New test collection', resource_type: ['Collection'], contributors_attributes: [{contributor_name:['Name'], affiliation:['Af1 ; Af2'], role:['','role1','role2']}] }
+      c = Collection.all.find do |c| c.title=='New test collection' end
+      expect(c).to be_present
+      expect(c.contributors.count).to eql(1)
+      expect(c.contributors.first.affiliation.count).to eql(2)
+      expect(c.contributors.first.role.count).to eql(2)
+    end
+  end
 
   describe "update" do
     let(:collection) { FactoryGirl.create(:collection,:test_data,depositor: user) }

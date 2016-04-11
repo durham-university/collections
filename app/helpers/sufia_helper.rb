@@ -75,4 +75,11 @@ module SufiaHelper
     end
   end
 
+  # Override default sufia link_to_facet, adding the possibility to specify
+  # label separately from facet value
+  def link_to_facet(field, field_string, label=nil)
+    label ||= field
+    link_to(label, add_facet_params(field_string, field).merge!(controller: "catalog", action: "index"))
+  end
+
 end

@@ -43,7 +43,7 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
     end
 
     def build_components(attribute_name, value, index, options)
-      @html << "<div class='block' style='padding-bottom: 0.5em'>"
+      @html << "<div class='block'>"
 
       # --- Contributor Name
       field = :contributor_name
@@ -73,14 +73,14 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       @html << "  </div>"
 
       @html << "  <div class='col-md-8'>"
-      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name, id: field_name))
+      @html << @builder.text_field(field_name, options.merge(value: field_value, name: field_name, id: field_name, placeholder: 'Institution, Country'))
       @html << "  </div>"
       @html << "</div>"
 
       # --- Role
       field = :role
 
-      field_value = value.send(field).first
+      field_value = value.send(field)
       field_name = name_for(attribute_name, index, field)
 
       @html << "<div class='row'>"
@@ -100,7 +100,7 @@ class ContributorWithHelpInput < MultiValueWithHelpInput
       @html << @builder.collection_select(
           attribute_name,
           Sufia.config.contributor_roles, :last, :first,
-          input_options.merge(selected: field_value).merge(disabled_options), merged_input_options.merge(name: field_name, id: field_name)
+          input_options.merge(selected: field_value).merge(disabled_options), merged_input_options.merge(name: field_name, id: field_name, multiple: true)
         )
 
       @html << "  </div>"

@@ -15,9 +15,6 @@
 //   }
 // }
 //
-// TODOs:
-//   - select needs to pull values from the Contributor class
-//   - QA needs to be involved to query existing contributors
 //
 //= require hydra-editor/hydra-editor
 
@@ -75,6 +72,8 @@ ContributorsFieldManager.prototype = Object.create(HydraEditor.FieldManager.prot
     addBehaviorsToInput: { value: function($newField) {
       $newInput = $('input.multi-text-field', $newField);
       $newInput.focus();
+      $newField.find('.chosen-container').detach();
+      $newField.find('select.contributors_multi_value').chosen({width:'308px'});
       // TODO: Hook-up QA to this
       //addAutocompleteToEditor($newInput);
       this.element.trigger("managed_field:add", $newInput);
@@ -102,6 +101,7 @@ ContributorsFieldManager.prototype.constructor = ContributorsFieldManager;
 $.fn.manage_comment_fields = function(option) {
   return this.each(function() {
     var $this = $(this);
+    $this.find('select.contributors_multi_value').chosen({width:'308px'});    
     var data  = $this.data('manage_fields');
     var options = $.extend({}, HydraEditor.FieldManager.DEFAULTS, $this.data(), typeof option == 'object' && option);
 
@@ -111,4 +111,16 @@ $.fn.manage_comment_fields = function(option) {
 
 Blacklight.onLoad(function() {
   $('.generic_file_contributors.form-group , .collection_contributors.form-group').manage_comment_fields();
+  
+  $('.contributors-editor').on('mouseenter','.form-group.contributors_multi_value ul.listing>li .field-controls button.remove',function(event){
+    var button=$(this);
+    var container=button.closest('li');
+    container.addClass('highlight_remove');
+  });
+
+  $('.contributors-editor').on('mouseleave','.form-group.contributors_multi_value ul.listing>li .field-controls button.remove',function(event){
+    var button=$(this);
+    var container=button.closest('li');
+    container.removeClass('highlight_remove');
+  });  
 });

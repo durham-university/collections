@@ -31,7 +31,9 @@ en:
                 contributors_html: >
                                     A person or group you want to recognize for playing a role in the creation of the file. &lt;br&gt;
                                     The personal name format should be: &lt;em&gt;family, given&lt;/em&gt;. &lt;br&gt;
-                                    Select one of the following roles, you can select multiple roles per one contributor. &lt;br&gt;
+                                    The affiliation format should be: &lt;em&gt;institution, country&lt;/em&gt;. &lt;br&gt;
+                                    You can enter several affiliations by separating them with a semi-colon. &lt;br&gt;
+                                    Select one or more of the following roles. &lt;br&gt;
                                     &lt;b&gt;Creator&lt;/b&gt;: The main researchers involved in producing the data, or the authors of the publication, in priority order. &lt;br&gt; 
                                     &lt;b&gt;Contact person&lt;/b&gt;: Person with knowledge of how to access, troubleshoot, or otherwise field issues related to the resource. &lt;br&gt;
                                     &lt;b&gt;Data colector&lt;/b&gt;: Person/institution responsible for finding, gathering/collecting data under the guidelines of the author(s) or Principal Investigator (PI). &lt;br&gt;

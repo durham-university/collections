@@ -1,7 +1,9 @@
 class CollectionsController < ApplicationController
+  # This must be first so the before_filter is invoked before others. 
+  # Resource loading in CollectionsController is different from others.
+  include HydraDurham::NestedContributorsBehaviour 
   include Sufia::CollectionsControllerBehavior
 #  include HydraDurham::DoiResourceBehaviour
-  include HydraDurham::NestedContributorsBehaviour
 
   def collection_params
     form_class.model_attributes(

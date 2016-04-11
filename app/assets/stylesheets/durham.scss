@@ -216,6 +216,18 @@ div.heading-tile {
   }
 }
 
+.contributor_footnotes {
+  border-top: 1px solid #CCC;
+  margin-top: 3px;
+  font-size: 12px;
+}
+
+.chosen-container-multi ul.chosen-choices {
+  padding: 3px 12px;
+  border: 1px solid #CCC;
+  li.search-field { font-size: 14px; }
+}
+
 .contributors_multi_value {
   .listing {
     margin-left: 0;
@@ -223,6 +235,14 @@ div.heading-tile {
     max-width: 40em;
     .input-group {
       margin-bottom: 1px;
+      
+      border-bottom: 1px solid #DDD;
+      padding-bottom: 0.5em;
+      padding-top: 0.5em;
+      
+      &.highlight_remove {
+        background: #FDD;
+      }
     }
 
     label {

@@ -23,6 +23,9 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
+# JQuery chosen plugin. Makes select boxes better.
+gem 'chosen-rails'
+
 # New version of Sufia would depend on redlock already so this can be removed
 # when updating Sufia. See comments in app/services/sufia/lock_manager.rb
 gem 'redlock', '~> 0.1.2'

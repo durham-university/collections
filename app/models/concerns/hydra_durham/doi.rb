@@ -257,9 +257,9 @@ module HydraDurham
       ret << "The resource must have a title" if title.empty?
       ret << "The resource can only have a single title" if (title.is_a? Array) && title.length>1
 
-      ret << "Contributors can only have a single name and role" if \
+      ret << "Contributors can only have a single name" if \
         (contributors.to_a.select do |c|
-          c.contributor_name.length>1 || c.role.length>1
+          c.contributor_name.length>1
         end).any?
 
       ret << "The resource must be Open Access" if (respond_to? :can_mint_doi?) && !can_mint_doi?
@@ -370,6 +370,7 @@ module HydraDurham
         roles=c.role.map do |r| contributor_role_to_datacite r end
         roles.compact!
         next a if roles.empty?
+        roles.sort! # Roles must be sorted, otherwise authors might change arbitrarily
         roles.each do |r|
           a << {
             name: c.contributor_name.first,

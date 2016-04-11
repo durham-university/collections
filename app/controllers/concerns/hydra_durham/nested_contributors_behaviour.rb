@@ -10,7 +10,7 @@ module HydraDurham
       def deserialise_contributor_affiliations
         controller_key=controller_name.singularize
 
-        controller_key='generic_file' if controller_key=='batch_edit'
+        controller_key='generic_file' if controller_key=='batch_edit' || controller_key=='batch'
 
         if params.key?(controller_key) && params[controller_key].key?('contributors_attributes')
           contributors_attributes = params[controller_key]['contributors_attributes']
@@ -20,6 +20,9 @@ module HydraDurham
               (c['affiliation'].map! do |affiliation|
                 affiliation.strip.split(/\s*;\s*/).select(&:present?)
               end).flatten!.compact!
+            end
+            if c.key?('role')
+              c['role'].map!(&:strip).select!(&:present?)
             end
           end
         end

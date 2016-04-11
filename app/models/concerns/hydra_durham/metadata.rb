@@ -26,7 +26,10 @@ module HydraDurham
       end
 
       def serializable_hash(*args)
-        super(*args).merge({'contributors' => contributors.map(&:serializable_hash)})
+        super(*args).merge({'contributors' => contributors \
+          .select do |contributor| !contributor.marked_for_destruction? end \
+          .map(&:serializable_hash)
+        })
       end
 
       def init_with_json(json)
