@@ -56,6 +56,7 @@ gem 'rubyzip'
 # See https://github.com/rsolr/rsolr/pull/116 and https://github.com/projecthydra/active_fedora/pull/960
 gem 'active-fedora', github: 'durham-university/active_fedora', branch: 'configurable_handlers'
 gem 'rsolr', github: 'durham-university/rsolr', branch: 'configurable_handlers'
+gem 'active_fedora-noid', '>= 1.0.3'
 
 # Get hydra-editor from github until some fixes are pushed to gem repositories.
 # Remove this line when a new version is released.

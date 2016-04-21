@@ -117,8 +117,8 @@ GEM
       deprecation (~> 0.1)
       linkeddata (~> 1.1)
       rdf (~> 1.1)
-    active_fedora-noid (1.0.2)
-      active-fedora (~> 9.0)
+    active_fedora-noid (1.0.3)
+      active-fedora (~> 9.7)
       noid (~> 0.7)
     activejob (4.2.1)
       activesupport (= 4.2.1)
@@ -692,6 +692,7 @@ PLATFORMS
 
 DEPENDENCIES
   active-fedora!
+  active_fedora-noid (>= 1.0.3)
   byebug
   capybara
   chosen-rails
