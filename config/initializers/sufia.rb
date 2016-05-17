@@ -152,7 +152,9 @@ Sufia.config do |config|
   # config.enable_noids = true
 
   # Specify a different template for your repository's NOID IDs
-  # config.noid_template = ".reeddeeddk"
+  config.noid_template = DURHAM_CONFIG['identifier_template'] || '.reeddeeddk'
+  
+  config.minter_statefile = DURHAM_CONFIG['identifier_statefile'] || '/tmp/minter-state'
 
   # Specify the prefix for Redis keys:
   # config.redis_namespace = "sufia"

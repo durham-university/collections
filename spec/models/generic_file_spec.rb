@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'shared/ark_resource'
 
 RSpec.describe GenericFile do
 
@@ -11,6 +12,10 @@ RSpec.describe GenericFile do
   let(:file_solr) { GenericFile.load_instance_from_solr(file_saved.id) }
 
   subject { file }
+
+  it_behaves_like "ark resource" do
+    let(:resource_factory) { :generic_file }
+  end
 
   it "should have doi functionality" do
     expect(subject).to respond_to :doi

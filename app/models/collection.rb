@@ -1,5 +1,6 @@
 class Collection < Sufia::Collection
   include HydraDurham::Metadata
+  include HydraDurham::ArkBehaviour
   #include HydraDurham::Doi
 
   # title validation already in hydra-collection

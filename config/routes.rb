@@ -36,11 +36,15 @@ Rails.application.routes.draw do
 
   resources :doi, only: [:show, :update]
 
+  # The id regex needs to allow doi identifiers doi:10.1234/abcdefgh, but not capture
+  # format .json at the end
+  get 'id/:id', to: 'identifiers#show', constraints: { id: /[a-z]+:[0-9\.]*\/[^\.]+?/ }  
+
   # This must be the very last route in the file because it has a catch-all route for 404 errors.
     # This behavior seems to show up only in production mode.
     mount Sufia::Engine => '/'
   root to: 'homepage#index'
-
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

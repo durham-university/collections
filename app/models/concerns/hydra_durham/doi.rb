@@ -298,6 +298,7 @@ module HydraDurham
       rules=[{regex: /^doi:(.*)/i, type: 'DOI', value: '\1' },
              {regex: /^info:doi\/(.*)/i, type: 'DOI', value: '\1' },
              {regex: /^.*dx\.doi\.org\/(.*)/i, type: 'DOI', value: '\1' },
+             {regex: /^ark:(.*)/i, type: 'ARK', value: 'ark:\1' },
              {regex: /^arxiv:(.*)/i, type: 'arXiv', value: 'arXiv:\1'},
              {regex: /^.*arxiv\.org\/[^\/]+\/(.*)/i, type: 'arXiv', value: 'arXiv:\1'},
              'issn', 'isbn', 'istc', 'lissn',
@@ -305,8 +306,10 @@ module HydraDurham
              {regex: /^purl:(.*)/i, type: 'PURL', value: '\1'},
              {regex: /(.*([\W]|^)purl\W.*)/i, type: 'PURL', value: '\1'},
              'upc',
-             {prefix: 'urn', type: 'URN', keep_prefix: true},  # urn should be second to last because LSID also starts with urn
-             {regex: /(.*)/, type: 'URL', value: '\1'} ]
+             {prefix: 'urn', type: 'URN', keep_prefix: true},  # urn should be after LSID because LSID also starts with urn
+             {regex: /(https?:)(.*)/i, type: 'URL', value: '\1\2'} ,
+             {regex: /(.*)/, type: 'Handle', value: '\1'} 
+           ]
 
       rules.each do |rule|
         if rule.class==String
@@ -334,6 +337,11 @@ module HydraDurham
       # Otherwise users could manually specify a different identifier and
       # change records they're not supposed to.
       data = {:identifier => mock_doi}
+      
+      data[:alternate_identifier] = identifier.map do |identifier|
+        next if identifier == full_mock_doi
+        guess_identifier_type(identifier)
+      end .compact
 
       if respond_to? :doi_published and doi_published
         data[:publication_year] = "#{doi_published.year}"

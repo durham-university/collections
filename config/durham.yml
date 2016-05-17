@@ -1,19 +1,23 @@
 defaults: &defaults
   visibility_notification_users: []
-
+  ark_naan: '12345'
+  identifier_template: 'r0.reeddeeddk'
+  identifier_statefile: <%= File.expand_path('../minter-state', __FILE__) %>
+  visibility_notification_users: []
 
 development:
   <<: *defaults
-  visibility_notification_users: []
 
 test:
   <<: *defaults
-  visibility_notification_users: []
 
 test_server:
   <<: *defaults
   visibility_notification_users: ['dch1sp']
+  identifier_template: <%= "r#{ENV['HYDRA_SERVER_ID'] || '0'}.reeddeeddk" %>
 
 production:
   <<: *defaults
+  ark_naan: '32150'
   visibility_notification_users: ['dch1sp']
+  identifier_template: <%= "r#{ENV['HYDRA_SERVER_ID'] || '0'}.reeddeeddk" %>
