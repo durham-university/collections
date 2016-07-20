@@ -70,7 +70,7 @@ gem 'mini_magick', '3.8.1'
 #gem 'qa', '~> 0.5.0'
 
 group :development, :test do
-  gem 'thin'
+  gem 'puma'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
