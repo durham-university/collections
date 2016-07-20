@@ -5,4 +5,12 @@ class GenericFile < ActiveFedora::Base
   include HydraDurham::ArkBehaviour
   include HydraDurham::Doi
   include HydraDurham::IdentifierNormalisation
+  
+  private
+  
+    # don't do full text indexing for very large files
+    def extract_content
+      return nil if content.size > 100.megabytes
+      return super
+    end
 end

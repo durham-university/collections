@@ -118,5 +118,11 @@ RSpec.describe GenericFile do
     end
   end
 
+  describe "big files" do
+    it "solr_doc supports big files" do
+      expect(file.content).to receive(:size).at_least(:once).and_return(2**32)
+      expect { file.update_index } .not_to raise_error
+    end
+  end
 
 end
