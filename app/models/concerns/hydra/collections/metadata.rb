@@ -52,7 +52,9 @@ module Hydra::Collections
       property :tag, predicate: RDF::DC.relation do |index|
         index.as :stored_searchable, :facetable
       end
-      property :related_url, predicate: RDF::RDFS.seeAlso
+      property :related_url, predicate: RDF::RDFS.seeAlso do |index|
+        index.as :stored_searchable
+      end
 
     end
   end

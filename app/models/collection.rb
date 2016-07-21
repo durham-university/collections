@@ -2,6 +2,7 @@ class Collection < Sufia::Collection
   include HydraDurham::Metadata
   include HydraDurham::ArkBehaviour
   #include HydraDurham::Doi
+  include HydraDurham::IdentifierNormalisation
 
   # title validation already in hydra-collection
   validates :contributors, presence: true
