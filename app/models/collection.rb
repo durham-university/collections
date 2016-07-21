@@ -3,6 +3,7 @@ class Collection < Sufia::Collection
   include HydraDurham::ArkBehaviour
   #include HydraDurham::Doi
   include HydraDurham::IdentifierNormalisation
+  include HydraDurham::FedoraBigFieldGuard
 
   # title validation already in hydra-collection
   validates :contributors, presence: true

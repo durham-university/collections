@@ -98,4 +98,26 @@ RSpec.describe Collection do
       expect(Collection.where(id: collection.id).to_a).to be_empty
     end
   end
+  
+  describe "big field guard" do
+    let( :short_value ) { 'a'*4095 }
+    let( :long_value ) { 'a'*4096 }
+    it "won't save objects with too long values" do
+      collection.title = long_value
+      expect { collection.save } .to raise_error(HydraDurham::FedoraBigFieldGuard::FieldTooBigError)
+    end
+    it "won't create objects with too long values" do
+      expect {
+        FactoryGirl.create(:collection, title: long_value)
+      } .to raise_error(HydraDurham::FedoraBigFieldGuard::FieldTooBigError)
+    end
+    it "saves objects with small fields" do
+      collection.title = short_value
+      expect { collection.save } .not_to raise_error
+      expect(collection.reload.title).to eql(short_value)
+      collection.title = 'test'
+      collection.save
+      expect(collection.reload.title).to eql('test')
+    end  
+  end
 end
