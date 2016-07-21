@@ -5,6 +5,7 @@ RSpec.describe IdentifiersController, type: :controller do
   let(:user) { FactoryGirl.find_or_create(:registered_user_1) }
   let(:other_user) { FactoryGirl.find_or_create(:registered_user_2) }
   let(:file) { FactoryGirl.create(:generic_file, depositor: user, identifier: ['ark:/12345/r9ab12cd34efx']) }
+  let(:collection) { FactoryGirl.create(:collection, identifier: ['ark:/12345/r9ab34cd56efy']) }
   let(:public_file) { FactoryGirl.create(:public_file, depositor: user, identifier: ['ark:/12345/r8ab12cd34efx']) }
 
   describe "GET #show" do
@@ -12,6 +13,10 @@ RSpec.describe IdentifiersController, type: :controller do
       it "redirects arks to public files" do
         get :show, id: public_file.identifier.first
         expect(response).to redirect_to(generic_file_path(public_file))
+      end
+      it "redirects arks to public collections" do
+        get :show, id: collection.identifier.first
+        expect(response).to redirect_to(collection_path(collection))
       end
       it "doesn't redirect arks to private files" do
         get :show, id: file.identifier.first
