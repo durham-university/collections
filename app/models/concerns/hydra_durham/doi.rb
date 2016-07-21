@@ -9,7 +9,10 @@ module HydraDurham
       end
 
       # This is a JSON serialised version of the document sent to DataCite.
-      property :datacite_document, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#datacite_document'), multiple: false
+      contains "datacite_document_file", class_name: 'ActiveFedora::File'
+      # The above datacite document used to be stored in a property. Still define
+      # it and use as a fallback for reading. This avoids a separate migration.
+      property :datacite_document_legacy, predicate: ::RDF::URI.new('http://collections.durham.ac.uk/ns#datacite_document'), multiple: false
 
       attr_accessor :skip_update_datacite
 
@@ -17,6 +20,17 @@ module HydraDurham
 
       after_save :update_datacite_metadata
       around_destroy :update_datacite_destroyed
+    end
+    
+    def datacite_document
+      return datacite_document_file.content if datacite_document_file.try(:content).present?
+      return datacite_document_legacy
+    end
+    
+    def datacite_document=(value)
+      self.datacite_document_file.content = value
+      self.datacite_document_file.mime_type = 'application/json'
+      self.datacite_document_legacy = nil unless self.datacite_document_legacy.nil?
     end
 
     def update_datacite_metadata

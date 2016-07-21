@@ -5,4 +5,5 @@ class GenericFile < ActiveFedora::Base
   include HydraDurham::ArkBehaviour
   include HydraDurham::Doi
   include HydraDurham::IdentifierNormalisation
+  include HydraDurham::FedoraBigFieldGuard
 end

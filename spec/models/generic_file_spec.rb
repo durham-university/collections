@@ -118,5 +118,26 @@ RSpec.describe GenericFile do
     end
   end
 
+  describe "big field guard" do
+    let( :short_value ) { 'a'*4095 }
+    let( :long_value ) { 'a'*4096 }
+    it "won't save objects with too long values" do
+      file.title = [long_value]
+      expect { file.save } .to raise_error(HydraDurham::FedoraBigFieldGuard::FieldTooBigError)
+    end
+    it "won't create objects with too long values" do
+      expect {
+        FactoryGirl.create(:generic_file, title: [long_value])
+      } .to raise_error(HydraDurham::FedoraBigFieldGuard::FieldTooBigError)
+    end
+    it "saves objects with small fields" do
+      file.title = [short_value]
+      expect { file.save } .not_to raise_error
+      expect(file.reload.title).to eql([short_value])
+      file.title = ['test']
+      file.save
+      expect(file.reload.title).to eql(['test'])
+    end
+  end
 
 end

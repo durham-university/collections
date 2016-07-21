@@ -184,6 +184,41 @@ RSpec.describe "doi concern" do
       end
     end
   end
+  
+  describe "datacite_document" do
+    context "with legacy value set" do
+      let(:file) {
+        FactoryGirl.create(:generic_file,:test_data,:public_doi).tap do |file|
+          file.datacite_document_file.content = ''
+          file.datacite_document_legacy='{"test": "moo"}'
+          file.save(validate: false)
+        end .reload
+      }
+      it "reads from legacy field" do
+        expect(file.datacite_document_file.content).to be_blank
+        expect(file.datacite_document_legacy).to be_present
+        expect(file.datacite_document).to eql('{"test": "moo"}')
+      end
+      it "sets in new file" do
+        file.datacite_document='{"test": "baa"}'
+        expect(file.datacite_document_file.content).to eql('{"test": "baa"}')
+        expect(file.datacite_document_legacy).to be_nil
+      end
+    end
+    context "with file set" do
+      let(:file) { FactoryGirl.create(:generic_file, :test_data, :public_doi) }      
+      it "reads" do
+        expect(file.datacite_document).to be_present
+      end
+      it "writes" do
+        file.datacite_document='{"test": "baa"}'
+        expect(file.datacite_document_file.content).to eql('{"test": "baa"}')
+        expect(file.datacite_document_legacy).to be_nil
+        file.save(validate: false)
+        expect(file.reload.datacite_document).to eql('{"test": "baa"}')
+      end
+    end
+  end
 
   context "with a generic file" do
     let(:file) { FactoryGirl.create(:generic_file) }
