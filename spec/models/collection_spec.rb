@@ -54,7 +54,7 @@ RSpec.describe Collection do
       ['title','description','subject','resource_type','identifier','tag','related_url','funder','abstract','research_methods','date_uploaded']
     }
     let(:expected_values) {
-      multi_value_sort({"title"=>"Test title", "description"=>["Description"], "subject"=>["subject1", "subject2"], "resource_type"=>["Collection"], "identifier"=>["http://something.else.com", "arXiv:0123.0000", "isbn:123456"] + [collection.local_ark], "tag"=>["keyword1", "keyword2"], "related_url"=>["http://related.url.com/test"], "funder"=>["Funder 1"], "abstract"=>["Test abstract"], "research_methods"=>["Test research method 1", "Test research method 2"], "date_uploaded"=>DateTime.parse("2015-07-16T12:44:38.000+01:00").to_s})
+      multi_value_sort({"title"=>"Test title", "description"=>["Description"], "subject"=>["subject1", "subject2"], "resource_type"=>["Collection"], "identifier"=>["http://something.else.com", "arxiv:0123.0000", "isbn:123456"] + [collection.local_ark], "tag"=>["keyword1", "keyword2"], "related_url"=>["http://related.url.com/test"], "funder"=>["Funder 1"], "abstract"=>["Test abstract"], "research_methods"=>["Test research method 1", "Test research method 2"], "date_uploaded"=>DateTime.parse("2015-07-16T12:44:38.000+01:00").to_s})
     }
 
     describe "loading from Fedora" do
