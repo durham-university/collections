@@ -2,6 +2,7 @@ en:
     sufia:
         account_name: Durham University CIS username
         product_name: "Collections"
+        deposit_agreement:  "DRO-DATA's Deposit Agreement"
         product_twitter_handle: "@dulib"
         institution_name: "Durham University"
         institution_name_full: "Durham University"
