@@ -52,7 +52,7 @@ namespace :authority_import do
     file=args.funders_file
     if args.force_download or not File.exists?(file)
       puts "Downloading funders rdf to #{file}"
-      download_file('http://data.fundref.org/fundref/registry',file)
+      download_file('http://dx.doi.org/10.13039/fundref_registry',file)
     else
       puts "Using existing funders file #{file}."
     end
