@@ -3,6 +3,10 @@ class SchmitDownloadsController < ApplicationController
   
   protected
   
+    def no_verify_certificate
+      SCHMIT_CONFIG['no_verify_certificate']
+    end
+  
     def download_url
       return nil unless /^ark:\/[0-9]{5}\/[a-z0-9]+\.(pdf|xml)$/.match(params[:id])
       SCHMIT_CONFIG['schmit_url']+"id/#{params[:id]}"

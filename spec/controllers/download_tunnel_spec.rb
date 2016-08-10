@@ -55,15 +55,27 @@ RSpec.describe HydraDurham::DownloadTunnelBehaviour, type: :controller do
   
   describe "#pipe_url" do
     it "follows redirects and calls #pipe_url" do
-      allow(Net::HTTP).to receive(:get_response)
-      expect(Net::HTTP).to receive(:get_response).with(URI('http://test/test1')).and_yield(
-        double('response1', code: '302', header: {'Location' => 'http://test/test2'})
+      allow(Net::HTTP).to receive(:start)
+      expect(Net::HTTP).to receive(:start).with('test1', 80, any_args).and_yield(
+        double('http1').tap do |mock|
+          allow(mock).to receive(:request) do |req,&block|
+            expect(req.method).to eql('GET')
+            expect(req.path).to eql('/test1')
+            block.call(double('response1', code: '302', header: {'Location' => 'http://test2/test2'}))
+          end
+        end
       )
-      expect(Net::HTTP).to receive(:get_response).with(URI('http://test/test2')).and_yield(
-        double('response2', code: '200')
+      expect(Net::HTTP).to receive(:start).with('test2', 80, any_args).and_yield(
+        double('http2').tap do |mock|
+          allow(mock).to receive(:request) do |req,&block|
+            expect(req.method).to eql('GET')
+            expect(req.path).to eql('/test2')
+            block.call(double('response2', code: '200'))
+          end
+        end
       )
       expect(tunnel).to receive(:pipe_response)
-      tunnel.send(:pipe_url,'http://test/test1')
+      tunnel.send(:pipe_url,'http://test1/test1')
     end
   end
 end

@@ -35,19 +35,30 @@ module HydraDurham
       end
       
       def pipe_url(url, tried=[])
-        Net::HTTP.get_response(URI(url)) do |resp|
-          if resp.code == '200'
-            pipe_response(resp)
-          elsif ['301', '302', '303', '307'].include?(resp.code) # redirects
-            if tried.include?(resp.header['Location']) || tried.length>5 # detect redirect loops
-              send_error(resp) 
+        uri = URI(url)
+        options = { use_ssl: uri.scheme == 'https' }
+        options[:verify_mode] = OpenSSL::SSL::VERIFY_NONE if no_verify_certificate
+        
+        Net::HTTP.start(uri.host, uri.port, options) do |http|
+          http.request(Net::HTTP::Get.new(uri.path)) do |resp|
+            if resp.code == '200'
+              pipe_response(resp)
+            elsif ['301', '302', '303', '307'].include?(resp.code) # redirects
+              if tried.include?(resp.header['Location']) || tried.length>5 # detect redirect loops
+                send_error(resp) 
+              else
+                pipe_url(resp.header['Location'], tried + [url])
+              end
             else
-              pipe_url(resp.header['Location'], tried + [url])
+              send_error(resp)
             end
-          else
-            send_error(resp)
           end
         end
+      end
+      
+      def no_verify_certificate
+        # return true to disable certificate verification, useful for debugging
+        false
       end
     
       def download_url

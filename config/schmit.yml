@@ -3,4 +3,7 @@ development:
 test:
   schmit_url: 'http://localhost:3001/schmit/'
 test_server:
+  schmit_url: 'https://schmit-test.durham.ac.uk/'
+  no_verify_certificate: true
 production:
+  schmit_url: 'https://schmit.durham.ac.uk/'
