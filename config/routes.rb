@@ -19,6 +19,8 @@ Rails.application.routes.draw do
 
   # this enables users/sign_in and users/sign_out
   devise_for :users
+  
+  get "schmit/:id" => "schmit_downloads#show", constraints: { id: /.+/ }
 
   # enable users index only, needed by user auto complete
   get "users" => "users#index"
