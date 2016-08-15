@@ -64,6 +64,7 @@ RSpec.describe "Uploading a file", type: :feature do
     visit "/downloads/#{file_id}"
     expect(page.status_code).to eql 200
     expect(page.response_headers['Content-Type']).to eql 'application/pdf'
-    expect(page.response_headers['Content-Disposition']).to include 'test.pdf'
+    expect(page.response_headers['Content-Disposition']).to include 'test'
+    expect(page.response_headers['Content-Disposition']).to include '.pdf'
   end
 end

@@ -8,13 +8,13 @@
 /*global $ */
 
 
-//200 MB  max file size 
-var max_file_size = 400000000;
-var max_file_size_str = "400 MB";
-//500 MB max total upload size
-var max_total_file_size = 500000000;
+// 20GB  max file size 
+var max_file_size = 21474836480;
+var max_file_size_str = "20 GB";
+// 20GB max total upload size
+var max_total_file_size = 21474836480;
 var max_file_count = 100;
-var max_total_file_size_str = "500 MB";
+var max_total_file_size_str = "20 GB";
 var first_file_after_max = ''; 
 var filestoupload =0;      
 

@@ -60,6 +60,11 @@ module HydraDurham
                 contributor.to_s
               end
         r["contributors_sim"]=r["contributors_tesim"] # this is needed for facets
+        
+        # Solrizer doesn't seem to support long type so hard code field name
+        r['file_size_ls'] = r['file_size_is']
+        r.delete('file_size_is')
+        
         r
       end
     end

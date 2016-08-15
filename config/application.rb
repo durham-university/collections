@@ -30,6 +30,12 @@ module Sufia
       Sufia::GenericFile::Actor.class_eval do
         prepend GenericFileActorPatch # in app/actors/generic_file_actor_patch.rb
       end
+      Hydra::Derivatives::ExtractMetadata.class_eval do
+        prepend HydraDerivativesExtractMetadataPatch # in lib/patches/hydra_derivatives_excract_metadata_patch.rb
+      end
+      Hydra::FileCharacterization::ToTempFile.class_eval do
+        prepend HydraFileCharacterizationToTempFilePatch # in lib/patches/hydra_file_characterization_to_temp_file_patch.rb
+      end
     end
 
     config.generators do |g|
