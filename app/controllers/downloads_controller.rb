@@ -3,7 +3,7 @@ class DownloadsController < ApplicationController
 
   def file_name
     return params[:filename] if params[:filename].present?
-    base = asset.filename.try(:first) || asset.label || 'unnamed_file'
+    base = asset.content.try(:original_name) || asset.filename.try(:first) || asset.label || 'unnamed_file'
     extension = ''
     ind = base.rindex('.')
     if ind

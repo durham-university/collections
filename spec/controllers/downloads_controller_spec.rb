@@ -5,16 +5,16 @@ RSpec.describe DownloadsController, type: :controller do
   describe "#file_name" do
     let( :asset_title ) { ['Test Asset'] }
     let( :asset_id ) { 'w9505044z' }
-    let( :filename ) { ['test.pdf'] }
+    let( :filename ) { 'test.pdf' }
     let( :version_label ) { 'version1' }
     let( :params_file ) { 'content' }
     let!( :asset ) {
       double('asset').tap do |asset|
-        allow(asset).to receive(:filename).and_return(filename)
+        allow(asset).to receive(:filename).and_return('dummyname.txt')
         allow(asset).to receive(:title).and_return(asset_title)
         allow(asset).to receive(:id).and_return(asset_id)
         allow(asset).to receive(:content).and_return(
-          OpenStruct.new( latest_version: OpenStruct.new( label: version_label ) )
+          OpenStruct.new( latest_version: OpenStruct.new( label: version_label ), original_name: filename )
         )
         allow(controller).to receive(:asset).and_return(asset)
       end
@@ -33,7 +33,7 @@ RSpec.describe DownloadsController, type: :controller do
     end
     
     context "with filename that has no extension" do
-      let( :filename ) { ['just_test'] }
+      let( :filename ) { 'just_test' }
       it "combines all pieces but extension" do
         expect(subject).to eql "just_test-#{asset_id}-#{version_label}"
       end
